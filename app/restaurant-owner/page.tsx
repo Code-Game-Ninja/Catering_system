@@ -92,7 +92,7 @@ export default function RestaurantOwnerDashboard() {
       // Fetch orders for this restaurant
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurantId))
-      const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+      const unsubscribe = onSnapshot(ordersQuery, async (snapshot) => {
         const orders = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
