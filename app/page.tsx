@@ -4,6 +4,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardTitle } from "@/components/ui/card"
 import { Utensils, ChefHat, HeartHandshake, Leaf, Award, Users } from "lucide-react" // Added new icons
+import { IndianFoodGallery } from "@/components/IndianFoodGallery"
 
 export default function LandingPage() {
   return (
@@ -148,7 +149,7 @@ export default function LandingPage() {
       {/* To change the testimonials background image, update the URL in the style prop below */}
       <section
         className="relative py-16 md:py-24 bg-cover bg-center text-white text-center"
-        style={{ backgroundImage: "url('https://media.istockphoto.com/id/1394553808/photo/indian-food-assortment-on-light-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=bRbedff5ZfCFGCJ-DLqyuTuGRh-sDFRdr1YhBDrpBLU=')" }}
+        style={{ backgroundImage: "url('/images/testimonials-bg.png')" }}
       >
         <div className="absolute inset-0 bg-black/70" />
         <div className="relative z-10 container mx-auto px-4">
@@ -178,6 +179,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Indian Food Gallery Section */}
+      <IndianFoodGallery />
 
       {/* Call to Action Section (already exists, but keeping for completeness) */}
       <section className="py-16 md:py-24 bg-primary text-primary-foreground text-center">

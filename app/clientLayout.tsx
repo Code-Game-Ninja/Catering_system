@@ -146,6 +146,11 @@ export default function ClientLayout({
                     <BookText className="mr-2 h-4 w-4" /> Menu
                   </Button>
                 </Link>
+                <Link href="/food-gallery">
+                  <Button variant="ghost" size="sm" className="text-primary-foreground">
+                    Gallery
+                  </Button>
+                </Link>
                 <Link href="/about">
                   <Button variant="ghost" size="sm" className="text-primary-foreground">
                     About
