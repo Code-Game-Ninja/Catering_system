@@ -77,18 +77,47 @@ export default function AdminDashboardPage() {
     }
   }, [router, userRole])
 
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = () => {
     try {
-      // Fetch orders
+      // Fetch orders in real time
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, orderBy("orderDate", "desc"))
-      const unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
+      const unsubscribeOrders = onSnapshot(ordersQuery, async (snapshot) => {
         const orders = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
           orderDate: doc.data().orderDate?.toDate(),
           estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
         })) as Order[]
+
+        // Fetch products
+        const productsCollection = collection(db, "products")
+        const productsSnapshot = await getDocs(productsCollection)
+        const products = productsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          updatedAt: doc.data().updatedAt?.toDate(),
+        })) as Product[]
+
+        // Fetch restaurants
+        const restaurantsCollection = collection(db, "restaurants")
+        const restaurantsSnapshot = await getDocs(restaurantsCollection)
+        const restaurants = restaurantsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          updatedAt: doc.data().updatedAt?.toDate(),
+        })) as Restaurant[]
+
+        // Fetch users
+        const usersCollection = collection(db, "users")
+        const usersSnapshot = await getDocs(usersCollection)
+        const users = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+        })) as UserProfile[]
 
         // Calculate stats
         const totalOrders = orders.length
@@ -98,88 +127,46 @@ export default function AdminDashboardPage() {
         const totalRevenue = orders
           .filter((order) => order.status === "delivered")
           .reduce((sum, order) => sum + order.totalAmount, 0)
-      const orders = ordersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        orderDate: doc.data().orderDate?.toDate(),
-        estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
-      })) as Order[]
+        const totalProducts = products.length
+        const totalRestaurants = restaurants.length
+        const totalUsers = users.filter((user) => user.role === "user").length
+        const recentOrders = orders.slice(0, 5)
 
-      // Fetch products
-      const productsCollection = collection(db, "products")
-      const productsSnapshot = await getDocs(productsCollection)
-      const products = productsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Product[]
+        // Get top restaurants by rating
+        const topRestaurants = restaurants
+          .filter((restaurant) => restaurant.isActive)
+          .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+          .slice(0, 5)
 
-      // Fetch restaurants
-      const restaurantsCollection = collection(db, "restaurants")
-      const restaurantsSnapshot = await getDocs(restaurantsCollection)
-      const restaurants = restaurantsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Restaurant[]
+        // Get top products by rating
+        const topProducts = products
+          .filter((product) => product.isAvailable)
+          .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+          .slice(0, 5)
 
-      // Fetch users
-      const usersCollection = collection(db, "users")
-      const usersSnapshot = await getDocs(usersCollection)
-      const users = usersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-      })) as UserProfile[]
+        const dashboardStats: DashboardStats = {
+          totalOrders,
+          pendingOrders,
+          completedOrders,
+          cancelledOrders,
+          totalRevenue,
+          totalProducts,
+          totalRestaurants,
+          totalUsers,
+          recentOrders,
+          topRestaurants,
+          topProducts,
+        }
 
-      // Calculate stats
-      const totalOrders = orders.length
-      const pendingOrders = orders.filter((order) => order.status === "pending").length
-      const completedOrders = orders.filter((order) => order.status === "delivered").length
-      const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
-      const totalRevenue = orders
-        .filter((order) => order.status === "delivered")
-        .reduce((sum, order) => sum + order.totalAmount, 0)
-      const totalProducts = products.length
-      const totalRestaurants = restaurants.length
-      const totalUsers = users.filter((user) => user.role === "user").length
-      const recentOrders = orders.slice(0, 5)
-
-      // Get top restaurants by rating
-      const topRestaurants = restaurants
-        .filter((restaurant) => restaurant.isActive)
-        .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-        .slice(0, 5)
-
-      // Get top products by rating
-      const topProducts = products
-        .filter((product) => product.isAvailable)
-        .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-        .slice(0, 5)
-
-      const dashboardStats: DashboardStats = {
-        totalOrders,
-        pendingOrders,
-        completedOrders,
-        cancelledOrders,
-        totalRevenue,
-        totalProducts,
-        totalRestaurants,
-        totalUsers,
-        recentOrders,
-        topRestaurants,
-        topProducts,
-      }
-
-      setStats(dashboardStats)
-      log("info", "Admin dashboard stats fetched successfully")
+        setStats(dashboardStats)
+        log("info", "Admin dashboard stats fetched successfully")
+        setLoading(false)
+      })
+      // Store unsubscribeOrders if you want to clean up later
     } catch (err: any) {
       log("error", "Failed to fetch admin dashboard stats", { error: err.message })
       setError("Failed to load dashboard data. Please try again later.")
       console.error("Error fetching dashboard stats:", err)
-    } finally {
       setLoading(false)
     }
   }
