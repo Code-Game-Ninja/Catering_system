@@ -85,6 +85,7 @@ export default function RestaurantOwnerOrdersPage() {
   }, [router])
 
   const fetchOrders = async (currentRestaurantId: string) => {
+    console.log("Querying orders for restaurantId:", currentRestaurantId)
     try {
       const ordersCollection = collection(db, "orders")
       const q = query(ordersCollection, where("restaurantId", "==", currentRestaurantId))
