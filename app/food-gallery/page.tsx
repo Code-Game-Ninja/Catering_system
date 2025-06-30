@@ -1,3 +1,5 @@
+"use client";
+
 import { IndianFoodGallery } from "@/components/IndianFoodGallery"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"

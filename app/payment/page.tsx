@@ -1,3 +1,4 @@
+"use client";
 import { Suspense } from "react"
 import PaymentPageContent from "./PaymentPageContent"
 import { ArrowLeft } from "lucide-react"
