@@ -264,26 +264,21 @@ export default function ClientLayout({
               )}
             </div>
 
-            {/* Add a mobile-optimized search bar, styled for mobile, only visible on mobile */}
-            <form onSubmit={handleSearch} className="block md:hidden mt-4 w-full">
-              <div className="relative">
+            {/* Desktop Search Bar */}
+            <div className="hidden md:block w-full max-w-md mx-auto mb-4">
+              <form onSubmit={handleSearch} className="flex items-center">
                 <Input
                   type="text"
                   placeholder="Search for dishes..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/70 rounded-lg py-3 text-base"
+                  className="pr-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground"
                 />
-                <Button
-                  type="submit"
-                  size="sm"
-                  variant="ghost"
-                  className="absolute right-0 top-0 h-full px-3 text-primary-foreground hover:bg-primary-foreground/10"
-                >
+                <Button type="submit" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2">
                   <Search className="h-5 w-5" />
                 </Button>
-              </div>
-            </form>
+              </form>
+            </div>
           </nav>
         </header>
 

@@ -165,7 +165,8 @@ export default function AdminDashboardPage() {
               }
 
               setStats(dashboardStats)
-              log("info", "Admin dashboard stats fetched successfully (real-time)")
+              console.log('Admin dashboard stats updated:', dashboardStats)
+              log('debug', 'Admin dashboard stats updated', dashboardStats)
               setLoading(false)
             })
           })
