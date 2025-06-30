@@ -125,7 +125,7 @@ export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
                       <p className="font-medium">{review.userName}</p>
                       <div className="flex items-center gap-2">
                         <StarRating rating={review.rating} size="sm" />
-                        <span className="text-sm text-gray-500">{review.createdAt.toLocaleDateString()}</span>
+                        <span className="text-sm text-gray-500">{review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'N/A'}</span>
                       </div>
                     </div>
                   </div>

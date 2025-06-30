@@ -371,7 +371,7 @@ export default function RestaurantOwnerOrdersPage() {
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {order.orderDate.toLocaleDateString()} at {order.orderDate.toLocaleTimeString()}
+                          {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
                         </div>
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />

@@ -359,7 +359,7 @@ export default function AdminRestaurantsPage() {
                           <span className="font-medium">Owner ID:</span> {restaurant.ownerId}
                         </p>
                         <p>
-                          <span className="font-medium">Created:</span> {restaurant.createdAt.toLocaleDateString()}
+                          <span className="font-medium">Created:</span> {restaurant.createdAt ? new Date(restaurant.createdAt).toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
                     </div>
