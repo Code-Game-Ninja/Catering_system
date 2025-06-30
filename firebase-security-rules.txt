@@ -25,7 +25,7 @@ service cloud.firestore {
     // ORDERS
     match /orders/{orderId} {
       allow read, create: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow update: if isAdmin() || isOwner(resource.data.restaurantId);
+      allow update: if isAdmin() || isRestaurantOwnerOfOrder();
       allow read, write: if isAdmin();
     }
 
@@ -45,6 +45,11 @@ service cloud.firestore {
     }
     function isOwner(ownerId) {
       return request.auth != null && request.auth.uid == ownerId;
+    }
+    function isRestaurantOwnerOfOrder() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)) &&
+        get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId == request.auth.uid;
     }
 
     // Categories collection

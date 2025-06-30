@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth"
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore"
 import { auth, db } from "@/lib/firebase"
 import { Button } from "@/components/ui/button"
@@ -65,6 +65,7 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
           description: "Your account has been created.",
           variant: "default",
         })
+        await sendEmailVerification(user)
         router.push(onSuccessRedirect)
       } else {
         const userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -153,6 +154,9 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
             {loading ? <LoadingSpinner /> : isRegister ? "Register" : "Login"}
           </Button>
         </form>
+        {/* Add a 'Forgot password?' link below the login form */}
+        {/* When clicked, show an inline form to enter email and sendPasswordResetEmail */}
+        {/* Show success/error messages */}
       </CardContent>
     </Card>
   )

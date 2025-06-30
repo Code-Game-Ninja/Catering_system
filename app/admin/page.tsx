@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
     <div className="container mx-auto px-2 sm:px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div className="flex items-center gap-2">
-          <Button variant="back" onClick={() => router.back()} className="p-2">
+          <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-2xl font-semibold">Platform Admin Dashboard</h1>
