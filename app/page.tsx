@@ -14,7 +14,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)]">
       <div className="flex items-center gap-4 mb-8">
-        <h1 className="text-4xl font-bold">Home</h1>
+        {/* Remove <h1 className="text-4xl font-bold">Home</h1> from the homepage header */}
       </div>
       {/* Hero Section */}
       {/* To change the hero background image, update the URL in the style prop below */}
