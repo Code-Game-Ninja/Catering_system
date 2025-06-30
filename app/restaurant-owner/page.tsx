@@ -70,28 +70,29 @@ export default function RestaurantOwnerDashboard() {
 
   const fetchRestaurantData = async (restaurantId: string) => {
     try {
-      // Fetch restaurant details
+      // Fetch restaurant details in real time
       const restaurantDocRef = doc(db, "restaurants", restaurantId)
-      const restaurantDocSnap = await getDoc(restaurantDocRef)
+      const unsubscribeRestaurant = onSnapshot(restaurantDocRef, (restaurantDocSnap) => {
+        if (!restaurantDocSnap.exists()) {
+          setError("Restaurant not found")
+          return
+        }
+        const data = restaurantDocSnap.data();
+        const restaurantData = {
+          id: restaurantDocSnap.id,
+          ...data,
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+        } as unknown as Restaurant;
+        setRestaurant(restaurantData)
+      }, (err) => {
+        setError("Failed to load restaurant data: " + err.message)
+      })
 
-      if (!restaurantDocSnap.exists()) {
-        setError("Restaurant not found")
-        return
-      }
-
-      const restaurantData = {
-        id: restaurantDocSnap.id,
-        ...restaurantDocSnap.data(),
-        createdAt: restaurantDocSnap.data().createdAt?.toDate(),
-        updatedAt: restaurantDocSnap.data().updatedAt?.toDate(),
-      } as Restaurant
-
-      setRestaurant(restaurantData)
-
-      // Fetch orders for this restaurant
+      // Fetch orders for this restaurant (already real-time)
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurantId))
-      const unsubscribe = onSnapshot(ordersQuery, async (snapshot) => {
+      const unsubscribeOrders = onSnapshot(ordersQuery, async (snapshot) => {
         const orders = snapshot.docs.map((doc) => {
           const data = doc.data();
           if (!data.userId || !data.restaurantId || !data.status || !data.totalAmount) return null;
@@ -103,82 +104,59 @@ export default function RestaurantOwnerDashboard() {
           } as unknown as Order;
         }).filter((o): o is Order => o !== null);
 
-        // sort newest → oldest (was previously handled by Firestore orderBy)
         orders.sort((a, b) => {
           const aTime = a && a.orderDate instanceof Date ? a.orderDate.getTime() : 0;
           const bTime = b && b.orderDate instanceof Date ? b.orderDate.getTime() : 0;
           return bTime - aTime;
         });
 
-        // Calculate stats
-        const totalOrders = orders.length
-        const pendingOrders = orders.filter((order) =>
-          ["pending", "confirmed", "preparing"].includes(order.status),
-        ).length
-        const completedOrders = orders.filter((order) => order.status === "delivered").length
-        const totalRevenue = orders
-          .filter((order) => order.status === "delivered")
-          .reduce((sum, order) => sum + order.totalAmount, 0)
-
-      // Fetch products for this restaurant
-      const productsCollection = collection(db, "products")
-      const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
-      const productsSnapshot = await getDocs(productsQuery)
-
-      const products = productsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Product[]
-
-      const recentOrders = orders.slice(0, 5)
-      const topProducts = products
-        .filter((product) => product.isAvailable)
-        .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-        .slice(0, 5)
-
-      const restaurantStats: RestaurantStats = {
-        totalOrders,
-        pendingOrders,
-        completedOrders,
-        totalRevenue,
-          totalProducts: products.length,
-        averageRating: restaurantData.rating || 0,
-        totalReviews: restaurantData.totalReviews || 0,
-        recentOrders,
-        topProducts,
-      }
-
-      setStats(restaurantStats)
-      log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
-
-        // Fetch user info for each recent order
-        const userInfoPromises = recentOrders.map(async (order) => {
-          const userDocRef = doc(db, "users", order.userId)
-          const userDocSnap = await getDoc(userDocRef)
-          if (userDocSnap.exists()) {
-            const userData = userDocSnap.data()
+        // Fetch products for this restaurant in real time
+        const productsCollection = collection(db, "products")
+        const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
+        const unsubscribeProducts = onSnapshot(productsQuery, (productsSnapshot) => {
+          const products = productsSnapshot.docs.map((doc) => {
+            const data = doc.data();
             return {
-              ...order,
-              user: {
-                email: userData.email,
-                name: userData.name,
-                phone: userData.phone,
-              },
-            }
-          }
-          return order
-        })
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+              updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+            } as unknown as Product;
+          });
 
-        const updatedRecentOrders = await Promise.all(userInfoPromises)
-        setStats((prevStats) => ({
-          ...prevStats!,
-          recentOrders: updatedRecentOrders,
-        }))
+          const recentOrders = orders.slice(0, 5)
+          const topProducts = products
+            .filter((product) => product.isAvailable)
+            .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+            .slice(0, 5)
+
+          const restaurantStats: RestaurantStats = {
+            totalOrders: orders.length,
+            pendingOrders: orders.filter((order) => ["pending", "confirmed", "preparing"].includes(order.status)).length,
+            completedOrders: orders.filter((order) => order.status === "delivered").length,
+            totalRevenue: orders.filter((order) => order.status === "delivered").reduce((sum, order) => sum + order.totalAmount, 0),
+            totalProducts: products.length,
+            averageRating: restaurant ? restaurant.rating || 0 : 0,
+            totalReviews: restaurant ? restaurant.totalReviews || 0 : 0,
+            recentOrders,
+            topProducts,
+          }
+
+          setStats(restaurantStats)
+          log("info", "Restaurant owner dashboard data fetched successfully (real-time)", { restaurantId })
+        }, (err) => {
+          setError("Failed to load products: " + err.message)
+        })
+      }, (err) => {
+        setError("Failed to load orders: " + err.message)
       })
 
-      return () => unsubscribe()
+      // Return unsubscribe functions if needed for cleanup
+      return () => {
+        unsubscribeRestaurant()
+        unsubscribeOrders()
+        // unsubscribeProducts() is called inside orders snapshot
+      }
     } catch (err: any) {
       log("error", "Failed to fetch restaurant owner dashboard data", { error: err.message })
       setError("Failed to load dashboard data. Please try again later.")
@@ -352,10 +330,10 @@ export default function RestaurantOwnerDashboard() {
                       <p className="font-medium">Order #{order.id.substring(0, 8)}</p>
                       <div className="space-y-2 text-sm">
                         <p>
-                          <span className="font-medium">Created:</span> {restaurant?.createdAt ? new Date(restaurant.createdAt).toLocaleDateString() : 'N/A'}
+                          <span className="font-medium">Created:</span> {restaurant?.createdAt instanceof Date ? restaurant.createdAt.toLocaleDateString() : 'N/A'}
                         </p>
                         <p>
-                          <span className="font-medium">Updated:</span> {restaurant?.updatedAt ? new Date(restaurant.updatedAt).toLocaleDateString() : 'N/A'}
+                          <span className="font-medium">Updated:</span> {restaurant?.updatedAt instanceof Date ? restaurant.updatedAt.toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">

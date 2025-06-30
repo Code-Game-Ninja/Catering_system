@@ -28,6 +28,9 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [showReset, setShowReset] = useState(false)
+  const [resetEmail, setResetEmail] = useState("")
+  const [resetMessage, setResetMessage] = useState<string | null>(null)
   const router = useRouter()
   const { toast } = useToast() // Initialize toast
 
@@ -106,6 +109,27 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
     }
   }
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setResetMessage(null)
+    try {
+      await sendPasswordResetEmail(auth, resetEmail)
+      setResetMessage("Password reset email sent! Check your inbox.")
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your inbox for reset instructions.",
+        variant: "default",
+      })
+    } catch (err: any) {
+      setResetMessage(err.message)
+      toast({
+        title: "Password Reset Failed",
+        description: err.message,
+        variant: "destructive",
+      })
+    }
+  }
+
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
@@ -115,48 +139,71 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleAuth} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          {isRegister && (
+        {showReset ? (
+          <form onSubmit={handlePasswordReset} className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Label htmlFor="reset-email">Email</Label>
               <Input
-                id="confirm-password"
-                type="password"
+                id="reset-email"
+                type="email"
+                placeholder="m@example.com"
                 required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
               />
             </div>
-          )}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? <LoadingSpinner /> : isRegister ? "Register" : "Login"}
-          </Button>
-        </form>
-        {/* Add a 'Forgot password?' link below the login form */}
-        {/* When clicked, show an inline form to enter email and sendPasswordResetEmail */}
-        {/* Show success/error messages */}
+            {resetMessage && <p className="text-sm text-center text-green-600 dark:text-green-400">{resetMessage}</p>}
+            <Button type="submit" className="w-full">Send Password Reset Email</Button>
+            <Button type="button" variant="link" className="w-full" onClick={() => setShowReset(false)}>
+              Back to Login
+            </Button>
+          </form>
+        ) : (
+          <>
+            <form onSubmit={handleAuth} className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              {isRegister && (
+                <div className="grid gap-2">
+                  <Label htmlFor="confirm-password">Confirm Password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    required
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+              )}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? <LoadingSpinner /> : isRegister ? "Register" : "Login"}
+              </Button>
+            </form>
+            <Button type="button" variant="link" className="w-full mt-2" onClick={() => setShowReset(true)}>
+              Forgot password?
+            </Button>
+          </>
+        )}
       </CardContent>
     </Card>
   )
