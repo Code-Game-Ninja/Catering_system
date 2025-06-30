@@ -5,85 +5,64 @@ import { useState } from "react"
 
 const FOODS = [
   {
-    name: "Butter Chicken",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "A rich and creamy North Indian curry made with tender chicken, tomatoes, butter, and aromatic spices.",
-  },
-  {
     name: "Masala Dosa",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
     description: "A crispy South Indian crepe made from fermented rice and lentil batter, filled with spicy potato masala.",
   },
   {
-    name: "Biryani",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "A fragrant rice dish layered with marinated meat or vegetables, saffron, and whole spices.",
-  },
-  {
-    name: "Samosa",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "A popular snack of crispy pastry filled with spicy potatoes, peas, and herbs.",
-  },
-  {
     name: "Paneer Tikka",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    src: "https://images.unsplash.com/photo-1600628422019-6c1a9b7b8c5e?auto=format&fit=crop&w=600&q=80",
     description: "Chunks of paneer (Indian cottage cheese) marinated in spices and grilled to perfection.",
   },
   {
     name: "Chole Bhature",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80",
     description: "A North Indian classic: spicy chickpea curry served with deep-fried bread (bhature).",
   },
   {
     name: "Dhokla",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1608131596337-cd3c3c7c1bfc?auto=format&fit=crop&w=600&q=80",
     description: "A light and fluffy steamed cake made from fermented rice and chickpea flour, popular in Gujarat.",
   },
   {
-    name: "Gulab Jamun",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "Soft, deep-fried milk balls soaked in fragrant sugar syrup, a beloved Indian dessert.",
-  },
-  // Additional food items
-  {
-    name: "Rogan Josh",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "A flavorful Kashmiri curry made with tender lamb or goat, yogurt, and aromatic spices.",
-  },
-  {
     name: "Idli Sambhar",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
     description: "Steamed rice cakes served with spicy lentil soup and coconut chutney, a South Indian breakfast staple.",
   },
   {
     name: "Pav Bhaji",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    src: "https://images.unsplash.com/photo-1606788075761-9c3e1e26c9b6?auto=format&fit=crop&w=600&q=80",
     description: "A spicy mashed vegetable curry served with buttered bread rolls, a Mumbai street food favorite.",
   },
   {
-    name: "Jalebi",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "Crispy, spiral-shaped sweets soaked in sugar syrup, enjoyed across India as a dessert or snack.",
-  },
-  {
-    name: "Fish Curry",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
-    description: "A tangy and spicy curry made with fresh fish, coconut, and regional spices, popular in coastal India.",
-  },
-  {
     name: "Rajma Chawal",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80",
     description: "Red kidney beans cooked in a thick tomato gravy, served with steamed rice, a North Indian comfort food.",
   },
   {
     name: "Pani Puri",
-    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    src: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80",
     description: "Crispy hollow puris filled with spicy, tangy water and potatoes, a beloved Indian street snack.",
   },
   {
-    name: "Rasgulla",
-    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
-    description: "Soft, spongy balls made from chenna (Indian cottage cheese) soaked in light sugar syrup, a Bengali dessert.",
+    name: "Aloo Paratha",
+    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
+    description: "Whole wheat flatbread stuffed with spiced mashed potatoes, served with butter and yogurt.",
+  },
+  {
+    name: "Gulab Jamun",
+    src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    description: "Soft, deep-fried milk balls soaked in fragrant sugar syrup, a beloved Indian dessert.",
+  },
+  {
+    name: "Jalebi",
+    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
+    description: "Crispy, spiral-shaped sweets soaked in sugar syrup, enjoyed across India as a dessert or snack.",
+  },
+  {
+    name: "Daal Tadka",
+    src: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80",
+    description: "Yellow lentils cooked with onions, tomatoes, and spices, finished with a tempering of ghee and cumin.",
   },
 ]
 
@@ -92,7 +71,7 @@ export function IndianFoodGallery() {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Indian Food Gallery</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">Indian Veg Food Gallery</h2>
         <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
           {FOODS.map((food, idx) => (
             <div

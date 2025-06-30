@@ -279,8 +279,13 @@ export default function ClientLayout({
                     </Link>
                   </li>
                   <li>
-                    <Link href="/search" className="text-gray-400 hover:text-white transition-colors">
-                      Search
+                    <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
+                      FAQ
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/support" className="text-gray-400 hover:text-white transition-colors">
+                      Support
                     </Link>
                   </li>
                 </ul>
@@ -319,15 +324,15 @@ export default function ClientLayout({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-gray-400">
                     <Phone className="h-4 w-4" />
-                    <span>+91 98765 43210</span>
+                    <span>6375960815</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <Mail className="h-4 w-4" />
-                    <span>hello@catering.com</span>
+                    <span>chiragmishra2511@gmail.com</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-400">
                     <MapPin className="h-4 w-4" />
-                    <span>New Delhi, India</span>
+                    <span>kishangarh ajmer rajasthan pincode 305801</span>
                   </div>
                 </div>
               </div>
