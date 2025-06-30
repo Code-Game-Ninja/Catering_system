@@ -6,62 +6,62 @@ import { useState } from "react"
 const FOODS = [
   {
     name: "Masala Dosa",
-    src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    src: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWFzYWxhJTIwRG9zYXxlbnwwfHwwfHx8MA%3D%3D",
     description: "A crispy South Indian crepe made from fermented rice and lentil batter, filled with spicy potato masala.",
   },
   {
     name: "Paneer Tikka",
-    src: "https://images.unsplash.com/photo-1600628422019-6c1a9b7b8c5e?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1455306682/photo/kachalu-chaat.webp?a=1&b=1&s=612x612&w=0&k=20&c=nE03ItYFZ3lUyvrLPpmKa0gG-FM8pFQPSHh0ZWW6p6w=",
     description: "Chunks of paneer (Indian cottage cheese) marinated in spices and grilled to perfection.",
   },
   {
     name: "Chole Bhature",
-    src: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/979914742/photo/chole-bhature-or-chick-pea-curry-and-fried-puri-served-in-terracotta-crockery-over-white.webp?a=1&b=1&s=612x612&w=0&k=20&c=8pmBVIcNb-GIFnsBT0sYqfy-YtzNq7pOqc6lQZgFOPo=",
     description: "A North Indian classic: spicy chickpea curry served with deep-fried bread (bhature).",
   },
   {
     name: "Dhokla",
-    src: "https://images.unsplash.com/photo-1608131596337-cd3c3c7c1bfc?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1257018928/photo/gujarati-khaman-dhokla-or-steamed-gram-flour-puffy-snack-cake.webp?a=1&b=1&s=612x612&w=0&k=20&c=YQTu_3O4g7MJ7iRqXrl634_J_SajzmaF-E9W51YdAOs=",
     description: "A light and fluffy steamed cake made from fermented rice and chickpea flour, popular in Gujarat.",
   },
   {
     name: "Idli Sambhar",
-    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1024549454/photo/idly-sambar-or-idli-with-sambhar-and-green-red-chutney-popular-south-indian-breakfast.webp?a=1&b=1&s=612x612&w=0&k=20&c=JGYk6zJNS6bneptDScV-2P8PrH2EirPA1qH3KKW8_9w=",
     description: "Steamed rice cakes served with spicy lentil soup and coconut chutney, a South Indian breakfast staple.",
   },
   {
     name: "Pav Bhaji",
-    src: "https://images.unsplash.com/photo-1606788075761-9c3e1e26c9b6?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1327433011/photo/pav-bhaji-indian-street-food-bharuch-gujarat-india.webp?a=1&b=1&s=612x612&w=0&k=20&c=wuk8_FqsHJwFTKvpAMt6iA7fsN0zROVmeSpJ9O9_cmE=",
     description: "A spicy mashed vegetable curry served with buttered bread rolls, a Mumbai street food favorite.",
   },
   {
     name: "Rajma Chawal",
-    src: "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/669635320/photo/kidney-bean-curry-or-rajma-or-rajmah-chawal-and-roti-typical-north-indian-main-course.webp?a=1&b=1&s=612x612&w=0&k=20&c=fQvk0ylYuRflBkPZ8aTUHwtcNkdeNqofVH9VjT4C2a0=",
     description: "Red kidney beans cooked in a thick tomato gravy, served with steamed rice, a North Indian comfort food.",
   },
   {
     name: "Pani Puri",
-    src: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1314329942/photo/goal-gappa-or-pani-puri.webp?a=1&b=1&s=612x612&w=0&k=20&c=gipl8gjcid4yNp9cIjVEvhyAFdlFyplwGXYgRv0jdoI=",
     description: "Crispy hollow puris filled with spicy, tangy water and potatoes, a beloved Indian street snack.",
   },
   {
     name: "Aloo Paratha",
-    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1279134709/photo/image-of-metal-tray-with-aloo-paratha-pile-topped-with-red-onion-rings-and-sprinkle-of.webp?a=1&b=1&s=612x612&w=0&k=20&c=BqI3olbZz2Ljg3LaEiLWYq2vQ8wfORCYdPrwKmJ2WbU=",
     description: "Whole wheat flatbread stuffed with spiced mashed potatoes, served with butter and yogurt.",
   },
   {
     name: "Gulab Jamun",
-    src: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1188000786/photo/gulab-jamun-in-bowl-on-wooden-background-indian-dessert-or-sweet-dish.webp?a=1&b=1&s=612x612&w=0&k=20&c=4kVDa_BP4pypOSvfDSL2mmLNO3SYdoAs1VG-qi4WAtI=",
     description: "Soft, deep-fried milk balls soaked in fragrant sugar syrup, a beloved Indian dessert.",
   },
   {
     name: "Jalebi",
-    src: "https://images.unsplash.com/photo-1519864600265-abb23847ef2c?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/1430753492/photo/indian-sweet-jalebi.webp?a=1&b=1&s=612x612&w=0&k=20&c=aO_1E0NcBstoEmqR8Bpw_eJpMT16eFUTcTdxHrOeHuM=",
     description: "Crispy, spiral-shaped sweets soaked in sugar syrup, enjoyed across India as a dessert or snack.",
   },
   {
     name: "Daal Tadka",
-    src: "https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80",
+    src: "https://media.istockphoto.com/id/495455544/photo/red-lentil-indian-soup-with-flat-bread-masoor-dal.webp?a=1&b=1&s=612x612&w=0&k=20&c=FL1aWzFzs_cMsxHj4QIE-dUudiOzV1eK0JjGr5CJd80=",
     description: "Yellow lentils cooked with onions, tomatoes, and spices, finished with a tempering of ghee and cumin.",
   },
 ]

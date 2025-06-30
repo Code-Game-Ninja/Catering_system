@@ -186,10 +186,10 @@ export default function CartPage() {
       updateLocalStorageCart([])
       toast({
         title: "Order Placed!",
-        description: `Your order #${orderRef.id.substring(0, 8)} has been placed successfully.`,
+        description: `Your order #${orderRef.id.substring(0, 8)} has been placed successfully. Please select a payment method.`,
         variant: "default",
       })
-      router.push("/my-orders")
+      router.push(`/payment?orderId=${orderRef.id}`)
     } catch (err: any) {
       log("error", "Failed to place order", { error: err.message, userId: user.uid })
       setError("Failed to place order. Please try again.")
