@@ -42,6 +42,47 @@ const FOODS = [
     src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
     description: "Soft, deep-fried milk balls soaked in fragrant sugar syrup, a beloved Indian dessert.",
   },
+  // Additional food items
+  {
+    name: "Rogan Josh",
+    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    description: "A flavorful Kashmiri curry made with tender lamb or goat, yogurt, and aromatic spices.",
+  },
+  {
+    name: "Idli Sambhar",
+    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    description: "Steamed rice cakes served with spicy lentil soup and coconut chutney, a South Indian breakfast staple.",
+  },
+  {
+    name: "Pav Bhaji",
+    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    description: "A spicy mashed vegetable curry served with buttered bread rolls, a Mumbai street food favorite.",
+  },
+  {
+    name: "Jalebi",
+    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    description: "Crispy, spiral-shaped sweets soaked in sugar syrup, enjoyed across India as a dessert or snack.",
+  },
+  {
+    name: "Fish Curry",
+    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    description: "A tangy and spicy curry made with fresh fish, coconut, and regional spices, popular in coastal India.",
+  },
+  {
+    name: "Rajma Chawal",
+    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    description: "Red kidney beans cooked in a thick tomato gravy, served with steamed rice, a North Indian comfort food.",
+  },
+  {
+    name: "Pani Puri",
+    src: "https://images.pexels.com/photos/106343/pexels-photo-106343.jpeg",
+    description: "Crispy hollow puris filled with spicy, tangy water and potatoes, a beloved Indian street snack.",
+  },
+  {
+    name: "Rasgulla",
+    src: "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    description: "Soft, spongy balls made from chenna (Indian cottage cheese) soaked in light sugar syrup, a Bengali dessert.",
+  },
 ]
 
 export function IndianFoodGallery() {
