@@ -6,13 +6,12 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId;
-      allow read, write: if isAdmin(); // Admins can manage all
+      allow read, write: if isAdmin();
     }
 
     // RESTAURANTS
     match /restaurants/{restaurantId} {
       allow read: if resource.data.isActive == true || isAdmin() || isOwner(resource.data.ownerId);
-      // Allow restaurant owners to create their first restaurant even if they don't have a restaurantId yet
       allow create: if request.auth != null && !exists(/databases/$(database)/documents/restaurants/$(restaurantId));
       allow update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }
@@ -25,8 +24,13 @@ service cloud.firestore {
 
     // ORDERS
     match /orders/{orderId} {
-      allow read, create: if request.auth != null && request.auth.uid == resource.data.userId;
-      allow update: if isAdmin() || isRestaurantOwnerOfOrder();
+      // Allow users to create orders for themselves
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // Allow users to read their own orders
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Allow restaurant owners to read/update orders for their restaurant
+      allow read, update: if isRestaurantOwnerOfOrder();
+      // Allow admin full access
       allow read, write: if isAdmin();
     }
 
@@ -38,6 +42,13 @@ service cloud.firestore {
         (request.resource.data.restaurantId is string && request.resource.data.restaurantId.size() > 0)
       ) && request.resource.data.userId == request.auth.uid;
       allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow read, write: if isAdmin();
+    }
+
+    // CATEGORIES
+    match /categories/{categoryId} {
+      allow read: if true; // Make categories public
+      allow create, update, delete: if isAdmin();
     }
 
     // Helper functions
@@ -51,16 +62,6 @@ service cloud.firestore {
       return request.auth != null &&
         exists(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)) &&
         get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId == request.auth.uid;
-    }
-
-    // Categories collection
-    match /categories/{categoryId} {
-      // Anyone authenticated can read categories
-      allow read: if request.auth != null;
-      // Only admins can create, update, or delete categories
-      allow create, update, delete: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
   }
 }
