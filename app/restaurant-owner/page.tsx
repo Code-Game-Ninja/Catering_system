@@ -50,14 +50,13 @@ export default function RestaurantOwnerDashboard() {
         }
 
         const userData = (await getDoc(userDocRef)).data()
-        if (userData?.role === "restaurant_owner") {
+        if (userData?.role === "restaurant_owner" && userData.restaurantId) {
           setUserRole("restaurant_owner")
-          if (userData.restaurantId) {
-            await fetchRestaurantData(userData.restaurantId)
-          } else {
-            // Redirect to restaurant setup if no restaurant is linked
-            router.push("/restaurant-owner/setup")
-          }
+          // Only fetch restaurant data after both role and restaurantId are confirmed
+          await fetchRestaurantData(userData.restaurantId)
+        } else if (userData?.role === "restaurant_owner" && !userData.restaurantId) {
+          // Redirect to setup if no restaurantId
+          router.push("/restaurant-owner/setup")
         } else {
           log("warn", "Unauthorized access attempt to restaurant owner dashboard", { uid: user.uid })
           router.push("/")
@@ -93,15 +92,23 @@ export default function RestaurantOwnerDashboard() {
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurantId))
       const unsubscribe = onSnapshot(ordersQuery, async (snapshot) => {
-        const orders = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        orderDate: doc.data().orderDate?.toDate(),
-        estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
-      })) as Order[]
+        const orders = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          if (!data.userId || !data.restaurantId || !data.status || !data.totalAmount) return null;
+          return {
+            id: doc.id,
+            ...data,
+            orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
+            estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
+          } as unknown as Order;
+        }).filter((o): o is Order => o !== null);
 
-      // sort newest → oldest (was previously handled by Firestore orderBy)
-      orders.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
+        // sort newest → oldest (was previously handled by Firestore orderBy)
+        orders.sort((a, b) => {
+          const aTime = a && a.orderDate instanceof Date ? a.orderDate.getTime() : 0;
+          const bTime = b && b.orderDate instanceof Date ? b.orderDate.getTime() : 0;
+          return bTime - aTime;
+        });
 
         // Calculate stats
         const totalOrders = orders.length
@@ -153,7 +160,6 @@ export default function RestaurantOwnerDashboard() {
           if (userDocSnap.exists()) {
             const userData = userDocSnap.data()
             return {
-              id: order.id,
               ...order,
               user: {
                 email: userData.email,
@@ -355,7 +361,7 @@ export default function RestaurantOwnerDashboard() {
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {order.orderDate && !isNaN(new Date(order.orderDate).getTime()) ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate && !isNaN(new Date(order.orderDate).getTime()) ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
+                          {order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'} at {order.orderDate instanceof Date ? order.orderDate.toLocaleTimeString() : 'N/A'}
                         </div>
                       </div>
                     </div>
