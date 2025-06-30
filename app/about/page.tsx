@@ -7,24 +7,12 @@ import { Heart, Users, Globe, Award, Utensils, Truck } from "lucide-react"
 export default function AboutPage() {
   const teamMembers = [
     {
-      name: "Priya Sharma",
+      name: "Chirag Mishra",
       role: "Founder & CEO",
-      image: "/placeholder.svg?height=300&width=300",
+      image: "https://plus.unsplash.com/premium_photo-1663091633166-20ef12aa7b4e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHByb2Zlc3Npb25hbCUyMGhhY2tlcnxlbnwwfHwwfHx8MA%3D%3D",
       description:
-        "Born in rural Punjab, Priya brings 15+ years of culinary expertise and a passion for authentic Indian flavors.",
-    },
-    {
-      name: "Rajesh Kumar",
-      role: "Head Chef",
-      image: "/placeholder.svg?height=300&width=300",
-      description: "Master chef with expertise in traditional cooking methods from across India's diverse regions.",
-    },
-    {
-      name: "Anita Patel",
-      role: "Operations Director",
-      image: "/placeholder.svg?height=300&width=300",
-      description: "Ensures quality and authenticity in every dish while managing our global supply chain.",
-    },
+        "Born in rural Punjab, Chirag brings 15+ years of culinary expertise and a passion for authentic Indian flavors.",
+    }
   ]
 
   const values = [
@@ -90,7 +78,7 @@ export default function AboutPage() {
             </div>
             <div>
               <Image
-                src="/placeholder.svg?height=400&width=600"
+                src="https://images.unsplash.com/photo-1589778655375-3e622a9fc91c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHJ1cnFhbCUyMHJhamF0aGFuaSUyMGZvb2R8ZW58MHx8MHx8fDA%3D"
                 alt="Traditional Indian cooking"
                 width={600}
                 height={400}

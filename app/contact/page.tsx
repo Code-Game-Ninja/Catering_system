@@ -42,17 +42,17 @@ export default function ContactPage() {
     {
       icon: <MapPin className="h-6 w-6" />,
       title: "Address",
-      details: ["123 Spice Street", "New Delhi, India 110001"],
+      details: ["kishangarh ajmer rajasthan pincode 305801"],
     },
     {
       icon: <Phone className="h-6 w-6" />,
       title: "Phone",
-      details: ["+91 98765 43210", "+91 87654 32109"],
+      details: ["6375960815"],
     },
     {
       icon: <Mail className="h-6 w-6" />,
       title: "Email",
-      details: ["hello@catering.com", "support@catering.com"],
+      details: ["chiragmishra2511@gmail.com"],
     },
     {
       icon: <Clock className="h-6 w-6" />,
@@ -96,7 +96,7 @@ export default function ContactPage() {
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form action="https://formspree.io/f/mzzgovqr" method="POST" className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="name">Full Name</Label>
