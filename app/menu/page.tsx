@@ -85,7 +85,7 @@ export default function MenuPage() {
       toast({
         title: "Added to Cart!",
         description: `${product.name} has been added to your cart.`,
-        variant: "success",
+        variant: "default",
       })
     } catch (e: any) {
       log("error", "Failed to add product to cart (localStorage error)", { productId: product.id, error: e.message })
@@ -140,6 +140,15 @@ export default function MenuPage() {
           <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
         ))}
       </div>
+
+      <section className="my-12">
+        <h2 className="text-2xl font-bold mb-4">Sweets</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {products.filter(p => p.category === 'Sweets').map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

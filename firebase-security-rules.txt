@@ -51,6 +51,16 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    // PLATFORM FEES (example for new collection)
+    match /platformFees/{feeId} {
+      allow read, write: if isAdmin();
+    }
+
+    // ANALYTICS (example for future collection)
+    // match /analytics/{docId} {
+    //   allow read, write: if isAdmin();
+    // }
+
     // Helper functions
     function isAdmin() {
       return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';

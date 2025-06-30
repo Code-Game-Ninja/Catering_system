@@ -128,7 +128,7 @@ export default function AdminDashboardPage() {
               // Calculate stats
               const totalOrders = orders.length
               const pendingOrders = orders.filter((order) => order.status === "pending").length
-              const completedOrders = orders.filter((order) => order.status === "delivered").length
+              const completedOrders = orders.filter((order) => order.status === "delivered" || order.status === "completed").length
               const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
               const totalRevenue = orders
                 .filter((order) => order.status === "delivered")
@@ -137,6 +137,7 @@ export default function AdminDashboardPage() {
               const totalRestaurants = restaurants.length
               const totalUsers = users.filter((user) => user.role === "user").length
               const recentOrders = orders.slice(0, 5)
+              const platformFee = totalRevenue * 0.02
 
               // Get top restaurants by rating
               const topRestaurants = restaurants

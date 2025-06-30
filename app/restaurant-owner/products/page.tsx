@@ -431,15 +431,23 @@ export default function RestaurantOwnerProductsPage() {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="category">Category</Label>
-            <Input
-              id="category"
-              name="category"
-              type="text"
-              placeholder="e.g., Main Course, Appetizer, Dessert"
-              value={currentProduct.category || ""}
-              onChange={handleInputChange}
+            <Select
+              value={currentProduct.category || "Main Course"}
+              onValueChange={(value) => handleSelectChange("category", value)}
               required
-            />
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Main Course">Main Course</SelectItem>
+                <SelectItem value="Appetizer">Appetizer</SelectItem>
+                <SelectItem value="Dessert">Dessert</SelectItem>
+                <SelectItem value="Sweets">Sweets</SelectItem>
+                <SelectItem value="Beverage">Beverage</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="preparationTime">Preparation Time (minutes)</Label>

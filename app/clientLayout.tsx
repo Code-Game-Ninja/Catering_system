@@ -263,22 +263,6 @@ export default function ClientLayout({
                 </div>
               )}
             </div>
-
-            {/* Desktop Search Bar */}
-            <div className="hidden md:block w-full max-w-md mx-auto mb-4">
-              <form onSubmit={handleSearch} className="flex items-center">
-                <Input
-                  type="text"
-                  placeholder="Search for dishes..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground"
-                />
-                <Button type="submit" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2">
-                  <Search className="h-5 w-5" />
-                </Button>
-              </form>
-            </div>
           </nav>
         </header>
 
