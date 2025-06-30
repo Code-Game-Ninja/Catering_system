@@ -145,6 +145,17 @@ export default function CartPage() {
     }
 
     try {
+      // Determine restaurantId and restaurantName for the order (if all items are from the same restaurant)
+      let restaurantId = null;
+      let restaurantName = null;
+      if (cart.length > 0) {
+        const firstRestaurantId = cart[0].restaurantId;
+        const allSameRestaurant = cart.every(item => item.restaurantId === firstRestaurantId);
+        if (allSameRestaurant) {
+          restaurantId = firstRestaurantId;
+          restaurantName = cart[0].restaurantName;
+        }
+      }
       const orderData = {
         userId: user.uid,
         items: cart.map((item) => ({
@@ -164,6 +175,8 @@ export default function CartPage() {
         status: "pending", // pending, confirmed, preparing, out_for_delivery, delivered, cancelled
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
+        ...(restaurantId && { restaurantId }),
+        ...(restaurantName && { restaurantName }),
       }
 
       const orderRef = await addDoc(collection(db, "orders"), orderData)

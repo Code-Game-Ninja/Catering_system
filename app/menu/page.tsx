@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { log } from "@/lib/logging"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Search } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
 
 export default function MenuPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -16,6 +17,7 @@ export default function MenuPage() {
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
+  const { toast } = useToast()
 
   useEffect(() => {
     const fetchMenuData = async () => {
@@ -77,10 +79,18 @@ export default function MenuPage() {
 
       localStorage.setItem("cart", JSON.stringify(currentCart))
       log("info", "Product added to cart from menu page", { productId: product.id })
-      alert(`Added ${product.name} to cart!`)
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success",
+      })
     } catch (e: any) {
       log("error", "Failed to add product to cart (localStorage error)", { productId: product.id, error: e.message })
-      alert("Failed to add product to cart. Please try again or clear your browser's local storage.")
+      toast({
+        title: "Add to Cart Failed",
+        description: "Failed to add product to cart. Please try again or clear your browser's local storage.",
+        variant: "destructive",
+      })
     }
   }
 

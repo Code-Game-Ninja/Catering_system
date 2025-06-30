@@ -32,6 +32,7 @@ import { onAuthStateChanged } from "firebase/auth"
 import { auth } from "@/lib/firebase"
 import type { UserProfile } from "@/lib/types"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/components/ui/use-toast"
 
 interface ProductPageProps {
   params: {
@@ -49,6 +50,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   const [user, setUser] = useState<any>(null)
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const router = useRouter()
+  const { toast } = useToast()
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
@@ -138,7 +140,11 @@ export default function ProductPage({ params }: ProductPageProps) {
   const handleAddToCart = () => {
     if (!product) {
       log("warn", "Attempted to add null product to cart")
-      alert("Cannot add product to cart: product details are missing.")
+      toast({
+        title: "Cannot Add to Cart",
+        description: "Product details are missing.",
+        variant: "destructive",
+      })
       return
     }
 
@@ -162,10 +168,18 @@ export default function ProductPage({ params }: ProductPageProps) {
 
       localStorage.setItem("cart", JSON.stringify(currentCart))
       log("info", "Product added to cart from detail page", { productId: product.id })
-      alert(`Added ${product.name} to cart!`)
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success",
+      })
     } catch (e: any) {
       log("error", "Failed to add product to cart (localStorage error)", { productId: product.id, error: e.message })
-      alert("Failed to add product to cart. Please try again or clear your browser's local storage.")
+      toast({
+        title: "Add to Cart Failed",
+        description: "Failed to add product to cart. Please try again or clear your browser's local storage.",
+        variant: "destructive",
+      })
     }
   }
 
