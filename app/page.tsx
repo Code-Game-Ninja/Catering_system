@@ -38,7 +38,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="lg:order-1">
             <Image
-              src="/images/our-story.png"
+              src="https://images.unsplash.com/photo-1616813769023-d0557572ddbe?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGElMjBjdWxpbmFyeSUyMGpvdXJuZXklMjBmcm9tJTIwcnVyYWwlMjBpbmRpYXxlbnwwfHwwfHx8MA%3D%3D"
               alt="Our Story"
               width={700}
               height={500}
@@ -104,7 +104,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="lg:order-2">
             <Image
-              src="/images/why-choose-us.png"
+              src="https://images.unsplash.com/photo-1652595802737-56d08ad31f09?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fFdoeSUyMENob29zZSUyMENhdGVyaW5nJTNGJTIwb24lMjBpbmRpYW4lMjBmb29kJTIwdGhlbWV8ZW58MHx8MHx8fDA%3D"
               alt="Why Choose Us"
               width={700}
               height={500}
@@ -148,7 +148,7 @@ export default function LandingPage() {
       {/* To change the testimonials background image, update the URL in the style prop below */}
       <section
         className="relative py-16 md:py-24 bg-cover bg-center text-white text-center"
-        style={{ backgroundImage: "url('/images/testimonials-bg.png')" }}
+        style={{ backgroundImage: "url('https://media.istockphoto.com/id/1394553808/photo/indian-food-assortment-on-light-background.webp?a=1&b=1&s=612x612&w=0&k=20&c=bRbedff5ZfCFGCJ-DLqyuTuGRh-sDFRdr1YhBDrpBLU=')" }}
       >
         <div className="absolute inset-0 bg-black/70" />
         <div className="relative z-10 container mx-auto px-4">
