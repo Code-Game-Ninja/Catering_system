@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, query, where, orderBy, getDocs } from "firebase/firestore"
+import { collection, query, where, orderBy, getDocs, onSnapshot } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { StarRating } from "@/components/ui/star-rating"

@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, query, orderBy, doc, getDoc, setDoc } from "firebase/firestore"
+import { collection, getDocs, query, orderBy, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -82,8 +82,22 @@ export default function AdminDashboardPage() {
       // Fetch orders
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, orderBy("orderDate", "desc"))
-      const ordersSnapshot = await getDocs(ordersQuery)
+      const unsubscribeOrders = onSnapshot(ordersQuery, (snapshot) => {
+        const orders = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          orderDate: doc.data().orderDate?.toDate(),
+          estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
+        })) as Order[]
 
+        // Calculate stats
+        const totalOrders = orders.length
+        const pendingOrders = orders.filter((order) => order.status === "pending").length
+        const completedOrders = orders.filter((order) => order.status === "delivered").length
+        const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
+        const totalRevenue = orders
+          .filter((order) => order.status === "delivered")
+          .reduce((sum, order) => sum + order.totalAmount, 0)
       const orders = ordersSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),

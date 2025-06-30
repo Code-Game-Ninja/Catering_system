@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, doc, getDoc, setDoc, query, where } from "firebase/firestore"
+import { collection, getDocs, doc, getDoc, setDoc, query, where, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -92,60 +92,62 @@ export default function RestaurantOwnerDashboard() {
       // Fetch orders for this restaurant
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurantId))
-      const ordersSnapshot = await getDocs(ordersQuery)
+      const unsubscribe = onSnapshot(ordersQuery, (snapshot) => {
+        const orders = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          orderDate: doc.data().orderDate?.toDate(),
+          estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
+        })) as Order[]
 
-      const orders = ordersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        orderDate: doc.data().orderDate?.toDate(),
-        estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
-      })) as Order[]
+        // sort newest → oldest (was previously handled by Firestore orderBy)
+        orders.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
 
-      // sort newest → oldest (was previously handled by Firestore orderBy)
-      orders.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
+        // Calculate stats
+        const totalOrders = orders.length
+        const pendingOrders = orders.filter((order) =>
+          ["pending", "confirmed", "preparing"].includes(order.status),
+        ).length
+        const completedOrders = orders.filter((order) => order.status === "delivered").length
+        const totalRevenue = orders
+          .filter((order) => order.status === "delivered")
+          .reduce((sum, order) => sum + order.totalAmount, 0)
 
-      // Fetch products for this restaurant
-      const productsCollection = collection(db, "products")
-      const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
-      const productsSnapshot = await getDocs(productsQuery)
+        // Fetch products for this restaurant
+        const productsCollection = collection(db, "products")
+        const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
+        const productsSnapshot = await getDocs(productsQuery)
 
-      const products = productsSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as Product[]
+        const products = productsSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(),
+          updatedAt: doc.data().updatedAt?.toDate(),
+        })) as Product[]
 
-      // Calculate stats
-      const totalOrders = orders.length
-      const pendingOrders = orders.filter((order) =>
-        ["pending", "confirmed", "preparing"].includes(order.status),
-      ).length
-      const completedOrders = orders.filter((order) => order.status === "delivered").length
-      const totalRevenue = orders
-        .filter((order) => order.status === "delivered")
-        .reduce((sum, order) => sum + order.totalAmount, 0)
-      const totalProducts = products.length
-      const recentOrders = orders.slice(0, 5)
-      const topProducts = products
-        .filter((product) => product.isAvailable)
-        .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-        .slice(0, 5)
+        const recentOrders = orders.slice(0, 5)
+        const topProducts = products
+          .filter((product) => product.isAvailable)
+          .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+          .slice(0, 5)
 
-      const restaurantStats: RestaurantStats = {
-        totalOrders,
-        pendingOrders,
-        completedOrders,
-        totalRevenue,
-        totalProducts,
-        averageRating: restaurantData.rating || 0,
-        totalReviews: restaurantData.totalReviews || 0,
-        recentOrders,
-        topProducts,
-      }
+        const restaurantStats: RestaurantStats = {
+          totalOrders,
+          pendingOrders,
+          completedOrders,
+          totalRevenue,
+          totalProducts: products.length,
+          averageRating: restaurantData.rating || 0,
+          totalReviews: restaurantData.totalReviews || 0,
+          recentOrders,
+          topProducts,
+        }
 
-      setStats(restaurantStats)
-      log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
+        setStats(restaurantStats)
+        log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
+      })
+
+      return () => unsubscribe()
     } catch (err: any) {
       log("error", "Failed to fetch restaurant owner dashboard data", { error: err.message })
       setError("Failed to load dashboard data. Please try again later.")

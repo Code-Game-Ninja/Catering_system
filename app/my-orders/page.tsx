@@ -2,7 +2,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, query, where, getDocs } from "firebase/firestore"
+import { collection, query, where, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import type { Order } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,16 +39,19 @@ export default function MyOrdersPage() {
     try {
       const ordersCollection = collection(db, "orders")
       const q = query(ordersCollection, where("userId", "==", userId))
-      const querySnapshot = await getDocs(q)
-      const ordersList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        orderDate: doc.data().orderDate?.toDate(), // Convert Firebase Timestamp to Date
-      })) as Order[]
-      // Sort newest → oldest locally
-      ordersList.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
-      setOrders(ordersList)
-      log("info", "Orders fetched successfully for user", { userId, count: ordersList.length })
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const ordersList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+          orderDate: doc.data().orderDate?.toDate(), // Convert Firebase Timestamp to Date
+        })) as Order[]
+        // Sort newest → oldest locally
+        ordersList.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
+        setOrders(ordersList)
+        log("info", "Orders fetched successfully for user", { userId, count: ordersList.length })
+      })
+
+      return () => unsubscribe()
     } catch (err: any) {
       log("error", "Failed to fetch orders", { userId, error: err.message })
       setError("Failed to load your orders. Please try again later.")

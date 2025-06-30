@@ -14,9 +14,6 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)]">
       <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" onClick={() => router.back()} className="p-2">
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
         <h1 className="text-4xl font-bold">Home</h1>
       </div>
       {/* Hero Section */}
