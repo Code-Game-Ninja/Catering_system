@@ -29,6 +29,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion"
 import { doc, getDoc } from "firebase/firestore"
 import type { UserProfile } from "@/lib/types"
+import { RotatingAds } from "@/components/RotatingAds"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -101,26 +102,10 @@ export default function ClientLayout({
                 Catering
               </Link>
 
-              {/* Search Bar */}
-              <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-8">
-                <div className="relative w-full">
-                  <Input
-                    type="text"
-                    placeholder="Search for dishes..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pr-10 bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/70"
-                  />
-                  <Button
-                    type="submit"
-                    size="sm"
-                    variant="ghost"
-                    className="absolute right-0 top-0 h-full px-3 text-primary-foreground hover:bg-primary-foreground/10"
-                  >
-                    <Search className="h-4 w-4" />
-                  </Button>
-                </div>
-              </form>
+              {/* Rotating Ads/Announcements Section */}
+              <div className="hidden md:flex flex-1 max-w-md mx-8 items-center justify-center">
+                <RotatingAds />
+              </div>
 
               <div className="flex items-center space-x-2">
                 {loadingAuth ? (
