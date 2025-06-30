@@ -180,7 +180,7 @@ export default function AdminRestaurantsPage() {
           <Button variant="back" onClick={() => router.back()} className="p-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-4xl font-bold">Restaurant Management</h1>
+        <h1 className="text-4xl font-bold">Restaurant Management</h1>
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Store className="h-4 w-4" />

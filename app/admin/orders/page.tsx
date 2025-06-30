@@ -84,38 +84,38 @@ export default function AdminOrdersPage() {
       const ordersCollection = collection(db, "orders")
       const q = query(ordersCollection, orderBy("orderDate", "desc"))
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-        const ordersList = await Promise.all(
-          querySnapshot.docs.map(async (orderDoc) => {
-            const orderData = {
-              id: orderDoc.id,
-              ...orderDoc.data(),
-              orderDate: orderDoc.data().orderDate?.toDate(),
-            } as Order
+      const ordersList = await Promise.all(
+        querySnapshot.docs.map(async (orderDoc) => {
+          const orderData = {
+            id: orderDoc.id,
+            ...orderDoc.data(),
+            orderDate: orderDoc.data().orderDate?.toDate(),
+          } as Order
 
-            // Fetch user information for each order
-            try {
-              const userDocRef = doc(db, "users", orderData.userId)
-              const userDocSnap = await getDoc(userDocRef)
-              if (userDocSnap.exists()) {
-                const userData = userDocSnap.data() as UserProfile
-                return {
-                  ...orderData,
-                  userEmail: userData.email,
-                  userName: userData.name,
-                  userPhone: userData.phone,
-                } as OrderWithUserInfo
-              }
-            } catch (err) {
-              log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
+          // Fetch user information for each order
+          try {
+            const userDocRef = doc(db, "users", orderData.userId)
+            const userDocSnap = await getDoc(userDocRef)
+            if (userDocSnap.exists()) {
+              const userData = userDocSnap.data() as UserProfile
+              return {
+                ...orderData,
+                userEmail: userData.email,
+                userName: userData.name,
+                userPhone: userData.phone,
+              } as OrderWithUserInfo
             }
+          } catch (err) {
+            log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
+          }
 
-            return orderData as OrderWithUserInfo
-          }),
-        )
+          return orderData as OrderWithUserInfo
+        }),
+      )
 
-        setOrders(ordersList)
-        setFilteredOrders(ordersList)
-        log("info", "Admin fetched orders successfully", { count: ordersList.length })
+      setOrders(ordersList)
+      setFilteredOrders(ordersList)
+      log("info", "Admin fetched orders successfully", { count: ordersList.length })
       })
 
       return () => unsubscribe()

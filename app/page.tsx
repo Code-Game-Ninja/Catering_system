@@ -153,10 +153,9 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      {/* To change the testimonials background image, update the URL in the style prop below */}
+      {/* Removed the testimonials background image and replaced with a neutral background color */}
       <section
-        className="relative py-16 md:py-24 bg-cover bg-center text-white text-center"
-        style={{ backgroundImage: "url('/images/testimonials-bg.png')" }}
+        className="relative py-16 md:py-24 bg-muted text-white text-center"
       >
         <div className="absolute inset-0 bg-black/70" />
         <div className="relative z-10 container mx-auto px-4">

@@ -165,7 +165,7 @@ export default function ClientLayout({
                             <Link href="/admin" onClick={() => setMobileNavOpen(false)}>
                               <Button variant="ghost" size="lg" className="w-full justify-start">
                                 Admin
-                              </Button>
+                  </Button>
                             </Link>
                           )}
                         </>
@@ -177,7 +177,7 @@ export default function ClientLayout({
               {/* Desktop Rotating Ads/Announcements Section */}
               <div className="hidden md:flex flex-1 max-w-md mx-8 items-center justify-center">
                 <RotatingAds />
-              </div>
+                </div>
               <div className="flex items-center space-x-2">
                 {loadingAuth ? (
                   <div className="h-8 w-8 flex items-center justify-center">

@@ -12,6 +12,7 @@ service cloud.firestore {
     // RESTAURANTS
     match /restaurants/{restaurantId} {
       allow read: if resource.data.isActive == true || isAdmin() || isOwner(resource.data.ownerId);
+      // Allow restaurant owners to create their first restaurant even if they don't have a restaurantId yet
       allow create: if request.auth != null && !exists(/databases/$(database)/documents/restaurants/$(restaurantId));
       allow update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }

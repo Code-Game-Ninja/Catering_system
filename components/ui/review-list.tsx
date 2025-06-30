@@ -29,7 +29,7 @@ export function ReviewList({ productId, restaurantId, refreshTrigger }: ReviewLi
     let unsubscribe: (() => void) | undefined
     setLoading(true)
     setError(null)
-    const reviewsCollection = collection(db, "reviews")
+      const reviewsCollection = collection(db, "reviews")
     let q
     if (restaurantId) {
       q = query(reviewsCollection, where("restaurantId", "==", restaurantId), orderBy("createdAt", "desc"))

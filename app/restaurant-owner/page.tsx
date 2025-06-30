@@ -94,14 +94,14 @@ export default function RestaurantOwnerDashboard() {
       const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurantId))
       const unsubscribe = onSnapshot(ordersQuery, async (snapshot) => {
         const orders = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          orderDate: doc.data().orderDate?.toDate(),
-          estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
-        })) as Order[]
+        id: doc.id,
+        ...doc.data(),
+        orderDate: doc.data().orderDate?.toDate(),
+        estimatedDeliveryTime: doc.data().estimatedDeliveryTime?.toDate(),
+      })) as Order[]
 
-        // sort newest → oldest (was previously handled by Firestore orderBy)
-        orders.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
+      // sort newest → oldest (was previously handled by Firestore orderBy)
+      orders.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
 
         // Calculate stats
         const totalOrders = orders.length
@@ -113,38 +113,38 @@ export default function RestaurantOwnerDashboard() {
           .filter((order) => order.status === "delivered")
           .reduce((sum, order) => sum + order.totalAmount, 0)
 
-        // Fetch products for this restaurant
-        const productsCollection = collection(db, "products")
-        const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
-        const productsSnapshot = await getDocs(productsQuery)
+      // Fetch products for this restaurant
+      const productsCollection = collection(db, "products")
+      const productsQuery = query(productsCollection, where("restaurantId", "==", restaurantId))
+      const productsSnapshot = await getDocs(productsQuery)
 
-        const products = productsSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-          createdAt: doc.data().createdAt?.toDate(),
-          updatedAt: doc.data().updatedAt?.toDate(),
-        })) as Product[]
+      const products = productsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        createdAt: doc.data().createdAt?.toDate(),
+        updatedAt: doc.data().updatedAt?.toDate(),
+      })) as Product[]
 
-        const recentOrders = orders.slice(0, 5)
-        const topProducts = products
-          .filter((product) => product.isAvailable)
-          .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-          .slice(0, 5)
+      const recentOrders = orders.slice(0, 5)
+      const topProducts = products
+        .filter((product) => product.isAvailable)
+        .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+        .slice(0, 5)
 
-        const restaurantStats: RestaurantStats = {
-          totalOrders,
-          pendingOrders,
-          completedOrders,
-          totalRevenue,
+      const restaurantStats: RestaurantStats = {
+        totalOrders,
+        pendingOrders,
+        completedOrders,
+        totalRevenue,
           totalProducts: products.length,
-          averageRating: restaurantData.rating || 0,
-          totalReviews: restaurantData.totalReviews || 0,
-          recentOrders,
-          topProducts,
-        }
+        averageRating: restaurantData.rating || 0,
+        totalReviews: restaurantData.totalReviews || 0,
+        recentOrders,
+        topProducts,
+      }
 
-        setStats(restaurantStats)
-        log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
+      setStats(restaurantStats)
+      log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
 
         // Fetch user info for each recent order
         const userInfoPromises = recentOrders.map(async (order) => {

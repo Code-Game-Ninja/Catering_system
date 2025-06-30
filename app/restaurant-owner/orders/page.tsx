@@ -90,42 +90,42 @@ export default function RestaurantOwnerOrdersPage() {
       const ordersCollection = collection(db, "orders")
       const q = query(ordersCollection, where("restaurantId", "==", currentRestaurantId))
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-        const ordersList = await Promise.all(
-          querySnapshot.docs.map(async (orderDoc) => {
-            const orderData = {
-              id: orderDoc.id,
-              ...orderDoc.data(),
-              orderDate: orderDoc.data().orderDate?.toDate(),
-            } as Order
+      const ordersList = await Promise.all(
+        querySnapshot.docs.map(async (orderDoc) => {
+          const orderData = {
+            id: orderDoc.id,
+            ...orderDoc.data(),
+            orderDate: orderDoc.data().orderDate?.toDate(),
+          } as Order
 
-            // Fetch user information for each order
-            try {
-              const userDocRef = doc(db, "users", orderData.userId)
-              const userDocSnap = await getDoc(userDocRef)
-              if (userDocSnap.exists()) {
-                const userData = userDocSnap.data() as UserProfile
-                return {
-                  ...orderData,
-                  userEmail: userData.email,
-                  userName: userData.name,
-                  userPhone: userData.phone,
-                } as OrderWithUserInfo
-              }
-            } catch (err) {
-              log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
+          // Fetch user information for each order
+          try {
+            const userDocRef = doc(db, "users", orderData.userId)
+            const userDocSnap = await getDoc(userDocRef)
+            if (userDocSnap.exists()) {
+              const userData = userDocSnap.data() as UserProfile
+              return {
+                ...orderData,
+                userEmail: userData.email,
+                userName: userData.name,
+                userPhone: userData.phone,
+              } as OrderWithUserInfo
             }
+          } catch (err) {
+            log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
+          }
 
-            return orderData as OrderWithUserInfo
-          }),
-        )
+          return orderData as OrderWithUserInfo
+        }),
+      )
 
         const sorted = ordersList.sort((a, b) => (b.orderDate?.getTime?.() ?? 0) - (a.orderDate?.getTime?.() ?? 0))
-        setOrders(sorted)
-        setFilteredOrders(sorted)
-        log("info", "Restaurant owner fetched orders successfully", {
-          count: ordersList.length,
-          restaurantId: currentRestaurantId,
-        })
+      setOrders(sorted)
+      setFilteredOrders(sorted)
+      log("info", "Restaurant owner fetched orders successfully", {
+        count: ordersList.length,
+        restaurantId: currentRestaurantId,
+      })
       })
 
       return () => unsubscribe()
