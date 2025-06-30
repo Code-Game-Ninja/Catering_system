@@ -1,0 +1,128 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users collection - users can read/write their own data, admins can read all
+    match /users/{userId} {
+      // Anyone may read / write his own document.
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Admins may list / read / write ALL user docs
+      allow read, write: if
+        request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // Restaurants collection
+    match /restaurants/{restaurantId} {
+      // Restaurant owners can read their own restaurant (regardless of isActive)
+      allow read: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == restaurantId;
+
+      // Admins can read / write every order (needed for dashboard list)
+      allow read, write: if
+        request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      // Anyone can read restaurants that are marked active
+      // IMPORTANT: This allows unauthenticated reads for active restaurants
+      allow read: if resource.data.isActive == true;
+
+      // Restaurant owners can write their own restaurant
+      allow write: if request.auth != null &&
+        request.auth.uid == resource.data.ownerId;
+
+      // Admins can read and write all restaurants
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+
+      // TEMPORARY: Allow creation of new restaurants by anyone for setup script
+      allow create: if true;
+    }
+
+    // Products collection
+    match /products/{productId} {
+      // Admins can read / write every order (needed for dashboard list)
+      allow read, write: if
+        request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      // Anyone (even if not signed-in) can read products
+      // IMPORTANT: This allows unauthenticated reads for all products
+      allow read: if true;
+
+      // Restaurant owners can manage their own products
+      allow write: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == request.resource.data.restaurantId);
+
+      // Admins can manage all products
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+
+      // TEMPORARY: Allow creation by anyone for setup script
+      allow create: if true;
+    }
+
+    // Orders collection
+    match /orders/{orderId} {
+      // Admins can read / write every order (needed for dashboard list)
+      allow read, write: if
+        request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      // Users can read their own orders
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+
+      // Users can create their own orders
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+
+      // Restaurant owners can read and update orders for their restaurant
+      allow read, update: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == resource.data.restaurantId;
+
+      // Admins can read and write all orders
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      // Anyone can read reviews
+      allow read: if request.auth != null;
+
+      // Users can create reviews
+      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
+
+      // Users can update their own reviews
+      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
+
+      // Admins can manage all reviews
+      allow read, write: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Categories collection
+    match /categories/{categoryId} {
+      // Anyone can read categories
+      allow read: if request.auth != null;
+
+      // TEMPORARY: Allow creation by anyone for setup script
+      allow create: if true;
+      // Only admins can manage categories (for update/delete)
+      allow update, delete: if request.auth != null &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+  }
+}

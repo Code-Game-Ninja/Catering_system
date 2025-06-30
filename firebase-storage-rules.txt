@@ -1,0 +1,27 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Product images – restaurant owners & admins can upload
+    match /product_images/{allPaths=**} {
+      allow read:  if request.auth != null;
+      allow write: if request.auth != null &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid))
+                 .data.role in ['restaurant_owner', 'admin'];
+    }
+
+    // Restaurant images – restaurant owners & admins can upload
+    match /restaurant_images/{allPaths=**} {
+      allow read:  if request.auth != null;
+      allow write: if request.auth != null &&
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid))
+                 .data.role in ['restaurant_owner', 'admin'];
+    }
+
+    // User profile images – user can upload their own
+    match /user_images/{userId}/{allPaths=**} {
+      allow read:  if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
