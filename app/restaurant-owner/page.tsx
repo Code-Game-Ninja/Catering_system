@@ -283,7 +283,7 @@ export default function RestaurantOwnerDashboard() {
               </Button>
             </Link>
 
-            <Link href="/restaurant-owner/products/new">
+            <Link href="/restaurant-owner/products">
               <Button variant="outline" className="w-full h-20 flex flex-col gap-2">
                 <Plus className="h-6 w-6" />
                 <span>Add Product</span>
@@ -356,7 +356,7 @@ export default function RestaurantOwnerDashboard() {
               <div className="text-center py-8">
                 <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500 mb-4">No products yet</p>
-                <Link href="/restaurant-owner/products/new">
+                <Link href="/restaurant-owner/products">
                   <Button>Add Your First Product</Button>
                 </Link>
               </div>
