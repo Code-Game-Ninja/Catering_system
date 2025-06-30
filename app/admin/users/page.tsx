@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useMemo } from "react"
-import { collection, getDocs, getDoc, doc, updateDoc, deleteDoc, query, orderBy } from "firebase/firestore"
+import { collection, getDocs, getDoc, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -89,15 +89,21 @@ export default function AdminUsersPage() {
       setLoading(true)
       const usersCollection = collection(db, "users")
       const usersQuery = query(usersCollection, orderBy("createdAt", "desc"))
-      const usersSnapshot = await getDocs(usersQuery)
-      const fetchedUsers = usersSnapshot.docs.map((doc) => ({
-        uid: doc.id,
-        ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate(),
-        updatedAt: doc.data().updatedAt?.toDate(),
-      })) as UserProfile[]
-      setUsers(fetchedUsers)
-      log("info", "User list fetched successfully for admin", { count: fetchedUsers.length })
+      const unsubscribe = onSnapshot(usersQuery, (usersSnapshot) => {
+        const fetchedUsers = usersSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            uid: doc.id,
+            ...data,
+            createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+            updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+          } as unknown as UserProfile;
+        })
+        setUsers(fetchedUsers)
+        log("info", "User list fetched successfully for admin (real-time)", { count: fetchedUsers.length })
+        setLoading(false)
+      })
+      return unsubscribe
     } catch (err: any) {
       log("error", "Failed to fetch users for admin", { error: err.message })
       setError("Failed to load users. Please try again later.")
@@ -107,7 +113,6 @@ export default function AdminUsersPage() {
         description: "Failed to load users. " + err.message,
         variant: "destructive",
       })
-    } finally {
       setLoading(false)
     }
   }
@@ -283,7 +288,7 @@ export default function AdminUsersPage() {
                         )}
                       </TableCell>
                       <TableCell className="text-sm">
-                        {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+                        {user.createdAt instanceof Date ? user.createdAt.toLocaleDateString() : 'N/A'}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">

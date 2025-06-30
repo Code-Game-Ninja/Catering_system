@@ -138,8 +138,8 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
       <div className="flex items-center gap-2 mb-8">
         <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
           <ArrowLeft className="mr-2 h-5 w-5" />
-          Back
-        </Button>
+        Back
+      </Button>
         <h1 className="text-2xl font-semibold">{restaurant.name}</h1>
       </div>
 
