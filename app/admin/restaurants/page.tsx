@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import Image from "next/image"
-import { Search, Filter, Eye, Store, Star, Phone, Mail, MapPin, CheckCircle, XCircle, Edit } from "lucide-react" // Import Edit icon
+import { Search, Filter, Eye, Store, Star, Phone, Mail, MapPin, CheckCircle, XCircle, Edit, ArrowLeft } from "lucide-react" // Import Edit icon and ArrowLeft icon
 import { EditRestaurantModal } from "@/components/admin/edit-restaurant-modal" // Import the new modal
 
 export default function AdminRestaurantsPage() {
@@ -174,9 +174,14 @@ export default function AdminRestaurantsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-bold">Restaurant Management</h1>
+    <div className="container mx-auto px-2 sm:px-4 py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => router.back()} className="p-2">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-4xl font-bold">Restaurant Management</h1>
+        </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Store className="h-4 w-4" />
           <span>{filteredRestaurants.length} restaurants</span>
@@ -192,7 +197,7 @@ export default function AdminRestaurantsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div className="space-y-2">
               <Label htmlFor="search">Search Restaurants</Label>
               <div className="relative">
@@ -278,7 +283,7 @@ export default function AdminRestaurantsPage() {
             <Card key={restaurant.id} className="overflow-hidden">
               <CardHeader className="bg-gray-50">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
                     <Image
                       src={restaurant.imageUrl || "/placeholder.svg?height=80&width=80"}
                       alt={restaurant.name}
@@ -286,9 +291,9 @@ export default function AdminRestaurantsPage() {
                       height={80}
                       className="w-20 h-20 object-cover rounded-lg"
                     />
-                    <div>
-                      <CardTitle className="text-xl">{restaurant.name}</CardTitle>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                    <div className="w-full">
+                      <CardTitle className="text-xl break-words">{restaurant.name}</CardTitle>
+                      <div className="flex flex-wrap gap-2 text-sm text-gray-600 mt-1">
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
                           {restaurant.address}

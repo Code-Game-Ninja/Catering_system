@@ -10,9 +10,10 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
-import { SearchIcon, UtensilsCrossed } from "lucide-react"
+import { SearchIcon, UtensilsCrossed, ArrowLeft } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 export default function SearchPage() {
   const searchParams = useSearchParams()
@@ -25,6 +26,8 @@ export default function SearchPage() {
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedRestaurant, setSelectedRestaurant] = useState("all")
   const [error, setError] = useState<string | null>(null)
+
+  const router = useRouter()
 
   useEffect(() => {
     const fetchSearchData = async () => {
@@ -104,7 +107,12 @@ export default function SearchPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-10">Search Results</h1>
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">Search</h1>
+      </div>
 
       <Card className="mb-8">
         <CardHeader>

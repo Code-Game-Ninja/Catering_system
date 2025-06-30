@@ -15,6 +15,10 @@ import { MapPin, Phone, Mail, UtensilsCrossed, ArrowLeft, Package } from "lucide
 import { Badge } from "@/components/ui/badge"
 import { ProductCard } from "@/components/ui/product-card"
 import { useRouter } from "next/navigation"
+import { ReviewForm } from "@/components/ui/review-form"
+import { ReviewList } from "@/components/ui/review-list"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 interface RestaurantPageProps {
   params: {
@@ -29,6 +33,7 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentUser, setCurrentUser] = useState<any>(null)
 
   useEffect(() => {
     const fetchRestaurantData = async () => {
@@ -84,6 +89,22 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
 
     fetchRestaurantData()
   }, [id])
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userDoc = await getDoc(doc(db, "users", user.uid))
+        setCurrentUser({
+          uid: user.uid,
+          name: userDoc.data()?.name || user.email?.split("@")[0] || "Anonymous",
+          email: user.email || "",
+        })
+      } else {
+        setCurrentUser(null)
+      }
+    })
+    return () => unsubscribe()
+  }, [])
 
   if (loading) {
     return <LoadingSpinner />
@@ -183,6 +204,28 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
           ))}
         </div>
       )}
+
+      {/* Restaurant Reviews */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
+        <ReviewList restaurantId={restaurant.id} />
+        <div className="mt-8">
+          {currentUser ? (
+            <ReviewForm
+              restaurantId={restaurant.id}
+              userId={currentUser.uid}
+              userName={currentUser.name}
+              userEmail={currentUser.email}
+              onReviewSubmitted={() => {}}
+            />
+          ) : (
+            <div className="text-center text-gray-600">
+              <p>You must be logged in to leave a review.</p>
+              <Button className="mt-2" onClick={() => router.push("/login")}>Login</Button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

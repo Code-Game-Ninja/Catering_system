@@ -15,14 +15,15 @@ import { log } from "@/lib/logging"
 import type { Review } from "@/lib/types"
 
 interface ReviewFormProps {
-  productId: string
+  productId?: string
+  restaurantId?: string
   userId: string
   userName: string
   userEmail: string
   onReviewSubmitted: () => void
 }
 
-export function ReviewForm({ productId, userId, userName, userEmail, onReviewSubmitted }: ReviewFormProps) {
+export function ReviewForm({ productId, restaurantId, userId, userName, userEmail, onReviewSubmitted }: ReviewFormProps) {
   const [rating, setRating] = useState(0)
   const [comment, setComment] = useState("")
   const [loading, setLoading] = useState(false)
@@ -41,12 +42,18 @@ export function ReviewForm({ productId, userId, userName, userEmail, onReviewSub
       return
     }
 
+    if (!productId && !restaurantId) {
+      setError("Invalid review target.")
+      return
+    }
+
     setLoading(true)
     setError(null)
 
     try {
       const reviewData: Omit<Review, "id"> = {
-        productId,
+        ...(productId ? { productId } : {}),
+        ...(restaurantId ? { restaurantId } : {}),
         userId,
         userName: userName || "Anonymous",
         userEmail,
@@ -61,14 +68,14 @@ export function ReviewForm({ productId, userId, userName, userEmail, onReviewSub
         createdAt: serverTimestamp(),
       })
 
-      log("info", "Review submitted successfully", { productId, userId, rating })
+      log("info", "Review submitted successfully", { productId, restaurantId, userId, rating })
 
       // Reset form
       setRating(0)
       setComment("")
       onReviewSubmitted()
     } catch (err: any) {
-      log("error", "Failed to submit review", { productId, userId, error: err.message })
+      log("error", "Failed to submit review", { productId, restaurantId, userId, error: err.message })
       setError("Failed to submit review. Please try again.")
     } finally {
       setLoading(false)

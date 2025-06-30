@@ -355,7 +355,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               <Button onClick={() => router.push("/login")}>Login to Review</Button>
             </div>
           )}
-          <ReviewList reviews={reviews} />
+          <ReviewList productId={id} />
         </CardContent>
       </Card>
     </div>

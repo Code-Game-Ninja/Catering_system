@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react"
+import { MapPin, Phone, Mail, Clock, Send, ArrowLeft } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -20,6 +21,8 @@ export default function ContactPage() {
   })
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  const router = useRouter()
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -64,7 +67,13 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
-        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" onClick={() => router.back()} className="p-2">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-4xl font-bold">Contact Us</h1>
+        </div>
+
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold mb-4">Get in Touch</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">

@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
-import { User, Mail, Phone, MapPin, Utensils } from "lucide-react"
+import { User, Mail, Phone, MapPin, Utensils, ArrowLeft } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function ProfilePage() {
@@ -159,7 +159,13 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-2 sm:px-4 py-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">My Profile</h1>
+      </div>
       <Card className="max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">

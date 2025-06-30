@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
-import { ShoppingCart, XCircle, MapPin, Phone, Mail } from "lucide-react"
+import { ShoppingCart, XCircle, MapPin, Phone, Mail, ArrowLeft } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 interface CartItem {
@@ -210,9 +210,12 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-10 flex items-center justify-center gap-3">
-        <ShoppingCart className="h-9 w-9" /> Your Cart
-      </h1>
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">Cart</h1>
+      </div>
 
       {cart.length === 0 ? (
         <Card className="max-w-2xl mx-auto text-center py-12">

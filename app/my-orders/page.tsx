@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation"
 import { log } from "@/lib/logging"
 import Image from "next/image"
 import { LoadingSpinner } from "@/components/ui/loading-spinner" // Import LoadingSpinner
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -73,8 +75,13 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-10">My Orders</h1>
+    <div className="container mx-auto px-2 sm:px-4 py-8">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">My Orders</h1>
+      </div>
 
       {orders.length === 0 ? (
         <p className="text-center text-lg text-gray-600">You haven't placed any orders yet.</p>

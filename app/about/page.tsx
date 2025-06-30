@@ -2,7 +2,9 @@
 import Image from "next/image"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Heart, Users, Globe, Award, Utensils, Truck } from "lucide-react"
+import { Heart, Users, Globe, Award, Utensils, Truck, ArrowLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export default function AboutPage() {
   const teamMembers = [
@@ -45,8 +47,17 @@ export default function AboutPage() {
     { number: "25+", label: "Countries Served" },
   ]
 
+  const router = useRouter()
+
   return (
     <div className="min-h-screen">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">About Us</h1>
+      </div>
+
       {/* Hero Section */}
       <section className="relative py-20 bg-gradient-to-r from-orange-50 to-red-50">
         <div className="container mx-auto px-4">

@@ -77,16 +77,19 @@ service cloud.firestore {
 
     // Reviews collection
     match /reviews/{reviewId} {
-      // Anyone authenticated can read reviews
-      allow read: if request.auth != null;
-      // Users can create reviews for themselves
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-      // Users can update their own reviews
-      allow update: if request.auth != null && request.auth.uid == resource.data.userId;
-      // Admins can manage all reviews
-      allow read, write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      // Allow anyone to read reviews
+      allow read: if true;
+
+      // Allow authenticated users to create reviews for products or restaurants
+      allow create: if request.auth != null
+        && (
+          (request.resource.data.productId is string && request.resource.data.productId.size() > 0)
+          || (request.resource.data.restaurantId is string && request.resource.data.restaurantId.size() > 0)
+        )
+        && request.resource.data.userId == request.auth.uid;
+
+      // Allow users to update/delete their own reviews
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
 
     // Categories collection

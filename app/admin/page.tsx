@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import Link from "next/link"
-import { Package, ShoppingCart, DollarSign, Clock, CheckCircle, Star, BarChart3, Store, Users } from "lucide-react"
+import { Package, ShoppingCart, DollarSign, Clock, CheckCircle, Star, BarChart3, Store, Users, ArrowLeft } from "lucide-react"
 
 interface DashboardStats {
   totalOrders: number
@@ -65,8 +65,17 @@ export default function AdminDashboardPage() {
         router.push("/login")
       }
     })
-    return () => unsubscribe()
-  }, [router])
+
+    // Add polling for auto-refresh
+    const interval = setInterval(() => {
+      if (userRole === "admin") fetchDashboardStats()
+    }, 30000) // 30 seconds
+
+    return () => {
+      unsubscribe()
+      clearInterval(interval)
+    }
+  }, [router, userRole])
 
   const fetchDashboardStats = async () => {
     try {
@@ -182,11 +191,13 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
+    <div className="container mx-auto px-2 sm:px-4 py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" onClick={() => router.back()} className="p-2">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
           <h1 className="text-4xl font-bold">Platform Admin Dashboard</h1>
-          <p className="text-gray-600 mt-2">Manage the entire multi-restaurant catering platform</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => window.location.reload()}>
@@ -197,7 +208,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Main Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Restaurants</CardTitle>
@@ -244,7 +255,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Secondary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>

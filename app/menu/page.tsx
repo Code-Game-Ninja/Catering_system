@@ -8,8 +8,10 @@ import { ProductCard } from "@/components/ui/product-card"
 import { Input } from "@/components/ui/input"
 import { log } from "@/lib/logging"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { Search } from "lucide-react"
+import { Search, ArrowLeft } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export default function MenuPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -18,6 +20,7 @@ export default function MenuPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const { toast } = useToast()
+  const router = useRouter()
 
   useEffect(() => {
     const fetchMenuData = async () => {
@@ -108,7 +111,12 @@ export default function MenuPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-10">Our Delicious Menu</h1>
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">Menu</h1>
+      </div>
 
       <div className="mb-8 flex justify-center">
         <div className="relative w-full max-w-md">

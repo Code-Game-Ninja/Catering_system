@@ -14,11 +14,12 @@ import type { Review } from "@/lib/types"
 import { ThumbsUp, MessageCircle, Star } from "lucide-react"
 
 interface ReviewListProps {
-  productId: string
+  productId?: string
+  restaurantId?: string
   refreshTrigger?: number
 }
 
-export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
+export function ReviewList({ productId, restaurantId, refreshTrigger }: ReviewListProps) {
   const [reviews, setReviews] = useState<Review[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -26,24 +27,30 @@ export function ReviewList({ productId, refreshTrigger }: ReviewListProps) {
 
   useEffect(() => {
     fetchReviews()
-  }, [productId, refreshTrigger])
+  }, [productId, restaurantId, refreshTrigger])
 
   const fetchReviews = async () => {
     try {
       const reviewsCollection = collection(db, "reviews")
-      const q = query(reviewsCollection, where("productId", "==", productId), orderBy("createdAt", "desc"))
-
+      let q
+      if (restaurantId) {
+        q = query(reviewsCollection, where("restaurantId", "==", restaurantId), orderBy("createdAt", "desc"))
+      } else if (productId) {
+        q = query(reviewsCollection, where("productId", "==", productId), orderBy("createdAt", "desc"))
+      } else {
+        setReviews([])
+        return
+      }
       const querySnapshot = await getDocs(q)
       const reviewsList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate(),
       })) as Review[]
-
       setReviews(reviewsList)
-      log("info", "Reviews fetched successfully", { productId, count: reviewsList.length })
+      log("info", "Reviews fetched successfully", { productId, restaurantId, count: reviewsList.length })
     } catch (err: any) {
-      log("error", "Failed to fetch reviews", { productId, error: err.message })
+      log("error", "Failed to fetch reviews", { productId, restaurantId, error: err.message })
       setError("Failed to load reviews")
     } finally {
       setLoading(false)

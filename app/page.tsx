@@ -3,12 +3,21 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardDescription, CardTitle } from "@/components/ui/card"
-import { Utensils, ChefHat, HeartHandshake, Leaf, Award, Users } from "lucide-react" // Added new icons
+import { Utensils, ChefHat, HeartHandshake, Leaf, Award, Users, ArrowLeft } from "lucide-react" // Added new icons
 import { IndianFoodGallery } from "@/components/IndianFoodGallery"
+import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
+  const router = useRouter()
+
   return (
     <div className="flex flex-col min-h-[calc(100vh-64px)]">
+      <div className="flex items-center gap-4 mb-8">
+        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+        <h1 className="text-4xl font-bold">Home</h1>
+      </div>
       {/* Hero Section */}
       {/* To change the hero background image, update the URL in the style prop below */}
       <section
