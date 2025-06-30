@@ -264,7 +264,13 @@ export default function RestaurantOwnerProductsPage() {
       restaurantId: userRestaurantId,
       restaurantName: userRestaurantName,
       updatedAt: serverTimestamp(),
-    } as Product
+      ingredients: Array.isArray(currentProduct.ingredients)
+        ? currentProduct.ingredients
+        : (typeof currentProduct.ingredients === 'string' ? (currentProduct.ingredients as string).split(',').map((i: string) => i.trim()).filter(Boolean) : []),
+      allergens: Array.isArray(currentProduct.allergens)
+        ? currentProduct.allergens
+        : (typeof currentProduct.allergens === 'string' ? (currentProduct.allergens as string).split(',').map((i: string) => i.trim()).filter(Boolean) : []),
+    }
 
     try {
       if (isEditing && currentProduct.id) {
@@ -282,6 +288,8 @@ export default function RestaurantOwnerProductsPage() {
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
+          averageRating: 0,
+          totalReviews: 0,
           createdAt: serverTimestamp(),
         })
         log("info", "Product added successfully by restaurant owner", {

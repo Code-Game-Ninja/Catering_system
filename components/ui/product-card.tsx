@@ -64,8 +64,8 @@ export function ProductCard({ product, onAddToCart, isAdmin = false, onEdit, onD
           <span className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</span>
           {product.averageRating !== undefined && product.totalReviews !== undefined && (
             <div className="flex items-center gap-1">
-              <StarRating rating={product.averageRating} size="sm" />
-              <span className="text-xs text-gray-500">({product.totalReviews})</span>
+              <StarRating rating={product.averageRating || 0} size="sm" />
+              <span className="text-xs text-gray-500">({product.totalReviews || 0})</span>
             </div>
           )}
         </div>
