@@ -2,94 +2,49 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Users collection
+    // USERS
     match /users/{userId} {
-      // Users can read/write their own data
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-      // Admins can read/write all user docs
-      allow read, write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isAdmin(); // Admins can manage all
     }
 
-    // Restaurants collection
+    // RESTAURANTS
     match /restaurants/{restaurantId} {
-      // Allow restaurant owners to create a restaurant if they don't have one yet
-      allow create: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
-        !('restaurantId' in get(/databases/$(database)/documents/users/$(request.auth.uid)).data);
-
-      // Restaurant owners can read their own restaurant (regardless of isActive)
-      allow read: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == restaurantId;
-
-      // Restaurant owners can update/delete their own restaurant
-      allow update, delete: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == restaurantId;
-
-      // Admins can read/write all restaurants
-      allow read, write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
-
-      // Anyone can read restaurants that are marked active
-      allow read: if resource.data.isActive == true;
+      allow read: if resource.data.isActive == true || isAdmin() || isOwner(resource.data.ownerId);
+      allow create: if request.auth != null && !exists(/databases/$(database)/documents/restaurants/$(restaurantId));
+      allow update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }
 
-    // Products collection
+    // PRODUCTS
     match /products/{productId} {
-      // Anyone (even if not signed-in) can read products
       allow read: if true;
-      // Restaurant owners can manage their own products
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == request.resource.data.restaurantId;
-      // Admins can manage all products
-      allow write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow create, update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }
 
-    // Orders collection
+    // ORDERS
     match /orders/{orderId} {
-      // Users can read their own orders
-      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
-      // Users can create their own orders
-      allow create: if request.auth != null && request.auth.uid == request.resource.data.userId;
-
-      // Restaurant owners can read/update orders for their restaurant
-      allow read, update: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'restaurant_owner' &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.restaurantId == resource.data.restaurantId;
-
-      // Admins can read/write all orders
-      allow read, write: if request.auth != null &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      allow read, create: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow update: if isAdmin() || isOwner(resource.data.restaurantId);
+      allow read, write: if isAdmin();
     }
 
-    // Reviews collection
+    // REVIEWS
     match /reviews/{reviewId} {
-      // Allow anyone to read reviews
       allow read: if true;
-
-      // Allow authenticated users to create reviews for products or restaurants
-      allow create: if request.auth != null
-        && (
-          (request.resource.data.productId is string && request.resource.data.productId.size() > 0)
-          || (request.resource.data.restaurantId is string && request.resource.data.restaurantId.size() > 0)
-        )
-        && request.resource.data.userId == request.auth.uid;
-
-      // Allow users to update/delete their own reviews
+      allow create: if request.auth != null && (
+        (request.resource.data.productId is string && request.resource.data.productId.size() > 0) ||
+        (request.resource.data.restaurantId is string && request.resource.data.restaurantId.size() > 0)
+      ) && request.resource.data.userId == request.auth.uid;
       allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Helper functions
+    function isAdmin() {
+      return request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    function isOwner(ownerId) {
+      return request.auth != null && request.auth.uid == ownerId;
     }
 
     // Categories collection
@@ -103,3 +58,7 @@ service cloud.firestore {
     }
   }
 }
+
+// Indexes required for reviews:
+// - reviews: composite index on (restaurantId ASC, createdAt DESC)
+// - reviews: composite index on (productId ASC, createdAt DESC)

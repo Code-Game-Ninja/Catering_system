@@ -12,7 +12,7 @@ export default function FAQPage() {
     <div className="min-h-screen py-12 bg-white">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <Button variant="back" onClick={() => router.back()} className="p-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>

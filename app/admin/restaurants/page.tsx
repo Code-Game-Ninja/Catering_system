@@ -177,7 +177,7 @@ export default function AdminRestaurantsPage() {
     <div className="container mx-auto px-2 sm:px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={() => router.back()} className="p-2">
+          <Button variant="back" onClick={() => router.back()} className="p-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <h1 className="text-4xl font-bold">Restaurant Management</h1>

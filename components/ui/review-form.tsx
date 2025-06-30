@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StarRating } from "@/components/ui/star-rating"
-import { addDoc, collection, serverTimestamp } from "firebase/firestore"
+import { addDoc, collection, serverTimestamp, doc, getDocs, updateDoc, query, where } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { log } from "@/lib/logging"
 import type { Review } from "@/lib/types"
@@ -74,6 +74,22 @@ export function ReviewForm({ productId, restaurantId, userId, userName, userEmai
       setRating(0)
       setComment("")
       onReviewSubmitted()
+
+      // After addDoc for the review, recalculate average rating and total reviews for the restaurant or product
+      if (restaurantId) {
+        const reviewsSnapshot = await getDocs(query(collection(db, "reviews"), where("restaurantId", "==", restaurantId)))
+        const reviews = reviewsSnapshot.docs.map(doc => doc.data())
+        const totalReviews = reviews.length
+        const averageRating = totalReviews > 0 ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / totalReviews : 0
+        await updateDoc(doc(db, "restaurants", restaurantId), { rating: averageRating, totalReviews })
+      }
+      if (productId) {
+        const reviewsSnapshot = await getDocs(query(collection(db, "reviews"), where("productId", "==", productId)))
+        const reviews = reviewsSnapshot.docs.map(doc => doc.data())
+        const totalReviews = reviews.length
+        const averageRating = totalReviews > 0 ? reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / totalReviews : 0
+        await updateDoc(doc(db, "products", productId), { averageRating, totalReviews })
+      }
     } catch (err: any) {
       log("error", "Failed to submit review", { productId, restaurantId, userId, error: err.message })
       setError("Failed to submit review. Please try again.")

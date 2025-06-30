@@ -25,11 +25,13 @@ import {
   Mail,
   MapPin,
   Store,
+  Menu,
 } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
 import { doc, getDoc } from "firebase/firestore"
 import type { UserProfile } from "@/lib/types"
 import { RotatingAds } from "@/components/RotatingAds"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -44,6 +46,7 @@ export default function ClientLayout({
   const router = useRouter()
   const pathname = usePathname()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -101,12 +104,80 @@ export default function ClientLayout({
               <Link href="/" className="text-2xl font-bold">
                 Catering
               </Link>
-
-              {/* Rotating Ads/Announcements Section */}
+              <div className="md:hidden">
+                <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+                  <SheetTrigger asChild>
+                    <button className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-white">
+                      <Menu className="h-6 w-6" />
+                      <span className="sr-only">Open navigation menu</span>
+                    </button>
+                  </SheetTrigger>
+                  <SheetContent side="left">
+                    <SheetHeader>
+                      <SheetTitle>Menu</SheetTitle>
+                    </SheetHeader>
+                    <div className="flex flex-col gap-4 mt-6">
+                      <Link href="/" onClick={() => setMobileNavOpen(false)}>
+                        <Button variant="ghost" size="lg" className="w-full justify-start">
+                          Home
+                        </Button>
+                      </Link>
+                      <Link href="/menu" onClick={() => setMobileNavOpen(false)}>
+                        <Button variant="ghost" size="lg" className="w-full justify-start">
+                          Menu
+                        </Button>
+                      </Link>
+                      <Link href="/food-gallery" onClick={() => setMobileNavOpen(false)}>
+                        <Button variant="ghost" size="lg" className="w-full justify-start">
+                          Gallery
+                        </Button>
+                      </Link>
+                      <Link href="/about" onClick={() => setMobileNavOpen(false)}>
+                        <Button variant="ghost" size="lg" className="w-full justify-start">
+                          About
+                        </Button>
+                      </Link>
+                      <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
+                        <Button variant="ghost" size="lg" className="w-full justify-start">
+                          Contact
+                        </Button>
+                      </Link>
+                      {user && (
+                        <>
+                          <Link href="/cart" onClick={() => setMobileNavOpen(false)}>
+                            <Button variant="ghost" size="lg" className="w-full justify-start">
+                              Cart
+                            </Button>
+                          </Link>
+                          <Link href="/my-orders" onClick={() => setMobileNavOpen(false)}>
+                            <Button variant="ghost" size="lg" className="w-full justify-start">
+                              Orders
+                            </Button>
+                          </Link>
+                          {userProfile?.role === "restaurant_owner" && (
+                            <Link href="/restaurant-owner" onClick={() => setMobileNavOpen(false)}>
+                              <Button variant="ghost" size="lg" className="w-full justify-start">
+                                Restaurant Dashboard
+                              </Button>
+                            </Link>
+                          )}
+                          {userProfile?.role === "admin" && (
+                            <Link href="/admin" onClick={() => setMobileNavOpen(false)}>
+                              <Button variant="ghost" size="lg" className="w-full justify-start">
+                                Admin
+                              </Button>
+                            </Link>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+              {/* Desktop Rotating Ads/Announcements Section */}
               <div className="hidden md:flex flex-1 max-w-md mx-8 items-center justify-center">
                 <RotatingAds />
               </div>
-
               <div className="flex items-center space-x-2">
                 {loadingAuth ? (
                   <div className="h-8 w-8 flex items-center justify-center">
@@ -133,8 +204,8 @@ export default function ClientLayout({
               </div>
             </div>
 
-            {/* Navigation Links */}
-            <div className="flex items-center justify-between">
+            {/* Desktop Navigation Links */}
+            <div className="hidden md:flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 <Link href="/">
                   <Button variant="ghost" size="sm" className="text-primary-foreground">

@@ -53,7 +53,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" onClick={() => router.back()} className="p-2">
+        <Button variant="back" onClick={() => router.back()} className="p-2">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-4xl font-bold">About Us</h1>
