@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import Link from "next/link"
-import { Package, ShoppingCart, DollarSign, Clock, Star, Settings, BarChart3, Store, Plus } from "lucide-react"
+import { Package, ShoppingCart, DollarSign, Clock, Star, Settings, BarChart3, Store, Plus, Calendar } from "lucide-react"
 
 interface RestaurantStats {
   totalOrders: number
@@ -317,7 +317,20 @@ export default function RestaurantOwnerDashboard() {
                   <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Order #{order.id.substring(0, 8)}</p>
-                      <p className="text-sm text-gray-600">{order.orderDate.toLocaleDateString()}</p>
+                      <div className="space-y-2 text-sm">
+                        <p>
+                          <span className="font-medium">Created:</span> {restaurant?.createdAt ? new Date(restaurant.createdAt).toLocaleDateString() : 'N/A'}
+                        </p>
+                        <p>
+                          <span className="font-medium">Updated:</span> {restaurant?.updatedAt ? new Date(restaurant.updatedAt).toLocaleDateString() : 'N/A'}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-4 w-4" />
+                          {order.orderDate && !isNaN(new Date(order.orderDate).getTime()) ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate && !isNaN(new Date(order.orderDate).getTime()) ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
+                        </div>
+                      </div>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">${order.totalAmount.toFixed(2)}</p>

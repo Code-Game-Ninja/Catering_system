@@ -86,7 +86,7 @@ export default function MyOrdersPage() {
                 <div>
                   <CardTitle className="text-xl">Order #{order.id.substring(0, 8)}</CardTitle>
                   <p className="text-sm text-gray-500">
-                    Placed on: {order.orderDate.toLocaleDateString()} at {order.orderDate.toLocaleTimeString()}
+                    Placed on: {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
                   </p>
                 </div>
                 <span
