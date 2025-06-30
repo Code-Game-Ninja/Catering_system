@@ -541,6 +541,7 @@ export default function RestaurantOwnerProductsPage() {
                 <SelectValue placeholder="Select spice level" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="sweet">Sweet</SelectItem>
                 <SelectItem value="mild">Mild</SelectItem>
                 <SelectItem value="medium">Medium</SelectItem>
                 <SelectItem value="hot">Hot</SelectItem>

@@ -145,6 +145,31 @@ export default function RestaurantOwnerDashboard() {
 
         setStats(restaurantStats)
         log("info", "Restaurant owner dashboard data fetched successfully", { restaurantId })
+
+        // Fetch user info for each recent order
+        const userInfoPromises = recentOrders.map(async (order) => {
+          const userDocRef = doc(db, "users", order.userId)
+          const userDocSnap = await getDoc(userDocRef)
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data()
+            return {
+              id: order.id,
+              ...order,
+              user: {
+                email: userData.email,
+                name: userData.name,
+                phone: userData.phone,
+              },
+            }
+          }
+          return order
+        })
+
+        const updatedRecentOrders = await Promise.all(userInfoPromises)
+        setStats((prevStats) => ({
+          ...prevStats!,
+          recentOrders: updatedRecentOrders,
+        }))
       })
 
       return () => unsubscribe()

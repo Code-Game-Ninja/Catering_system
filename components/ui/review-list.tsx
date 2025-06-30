@@ -26,36 +26,39 @@ export function ReviewList({ productId, restaurantId, refreshTrigger }: ReviewLi
   const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
-    fetchReviews()
-  }, [productId, restaurantId, refreshTrigger])
-
-  const fetchReviews = async () => {
-    try {
-      const reviewsCollection = collection(db, "reviews")
-      let q
-      if (restaurantId) {
-        q = query(reviewsCollection, where("restaurantId", "==", restaurantId), orderBy("createdAt", "desc"))
-      } else if (productId) {
-        q = query(reviewsCollection, where("productId", "==", productId), orderBy("createdAt", "desc"))
-      } else {
-        setReviews([])
-        return
-      }
-      const querySnapshot = await getDocs(q)
+    let unsubscribe: (() => void) | undefined
+    setLoading(true)
+    setError(null)
+    const reviewsCollection = collection(db, "reviews")
+    let q
+    if (restaurantId) {
+      q = query(reviewsCollection, where("restaurantId", "==", restaurantId), orderBy("createdAt", "desc"))
+    } else if (productId) {
+      q = query(reviewsCollection, where("productId", "==", productId), orderBy("createdAt", "desc"))
+    } else {
+      setReviews([])
+      setLoading(false)
+      return
+    }
+    unsubscribe = onSnapshot(q, (querySnapshot) => {
       const reviewsList = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate(),
       })) as Review[]
       setReviews(reviewsList)
-      log("info", "Reviews fetched successfully", { productId, restaurantId, count: reviewsList.length })
-    } catch (err: any) {
-      log("error", "Failed to fetch reviews", { productId, restaurantId, error: err.message })
-      setError("Failed to load reviews")
-    } finally {
       setLoading(false)
+      setError(null)
+      log("info", "Reviews fetched successfully (real-time)", { productId, restaurantId, count: reviewsList.length })
+    }, (err) => {
+      log("error", "Failed to fetch reviews (real-time)", { productId, restaurantId, error: err.message })
+      setError("Failed to load reviews")
+      setLoading(false)
+    })
+    return () => {
+      if (unsubscribe) unsubscribe()
     }
-  }
+  }, [productId, restaurantId, refreshTrigger])
 
   if (loading) {
     return <LoadingSpinner />
