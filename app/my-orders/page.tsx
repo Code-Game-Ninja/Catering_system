@@ -13,6 +13,7 @@ import Image from "next/image"
 import { LoadingSpinner } from "@/components/ui/loading-spinner" // Import LoadingSpinner
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { ReviewForm } from "@/components/ui/review-form"
 
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -46,7 +47,11 @@ export default function MyOrdersPage() {
           orderDate: doc.data().orderDate?.toDate(), // Convert Firebase Timestamp to Date
         })) as Order[]
         // Sort newest → oldest locally
-        ordersList.sort((a, b) => (b.orderDate?.getTime() ?? 0) - (a.orderDate?.getTime() ?? 0))
+        ordersList.sort((a, b) => {
+          const aTime = a.orderDate instanceof Date ? a.orderDate.getTime() : 0;
+          const bTime = b.orderDate instanceof Date ? b.orderDate.getTime() : 0;
+          return bTime - aTime;
+        })
         setOrders(ordersList)
         log("info", "Orders fetched successfully for user", { userId, count: ordersList.length })
       })
@@ -96,7 +101,7 @@ export default function MyOrdersPage() {
                 <div>
                   <CardTitle className="text-xl">Order #{order.id.substring(0, 8)}</CardTitle>
                   <p className="text-sm text-gray-500">
-                    Placed on: {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
+                    Placed on: {order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'} at {order.orderDate instanceof Date ? order.orderDate.toLocaleTimeString() : 'N/A'}
                   </p>
                 </div>
                 <span
