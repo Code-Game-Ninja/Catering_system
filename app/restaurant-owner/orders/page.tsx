@@ -120,7 +120,7 @@ export default function RestaurantOwnerOrdersPage() {
         }),
       )
 
-      const sorted = ordersList.sort((a, b) => b.orderDate.getTime() - a.orderDate.getTime())
+      const sorted = ordersList.sort((a, b) => (b.orderDate?.getTime?.() ?? 0) - (a.orderDate?.getTime?.() ?? 0))
       setOrders(sorted)
       setFilteredOrders(sorted)
       log("info", "Restaurant owner fetched orders successfully", {
@@ -372,7 +372,16 @@ export default function RestaurantOwnerOrdersPage() {
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
+                          {(() => {
+                            let dateObj = order.orderDate
+                            if (dateObj && typeof dateObj === 'object' && typeof dateObj.toDate === 'function') {
+                              dateObj = dateObj.toDate()
+                            }
+                            if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
+                              return `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`
+                            }
+                            return 'N/A'
+                          })()}
                         </div>
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
