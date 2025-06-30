@@ -135,10 +135,13 @@ export default function RestaurantPage({ params }: RestaurantPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back Button */}
-      <Button variant="back" onClick={() => router.back()} className="mb-6">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back
-      </Button>
+      <div className="flex items-center gap-2 mb-8">
+        <Button variant="back" onClick={() => router.back()} className="p-2">
+          <ArrowLeft className="mr-2 h-5 w-5" />
+          Back
+        </Button>
+        <h1 className="text-2xl font-semibold">{restaurant.name}</h1>
+      </div>
 
       {/* Restaurant Header */}
       <Card className="mb-8">

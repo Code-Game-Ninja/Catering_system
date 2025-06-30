@@ -188,11 +188,11 @@ export default function AdminDashboardPage() {
   return (
     <div className="container mx-auto px-2 sm:px-4 py-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <Button variant="back" onClick={() => router.back()} className="p-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-4xl font-bold">Platform Admin Dashboard</h1>
+          <h1 className="text-2xl font-semibold">Platform Admin Dashboard</h1>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => window.location.reload()}>

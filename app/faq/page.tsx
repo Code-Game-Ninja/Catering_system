@@ -11,11 +11,11 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen py-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-2 mb-8">
           <Button variant="back" onClick={() => router.back()} className="p-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-4xl font-bold">Frequently Asked Questions</h1>
+          <h1 className="text-2xl font-semibold">Frequently Asked Questions</h1>
         </div>
         <div className="max-w-2xl mx-auto space-y-6">
           <Card>
