@@ -240,6 +240,14 @@ export default function RestaurantOwnerDashboard() {
   }
 
   if (error || !restaurant || !stats) {
+    // Check for Firebase permission error
+    if (error && error.toLowerCase().includes('permission')) {
+      return (
+        <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
+          <p className="text-red-500">You do not have permission to view this data. Please contact support or check your account permissions.</p>
+        </div>
+      )
+    }
     return (
       <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
         <p className="text-red-500">{error || "Failed to load dashboard"}</p>
@@ -280,7 +288,7 @@ export default function RestaurantOwnerDashboard() {
             </div>
             <div className="flex items-center gap-2">
               <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-              <span className="text-lg font-semibold">{stats.averageRating.toFixed(1)}</span>
+              <span className="text-lg font-semibold">{typeof stats.averageRating === 'number' ? stats.averageRating.toFixed(1) : '0.0'}</span>
               <span className="text-sm text-gray-600">({stats.totalReviews} reviews)</span>
             </div>
           </div>
@@ -477,12 +485,12 @@ export default function RestaurantOwnerDashboard() {
                       <p className="text-sm text-gray-600">${product.price.toFixed(2)}</p>
                     </div>
                     <div className="text-right">
-                      {product.averageRating && (
+                      {typeof product.averageRating === 'number' && !isNaN(product.averageRating) ? (
                         <div className="flex items-center gap-1">
                           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                           <span className="text-sm">{product.averageRating.toFixed(1)}</span>
                         </div>
-                      )}
+                      ) : null}
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           product.isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
