@@ -261,7 +261,7 @@ export default function AdminDashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</div>
+            <div className="text-2xl font-bold">₹{stats.totalRevenue.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">From completed orders</p>
           </CardContent>
         </Card>
@@ -360,7 +360,7 @@ export default function AdminDashboardPage() {
                       <p className="text-xs text-gray-500">{order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${order.totalAmount.toFixed(2)}</p>
+                      <p className="font-medium">₹{order.totalAmount.toFixed(2)}</p>
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           order.status === "delivered"
