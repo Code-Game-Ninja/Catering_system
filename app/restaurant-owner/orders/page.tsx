@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { collection, getDocs, doc, updateDoc, query, where, setDoc, getDoc, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
@@ -262,6 +262,22 @@ export default function RestaurantOwnerOrdersPage() {
     return "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"
   }
 
+  // Add a hook to fetch user info in real time
+  function useUserProfile(userId: string | undefined) {
+    const [profile, setProfile] = useState<{ name: string; email: string }>({ name: "N/A", email: "N/A" })
+    useEffect(() => {
+      if (!userId) return
+      const unsub = onSnapshot(doc(db, "users", userId), (snap) => {
+        if (snap.exists()) {
+          const data = snap.data()
+          setProfile({ name: data.name || "N/A", email: data.email || "N/A" })
+        }
+      })
+      return () => unsub()
+    }, [userId])
+    return profile
+  }
+
   if (loading || userRole === null || restaurantId === null) {
     return <LoadingSpinner />
   }
@@ -401,7 +417,7 @@ export default function RestaurantOwnerOrdersPage() {
                         </div>
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
-                          {order.userEmail}
+                          {useUserProfile(order.userId)?.name}
                         </div>
                         <div className="flex items-center gap-1">
                           <DollarSign className="h-4 w-4" />₹{order.totalAmount.toFixed(2)}
@@ -436,10 +452,10 @@ export default function RestaurantOwnerOrdersPage() {
                       <h3 className="font-semibold mb-3">Customer Information</h3>
                       <div className="space-y-2 text-sm">
                         <p>
-                          <span className="font-medium">Email:</span> {order.userEmail || "N/A"}
+                          <span className="font-medium">Email:</span> {useUserProfile(order.userId)?.email}
                         </p>
                         <p>
-                          <span className="font-medium">Name:</span> {order.userName || "N/A"}
+                          <span className="font-medium">Name:</span> {useUserProfile(order.userId)?.name}
                         </p>
                         <p>
                           <span className="font-medium">Delivery Address:</span> {order.deliveryAddress || "N/A"}

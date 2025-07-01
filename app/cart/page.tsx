@@ -154,6 +154,7 @@ export default function CartPage() {
         contactEmail,
         notes,
         status: "pending", // pending, confirmed, preparing, out_for_delivery, delivered, cancelled
+        orderDate: serverTimestamp(),
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         ...(restaurantId && { restaurantId }),
@@ -169,7 +170,7 @@ export default function CartPage() {
       router.push(`/payment?orderId=${orderRef.id}`)
 
       // After order is placed (after addDoc):
-      const placedOrder = { id: orderRef.id, ...orderData, orderDate: new Date() }
+      const placedOrder = { id: orderRef.id, ...orderData };
       // Send email to user
       const userEmail = contactEmail || user.email || ''
       const { subject, html, text } = generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'user' })

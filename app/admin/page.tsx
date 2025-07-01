@@ -69,34 +69,34 @@ export default function AdminDashboardPage() {
 
     // Set up all listeners in parallel
     const unsubOrders = onSnapshot(collection(db, "orders"), (ordersSnapshot) => {
-      const validOrders: Order[] = []
-      const invalidOrders: any[] = []
-      ordersSnapshot.docs.forEach((doc) => {
-        const data = doc.data();
-        if (
-          typeof data.status === 'string' &&
-          typeof data.totalAmount === 'number' &&
-          (data.orderDate && (typeof data.orderDate.toDate === 'function' || data.orderDate instanceof Date))
-        ) {
-          validOrders.push({
-            id: doc.id,
-            userId: data.userId || '',
-            userName: data.userName || '',
-            userEmail: data.userEmail || '',
-            restaurantId: data.restaurantId || '',
-            restaurantName: data.restaurantName || '',
-            items: data.items || [],
-            totalAmount: data.totalAmount,
-            status: data.status,
-            orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
-            deliveryAddress: data.deliveryAddress || '',
-            contactPhone: data.contactPhone || '',
-            notes: data.notes || '',
-            updatedAt: data.updatedAt || undefined,
-            estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
-          } as unknown as Order)
-        } else {
-          invalidOrders.push({ id: doc.id, ...data })
+        const validOrders: Order[] = []
+        const invalidOrders: any[] = []
+        ordersSnapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          if (
+            typeof data.status === 'string' &&
+            typeof data.totalAmount === 'number' &&
+            (data.orderDate && (typeof data.orderDate.toDate === 'function' || data.orderDate instanceof Date))
+          ) {
+            validOrders.push({
+              id: doc.id,
+              userId: data.userId || '',
+              userName: data.userName || '',
+              userEmail: data.userEmail || '',
+              restaurantId: data.restaurantId || '',
+              restaurantName: data.restaurantName || '',
+              items: data.items || [],
+              totalAmount: data.totalAmount,
+              status: data.status,
+              orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
+              deliveryAddress: data.deliveryAddress || '',
+              contactPhone: data.contactPhone || '',
+              notes: data.notes || '',
+              updatedAt: data.updatedAt || undefined,
+              estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
+            } as unknown as Order)
+          } else {
+            invalidOrders.push({ id: doc.id, ...data })
         }
       })
       setOrders(validOrders)
@@ -104,34 +104,34 @@ export default function AdminDashboardPage() {
     })
     const unsubProducts = onSnapshot(collection(db, "products"), (productsSnapshot) => {
       setProducts(productsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
-        } as unknown as Product;
+            const data = doc.data();
+            return {
+              id: doc.id,
+              ...data,
+              createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+              updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+            } as unknown as Product;
       }))
     })
     const unsubRestaurants = onSnapshot(collection(db, "restaurants"), (restaurantsSnapshot) => {
       setRestaurants(restaurantsSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
-        } as unknown as Restaurant;
+              const data = doc.data();
+              return {
+                id: doc.id,
+                ...data,
+                createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+                updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+              } as unknown as Restaurant;
       }))
     })
     const unsubUsers = onSnapshot(collection(db, "users"), (usersSnapshot) => {
       setUsers(usersSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          ...data,
-          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-        } as unknown as UserProfile;
+                const data = doc.data();
+                return {
+                  id: doc.id,
+                  ...data,
+                  createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+                } as unknown as UserProfile;
       }))
     })
 
@@ -154,33 +154,33 @@ export default function AdminDashboardPage() {
     const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
     const platformFeeRate = 0.10
     const totalRevenue = orders
-      .filter((order) => order.status === "delivered")
-      .reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
-    const totalProducts = products.length
-    const totalRestaurants = restaurants.length
-    const totalUsers = users.filter((user) => user.role === "user").length
+                .filter((order) => order.status === "delivered")
+                .reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
+              const totalProducts = products.length
+              const totalRestaurants = restaurants.length
+              const totalUsers = users.filter((user) => user.role === "user").length
     const recentOrders = [...orders].sort((a, b) => (b.orderDate instanceof Date && a.orderDate instanceof Date ? b.orderDate.getTime() - a.orderDate.getTime() : 0)).slice(0, 5)
     const topRestaurants = [...restaurants]
-      .filter((restaurant) => restaurant.isActive)
-      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-      .slice(0, 5)
+                .filter((restaurant) => restaurant.isActive)
+                .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+                .slice(0, 5)
     const topProducts = [...products]
-      .filter((product) => product.isAvailable)
-      .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-      .slice(0, 5)
+                .filter((product) => product.isAvailable)
+                .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+                .slice(0, 5)
     return {
-      totalOrders,
-      pendingOrders,
-      completedOrders,
-      cancelledOrders,
-      totalRevenue,
-      totalProducts,
-      totalRestaurants,
-      totalUsers,
-      recentOrders,
-      topRestaurants,
-      topProducts,
-    }
+                totalOrders,
+                pendingOrders,
+                completedOrders,
+                cancelledOrders,
+                totalRevenue,
+                totalProducts,
+                totalRestaurants,
+                totalUsers,
+                recentOrders,
+                topRestaurants,
+                topProducts,
+              }
   }, [orders, products, restaurants, users])
 
   if (loading || userRole === null) {
