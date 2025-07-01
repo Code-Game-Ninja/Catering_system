@@ -122,7 +122,7 @@ export default function AboutPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-primary text-primary-foreground">
+      <section className="py-16 bg-[var(--primary)] text-[var(--primary-foreground)]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Our Impact</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -170,7 +170,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
-                <Utensils className="h-12 w-12 text-primary mx-auto mb-4" />
+                <Utensils className="h-12 w-12 text-[var(--primary)] mx-auto mb-4" />
                 <CardTitle>Source Authentically</CardTitle>
               </CardHeader>
               <CardContent>
@@ -183,7 +183,7 @@ export default function AboutPage() {
 
             <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
-                <Award className="h-12 w-12 text-primary mx-auto mb-4" />
+                <Award className="h-12 w-12 text-[var(--primary)] mx-auto mb-4" />
                 <CardTitle>Ensure Quality</CardTitle>
               </CardHeader>
               <CardContent>
@@ -196,7 +196,7 @@ export default function AboutPage() {
 
             <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
-                <Truck className="h-12 w-12 text-primary mx-auto mb-4" />
+                <Truck className="h-12 w-12 text-[var(--primary)] mx-auto mb-4" />
                 <CardTitle>Deliver Fresh</CardTitle>
               </CardHeader>
               <CardContent>
@@ -211,7 +211,7 @@ export default function AboutPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-primary text-primary-foreground text-center">
+      <section className="py-16 bg-[var(--primary)] text-[var(--primary-foreground)] text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-6">Join Our Culinary Journey</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -221,13 +221,13 @@ export default function AboutPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/menu"
-              className="bg-primary-foreground text-primary px-8 py-3 rounded-lg font-semibold hover:bg-primary-foreground/90 transition-colors"
+              className="bg-[var(--primary-foreground)] text-[var(--primary)] px-8 py-3 rounded-lg font-semibold hover:bg-[var(--primary-foreground)]/90 transition-colors"
             >
               Explore Our Menu
             </a>
             <a
               href="/contact"
-              className="border-2 border-primary-foreground text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary-foreground hover:text-primary transition-colors"
+              className="border-2 border-[var(--primary-foreground)] text-[var(--primary-foreground)] px-8 py-3 rounded-lg font-semibold hover:bg-[var(--primary-foreground)] hover:text-[var(--primary)] transition-colors"
             >
               Get in Touch
             </a>

@@ -46,7 +46,7 @@ export default function PaymentPageContent() {
                   {PAYMENT_METHODS.map((method) => (
                     <label
                       key={method.value}
-                      className={`flex items-center gap-3 p-3 rounded border ${selected === method.value ? "border-primary bg-primary/10" : "border-gray-200"} ${!method.available ? "opacity-60 cursor-not-allowed" : ""}`}
+                      className={`flex items-center gap-3 p-3 rounded border ${selected === method.value ? "border-[var(--primary)] bg-[var(--primary)]/10" : "border-gray-200"} ${!method.available ? "opacity-60 cursor-not-allowed" : ""}`}
                     >
                       <input
                         type="radio"

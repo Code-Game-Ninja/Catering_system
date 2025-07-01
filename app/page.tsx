@@ -33,7 +33,7 @@ export default function LandingPage() {
           <Link href="/menu">
             <Button
               size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 animate-fade-in-up delay-400"
+              className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90 animate-fade-in-up delay-400"
             >
               View Our Menu
             </Button>
@@ -153,12 +153,12 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      {/* Removed the testimonials background image and replaced with a neutral background color */}
       <section
         className="relative py-16 md:py-24 bg-[var(--muted)] text-[var(--foreground)] text-center"
       >
-        <div className="absolute inset-0 bg-[var(--background)]/60" />
-        <div className="relative z-10 container mx-auto px-4">
+        <div className="absolute inset-0 bg-[url('https://media.istockphoto.com/id/1471444483/photo/customer-satisfaction-survey-concept-users-rate-service-experiences-on-online-application.webp?a=1&b=1&s=612x612&w=0&k=20&c=vTedWOsRo4-O5hO_ZblfrCYNEHvmdTcU6cPCW8I1u60=')] bg-cover bg-center opacity-30 z-0" />
+        <div className="absolute inset-0 bg-[var(--background)]/60 z-10" />
+        <div className="relative z-20 container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">What Our Customers Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="p-6 bg-[var(--background)]/10 backdrop-blur-sm text-[var(--foreground)] shadow-lg">
