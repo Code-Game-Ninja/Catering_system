@@ -123,20 +123,20 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Catering?</h2>
             <ul className="space-y-4 text-lg text-muted-foreground mb-8 list-none pl-0">
               <li className="flex items-start lg:items-center gap-3">
-                <Leaf className="h-6 w-6 text-success flex-shrink-0" />
+                <Leaf className="h-6 w-6 text-green-600 flex-shrink-0" />
                 <span>
                   **Authenticity & Freshness:** We source directly from rural communities, ensuring genuine flavors and
                   the freshest ingredients.
                 </span>
               </li>
               <li className="flex items-start lg:items-center gap-3">
-                <Award className="h-6 w-6 text-accent flex-shrink-0" />
+                <Award className="h-6 w-6 text-yellow-600 flex-shrink-0" />
                 <span>
                   **Empowering Communities:** Every order directly supports the livelihoods of talented local caterers.
                 </span>
               </li>
               <li className="flex items-start lg:items-center gap-3">
-                <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                <Users className="h-6 w-6 text-blue-600 flex-shrink-0" />
                 <span>
                   **Cultural Exchange:** Experience the diverse culinary traditions of India, one delicious dish at a
                   time.

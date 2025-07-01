@@ -20,22 +20,22 @@ export default function AboutPage() {
 
   const values = [
     {
-      icon: <Heart className="h-8 w-8 text-destructive" />,
+      icon: <Heart className="h-8 w-8 text-red-500" />,
       title: "Authenticity",
       description: "Every recipe is sourced from traditional family kitchens and prepared with genuine ingredients.",
     },
     {
-      icon: <Users className="h-8 w-8 text-primary" />,
+      icon: <Users className="h-8 w-8 text-blue-500" />,
       title: "Community",
       description: "Supporting local farmers and caterers while building bridges between cultures through food.",
     },
     {
-      icon: <Globe className="h-8 w-8 text-success" />,
+      icon: <Globe className="h-8 w-8 text-green-500" />,
       title: "Global Reach",
       description: "Bringing the taste of rural India to food lovers around the world.",
     },
     {
-      icon: <Award className="h-8 w-8 text-accent" />,
+      icon: <Award className="h-8 w-8 text-yellow-500" />,
       title: "Quality",
       description: "Uncompromising standards in ingredients, preparation, and delivery.",
     },
@@ -60,11 +60,11 @@ export default function AboutPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-primary/10 to-accent/10">
+      <section className="relative py-20 bg-gradient-to-r from-orange-50 to-red-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">Our Story: From Village Kitchens to Global Tables</h1>
-            <p className="text-xl text-muted-foreground leading-relaxed">
+            <p className="text-xl text-gray-700 leading-relaxed">
               Catering was born from a simple belief: that the most authentic and delicious Indian food comes from the
               heart of rural communities, where recipes have been passed down through generations.
             </p>
@@ -73,17 +73,17 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-6">Our Mission</h2>
-              <p className="text-lg text-muted-foreground mb-6">
+              <p className="text-lg text-gray-700 mb-6">
                 We exist to bridge the gap between authentic rural Indian cuisine and the global community. Our platform
                 empowers local caterers and traditional cooks to share their culinary heritage while providing food
                 enthusiasts worldwide access to genuine, home-style Indian meals.
               </p>
-              <p className="text-lg text-muted-foreground">
+              <p className="text-lg text-gray-700">
                 Every order supports rural communities, preserves traditional cooking methods, and brings families
                 together over authentic flavors that tell the story of India's rich culinary landscape.
               </p>
@@ -102,7 +102,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-16 bg-muted">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -137,7 +137,7 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -164,7 +164,7 @@ export default function AboutPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 bg-muted">
+      <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">How We Work</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
