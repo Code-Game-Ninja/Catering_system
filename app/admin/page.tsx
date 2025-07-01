@@ -297,30 +297,30 @@ export default function AdminDashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-600" />
+            <Clock className="h-4 w-4 text-accent" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{stats.pendingOrders}</div>
+            <div className="text-2xl font-bold text-accent">{stats.pendingOrders}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Completed Orders</CardTitle>
-            <CheckCircle className="h-4 w-4 text-green-600" />
+            <CheckCircle className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{stats.completedOrders}</div>
+            <div className="text-2xl font-bold text-success">{stats.completedOrders}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-blue-600" />
+            <Package className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{stats.totalProducts}</div>
+            <div className="text-2xl font-bold text-primary">{stats.totalProducts}</div>
           </CardContent>
         </Card>
       </div>
@@ -374,25 +374,25 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             {stats.recentOrders.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No orders yet</p>
+              <p className="text-muted-foreground text-center py-4">No orders yet</p>
             ) : (
               <div className="space-y-4">
                 {stats.recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Order #{order.id.substring(0, 8)}</p>
-                      <p className="text-sm text-gray-600">{order.restaurantName}</p>
-                      <p className="text-xs text-gray-500">{order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'}</p>
+                      <p className="text-sm text-muted-foreground">{order.restaurantName}</p>
+                      <p className="text-xs text-muted-foreground">{order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">₹{order.totalAmount.toFixed(2)}</p>
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           order.status === "delivered"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-success text-success"
                             : order.status === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
+                              ? "bg-accent text-accent"
+                              : "bg-destructive text-destructive"
                         }`}
                       >
                         {order.status}
@@ -418,21 +418,21 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent>
             {stats.topRestaurants.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">No restaurants yet</p>
+              <p className="text-muted-foreground text-center py-4">No restaurants yet</p>
             ) : (
               <div className="space-y-4">
                 {stats.topRestaurants.map((restaurant) => (
                   <div key={restaurant.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">{restaurant.name}</p>
-                      <p className="text-sm text-gray-600">{restaurant.cuisine.join(", ")}</p>
+                      <p className="text-sm text-muted-foreground">{restaurant.cuisine.join(", ")}</p>
                     </div>
                     <div className="text-right">
                       <div className="flex items-center gap-1">
-                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <Star className="h-4 w-4 text-accent" />
                         <span className="text-sm">{restaurant.rating?.toFixed(1) || "N/A"}</span>
                       </div>
-                      <p className="text-xs text-gray-500">{restaurant.totalReviews || 0} reviews</p>
+                      <p className="text-xs text-muted-foreground">{restaurant.totalReviews || 0} reviews</p>
                     </div>
                   </div>
                 ))}

@@ -278,18 +278,18 @@ export default function RestaurantOwnerDashboard() {
               <Store className="h-8 w-8 text-primary" />
               <div>
                 <h3 className="text-lg font-semibold">Restaurant Status</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted-foreground">
                   Your restaurant is currently{" "}
-                  <span className={restaurant.isActive ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+                  <span className={restaurant.isActive ? "text-success font-medium" : "text-destructive font-medium"}>
                     {restaurant.isActive ? "Active" : "Inactive"}
                   </span>
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+              <Star className="h-5 w-5 fill-accent text-accent" />
               <span className="text-lg font-semibold">{typeof stats.averageRating === 'number' ? stats.averageRating.toFixed(1) : '0.0'}</span>
-              <span className="text-sm text-gray-600">({stats.totalReviews} reviews)</span>
+              <span className="text-sm text-muted-foreground">({stats.totalReviews} reviews)</span>
             </div>
           </div>
         </CardContent>
@@ -428,7 +428,7 @@ export default function RestaurantOwnerDashboard() {
                           <span className="font-medium">Updated:</span> {restaurant?.updatedAt instanceof Date ? restaurant.updatedAt.toLocaleDateString() : 'N/A'}
                         </p>
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
                           {order.orderDate instanceof Date ? order.orderDate.toLocaleDateString() : 'N/A'} at {order.orderDate instanceof Date ? order.orderDate.toLocaleTimeString() : 'N/A'}
@@ -440,7 +440,7 @@ export default function RestaurantOwnerDashboard() {
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           order.status === "delivered"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-success text-success"
                             : order.status === "pending"
                               ? "bg-yellow-100 text-yellow-800"
                               : "bg-blue-100 text-blue-800"
@@ -482,18 +482,18 @@ export default function RestaurantOwnerDashboard() {
                   <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-600">₹{product.price.toFixed(2)}</p>
+                      <p className="text-sm text-muted-foreground">₹{product.price.toFixed(2)}</p>
                     </div>
                     <div className="text-right">
                       {typeof product.averageRating === 'number' && !isNaN(product.averageRating) ? (
                         <div className="flex items-center gap-1">
-                          <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                          <Star className="h-4 w-4 fill-accent text-accent" />
                           <span className="text-sm">{product.averageRating.toFixed(1)}</span>
                         </div>
                       ) : null}
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
-                          product.isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                          product.isAvailable ? "bg-success text-success" : "bg-destructive text-destructive"
                         }`}
                       >
                         {product.isAvailable ? "Available" : "Unavailable"}
