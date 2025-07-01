@@ -107,7 +107,7 @@ export function EditRestaurantModal({ isOpen, onClose, restaurant, onSave }: Edi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-white rounded-xl shadow-2xl p-6 z-[9999]">
         <DialogHeader>
           <DialogTitle>Edit Restaurant: {restaurant.name}</DialogTitle>
           <DialogDescription>

@@ -113,7 +113,7 @@ export default function ClientLayout({
                       <span className="sr-only">Open navigation menu</span>
                     </button>
                   </SheetTrigger>
-                  <SheetContent side="left">
+                  <SheetContent side="left" className="bg-white text-gray-900 border-r border-gray-200 shadow-lg">
                     <SheetHeader>
                       <SheetTitle>Menu</SheetTitle>
                     </SheetHeader>
