@@ -34,18 +34,18 @@ export default function PaymentPageContent() {
       toast({
         title: "Payment Confirmed!",
         description: `Order #${orderId?.substring(0, 8)} will be paid by Cash on Delivery. Thank you!`,
-        variant: "success",
+        variant: "default",
       })
       router.push("/my-orders")
     }, 1200)
   }
 
   return (
-    <div className="min-h-screen py-12 bg-white">
+    <div className="min-h-screen py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Select Payment Method</h1>
         <div className="max-w-xl mx-auto">
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>Payment Options</CardTitle>
             </CardHeader>

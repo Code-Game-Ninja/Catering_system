@@ -21,11 +21,11 @@ export default function SupportPage() {
   }
 
   return (
-    <div className="min-h-screen py-12 bg-white">
+    <div className="min-h-screen py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-8">Support</h1>
         <div className="max-w-xl mx-auto">
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>Contact Support</CardTitle>
             </CardHeader>

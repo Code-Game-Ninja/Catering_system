@@ -171,7 +171,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       toast({
         title: "Added to Cart!",
         description: `${product.name} has been added to your cart.`,
-        variant: "success",
+        variant: "default",
       })
     } catch (e: any) {
       log("error", "Failed to add product to cart (localStorage error)", { productId: product.id, error: e.message })
@@ -210,14 +210,14 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
       {/* Back Button */}
       <Button variant="ghost" onClick={() => window.history.back()} className="mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" />
         Back
       </Button>
 
-      <Card className="mb-8">
+      <Card className="mb-8 bg-white rounded-xl shadow-lg">
         <CardContent className="grid md:grid-cols-2 gap-8 p-6">
           <div className="relative h-80 w-full overflow-hidden rounded-lg">
             <Image
@@ -287,7 +287,7 @@ export default function ProductPage({ params }: ProductPageProps) {
               )}
 
               <div className="flex items-center gap-2 mb-4">
-                <StarRating rating={product.averageRating || 0} totalReviews={product.totalReviews || 0} />
+                <StarRating rating={product.averageRating || 0} />
                 <span className="text-sm text-gray-600">({product.totalReviews || 0} reviews)</span>
               </div>
             </div>
@@ -306,7 +306,7 @@ export default function ProductPage({ params }: ProductPageProps) {
       </Card>
 
       {restaurant && (
-        <Card className="mb-8">
+        <Card className="mb-8 bg-white rounded-xl shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Store className="h-6 w-6" /> About {restaurant.name}
@@ -336,18 +336,18 @@ export default function ProductPage({ params }: ProductPageProps) {
         </Card>
       )}
 
-      <Card>
+      <Card className="bg-white rounded-xl shadow-lg">
         <CardHeader>
           <CardTitle>Customer Reviews</CardTitle>
         </CardHeader>
         <CardContent>
           {user && userProfile ? (
             <ReviewForm
-              productId={id}
-              userId={user.uid}
-              userName={userProfile.name || "Anonymous"}
-              userEmail={userProfile.email}
-              onReviewSubmitted={handleReviewSubmitted}
+              productId={product.id}
+              userId={userProfile?.uid || user?.uid || ""}
+              userName={userProfile?.name || user?.displayName || user?.email?.split("@")[0] || "Anonymous"}
+              userEmail={userProfile?.email || user?.email || ""}
+              onReviewSubmitted={() => {}}
             />
           ) : (
             <div className="text-center p-4 bg-gray-50 rounded-lg mb-6">

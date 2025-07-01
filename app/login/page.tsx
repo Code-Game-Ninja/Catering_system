@@ -10,10 +10,10 @@ export default function LoginPage() {
   const [registrationType, setRegistrationType] = useState<"user" | "restaurant_owner">("user")
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gray-100 px-4 py-12 dark:bg-gray-950">
+    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
       {showRegister ? (
         <div className="flex flex-col items-center gap-4">
-          <Card className="w-full max-w-md">
+          <Card className="w-full max-w-md bg-white rounded-xl shadow-lg">
             <CardContent className="pt-6">
               <div className="flex justify-center gap-4 mb-6">
                 <Button
@@ -42,10 +42,14 @@ export default function LoginPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center gap-4">
-          <AuthForm />
-          <Button variant="link" className="w-full" onClick={() => setShowRegister(true)}>
-            Don't have an account? Register
-          </Button>
+          <Card className="w-full max-w-md bg-white rounded-xl shadow-lg">
+            <CardContent className="pt-6">
+              <AuthForm />
+              <Button variant="link" className="w-full" onClick={() => setShowRegister(true)}>
+                Don't have an account? Register
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>

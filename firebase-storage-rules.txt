@@ -2,25 +2,23 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // Product images – restaurant owners & admins can upload
+    // Product images – only restaurant owners & admins can upload
     match /product_images/{allPaths=**} {
-      allow read:  if request.auth != null;
+      allow read: if true; // Public read for product images
       allow write: if request.auth != null &&
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid))
-                 .data.role in ['restaurant_owner', 'admin'];
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['restaurant_owner', 'admin'];
     }
 
-    // Restaurant images – restaurant owners & admins can upload
+    // Restaurant images – only restaurant owners & admins can upload
     match /restaurant_images/{allPaths=**} {
-      allow read:  if request.auth != null;
+      allow read: if true; // Public read for restaurant images
       allow write: if request.auth != null &&
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid))
-                 .data.role in ['restaurant_owner', 'admin'];
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['restaurant_owner', 'admin'];
     }
 
-    // User profile images – user can upload their own
+    // User profile images – only the user can upload
     match /user_images/{userId}/{allPaths=**} {
-      allow read:  if request.auth != null;
+      allow read: if true; // Public read for profile images (optional)
       allow write: if request.auth != null && request.auth.uid == userId;
     }
   }

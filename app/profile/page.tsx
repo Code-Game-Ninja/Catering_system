@@ -159,14 +159,14 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-8">
+    <div className="container mx-auto px-2 sm:px-4 py-8 bg-gray-50">
       <div className="flex items-center gap-2 mb-8">
         <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <h1 className="text-2xl font-semibold">My Profile</h1>
       </div>
-      <Card className="max-w-2xl mx-auto">
+      <Card className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-6 w-6" /> Your Profile

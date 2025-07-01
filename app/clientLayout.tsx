@@ -32,6 +32,7 @@ import { doc, getDoc } from "firebase/firestore"
 import type { UserProfile } from "@/lib/types"
 import { RotatingAds } from "@/components/RotatingAds"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { NotificationBell } from "@/components/ui/NotificationBell"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -185,6 +186,7 @@ export default function ClientLayout({
                   </div>
                 ) : user ? (
                   <>
+                    <NotificationBell userId={user?.uid} restaurantOwnerId={userProfile?.role === "restaurant_owner" ? userProfile?.uid : undefined} />
                     <Link href="/profile">
                       <Button variant="ghost" size="sm" className="text-primary-foreground">
                         <User className="h-4 w-4" />

@@ -106,7 +106,7 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
       <div className="flex items-center gap-2 mb-8">
         <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
           <ArrowLeft className="h-5 w-5" />
@@ -114,7 +114,7 @@ export default function SearchPage() {
         <h1 className="text-2xl font-semibold">Search</h1>
       </div>
 
-      <Card className="mb-8">
+      <Card className="mb-8 bg-white rounded-xl shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <SearchIcon className="h-5 w-5" /> Refine Your Search
@@ -163,7 +163,7 @@ export default function SearchPage() {
       </Card>
 
       {filteredProducts.length === 0 ? (
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardContent className="text-center py-12">
             <UtensilsCrossed className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-lg text-gray-600">No products found matching your search criteria.</p>

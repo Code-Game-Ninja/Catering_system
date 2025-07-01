@@ -83,7 +83,7 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-8">
+    <div className="container mx-auto px-2 sm:px-4 py-8 bg-gray-50">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="back" onClick={() => router.back()} className="p-2">
           <ArrowLeft className="h-5 w-5" />
@@ -96,7 +96,7 @@ export default function MyOrdersPage() {
       ) : (
         <div className="space-y-6">
           {orders.map((order) => (
-            <Card key={order.id}>
+            <Card key={order.id} className="bg-white rounded-xl shadow-lg">
               <CardHeader className="flex flex-row items-center justify-between">
                 <div>
                   <CardTitle className="text-xl">Order #{order.id.substring(0, 8)}</CardTitle>

@@ -9,7 +9,7 @@ export default function FoodGalleryPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-12">
         <div className="flex items-center gap-2 mb-8">
           <Button variant="back" onClick={() => router.back()} className="p-2">
