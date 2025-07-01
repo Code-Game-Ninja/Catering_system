@@ -310,7 +310,7 @@ export default function ClientLayout({
           </AnimatePresence>
 
           {/* Footer */}
-          <footer className="bg-background text-foreground py-12 mt-16 w-full">
+          <footer className="bg-[var(--muted)] text-foreground py-12 mt-16 w-full">
             <div className="px-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Company Info */}

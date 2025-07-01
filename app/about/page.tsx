@@ -137,28 +137,30 @@ export default function AboutPage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[var(--muted)]">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="text-center bg-white rounded-xl shadow-lg">
-                <CardHeader>
-                  <Image
-                    src={member.image || "/placeholder.svg"}
-                    alt={member.name}
-                    width={300}
-                    height={300}
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-                  />
-                  <CardTitle className="text-xl">{member.name}</CardTitle>
-                  <Badge variant="secondary">{member.role}</Badge>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base">{member.description}</CardDescription>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {teamMembers.map((member, index) => (
+                <Card key={index} className="text-center bg-white rounded-xl shadow-lg">
+                  <CardHeader>
+                    <Image
+                      src={member.image || "/placeholder.svg"}
+                      alt={member.name}
+                      width={300}
+                      height={300}
+                      className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+                    />
+                    <CardTitle className="text-xl">{member.name}</CardTitle>
+                    <Badge variant="secondary">{member.role}</Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-base">{member.description}</CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </section>

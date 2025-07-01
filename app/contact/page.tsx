@@ -65,7 +65,7 @@ export default function ContactPage() {
   ]
 
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-[var(--muted)]">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 mb-8">
           <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
