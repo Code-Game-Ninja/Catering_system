@@ -397,7 +397,7 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="space-y-4">
                 {stats.topRestaurants.map((restaurant) => (
-                  <div key={restaurant.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={restaurant.id} className="flex items-center justify-between p-3 border rounded-lg bg-yellow-50">
                     <div>
                       <p className="font-medium">{restaurant.name}</p>
                       <p className="text-sm text-gray-600">{restaurant.cuisine.join(", ")}</p>
@@ -422,17 +422,47 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
 
-      {invalidOrders && invalidOrders.length > 0 && (
-        <div className="mt-8 p-4 border border-destructive bg-destructive/10 rounded">
-          <h2 className="text-lg font-bold text-destructive mb-2">Orders with Missing Fields</h2>
-          <ul className="text-destructive-foreground text-sm">
-            {invalidOrders.map(order => (
-              <li key={order.id}>Order ID: {order.id} (Missing required fields)</li>
-            ))}
-          </ul>
-          <p className="text-xs mt-2">These orders are not included in stats. Please review in Firestore.</p>
-        </div>
-      )}
+      {/* Top Products */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Menu Items</CardTitle>
+          <CardDescription>Highest rated menu products</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {stats.topProducts.length === 0 ? (
+            <p className="text-gray-500 text-center py-4">No products yet</p>
+          ) : (
+            <div className="space-y-4">
+              {stats.topProducts.map((product) => (
+                <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg bg-blue-50">
+                  <div>
+                    <p className="font-medium">{product.name}</p>
+                    <p className="text-sm text-gray-600">₹{product.price.toFixed(2)}</p>
+                  </div>
+                  <div className="text-right">
+                    {typeof product.averageRating === 'number' && !isNaN(product.averageRating) ? (
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                        <span className="text-sm">{product.averageRating.toFixed(1)}</span>
+                      </div>
+                    ) : null}
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full ${product.isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+                    >
+                      {product.isAvailable ? "Available" : "Unavailable"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              <Link href="/admin/products">
+                <Button variant="outline" className="w-full">
+                  Manage Products
+                </Button>
+              </Link>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
