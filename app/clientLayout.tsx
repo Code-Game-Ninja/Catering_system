@@ -83,7 +83,11 @@ export default function ClientLayout({
     }
     updateCartCount()
     window.addEventListener("storage", updateCartCount)
-    return () => window.removeEventListener("storage", updateCartCount)
+    window.addEventListener("cart-updated", updateCartCount)
+    return () => {
+      window.removeEventListener("storage", updateCartCount)
+      window.removeEventListener("cart-updated", updateCartCount)
+    }
   }, [])
 
   const handleLogout = async () => {
@@ -204,18 +208,6 @@ export default function ClientLayout({
                           <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                             <User className="h-4 w-4" />
                           </Button>
-                        </Link>
-                        <Link href="/cart">
-                          <div className="relative">
-                            <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                              <ShoppingCart className="h-4 w-4" />
-                              {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
-                                  {cartCount}
-                                </span>
-                              )}
-                            </Button>
-                          </div>
                         </Link>
                         <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]" onClick={handleLogout}>
                           <LogOut className="h-4 w-4" />

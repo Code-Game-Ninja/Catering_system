@@ -25,9 +25,11 @@ service cloud.firestore {
 
     // ORDERS
     match /orders/{orderId} {
-      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
-      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
-      allow read, update: if isRestaurantOwnerOfOrder();
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow read: if request.auth != null &&
+        resource.data.restaurantId != null &&
+        exists(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)) &&
+        get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId == request.auth.uid;
       allow read, write: if isAdmin();
     }
 

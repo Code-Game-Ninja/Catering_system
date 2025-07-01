@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { collection, doc, getDoc, setDoc, serverTimestamp, addDoc } from "firebase/firestore"
+import { collection, doc, getDoc, setDoc, serverTimestamp, addDoc, query, where, getDocs } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -188,11 +188,14 @@ export default function CartPage() {
         }
       }
       await sendEmail({ to: ownerEmail, ...(generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'restaurant_owner' })) })
-      // Fetch admin email (first admin found)
+      // Fetch admin email(s)
       let adminEmail = 'admin@example.com'
-      const usersSnapshot = await getDoc(doc(db, 'users', user.uid))
-      // If you have a way to query all admins, replace this with a query for admin users
-      // For now, use placeholder
+      const adminsQuery = query(collection(db, 'users'), where('role', '==', 'admin'))
+      const adminsSnapshot = await getDocs(adminsQuery)
+      if (!adminsSnapshot.empty) {
+        const adminDoc = adminsSnapshot.docs[0]
+        adminEmail = adminDoc.data().email || adminEmail
+      }
       await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'admin' })) })
     } catch (err: any) {
       log("error", "Failed to place order", { error: err.message, userId: user.uid })

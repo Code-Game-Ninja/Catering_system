@@ -11,6 +11,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { Search, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function MenuPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -80,10 +81,12 @@ export default function MenuPage() {
 
       localStorage.setItem("cart", JSON.stringify(currentCart))
       log("info", "Product added to cart from menu page", { productId: product.id })
-      setError("Item added to cart.")
+      // Fire a custom event to update cart count in ClientLayout
+      window.dispatchEvent(new Event("cart-updated"))
+      toast.success("Item added to cart.")
     } catch (e: any) {
       log("error", "Failed to add product to cart (localStorage error)", { productId: product.id, error: e.message })
-      setError("Failed to add product to cart. Please try again or clear your browser's local storage.")
+      toast.error("Failed to add product to cart. Please try again or clear your browser's local storage.")
     }
   }
 
