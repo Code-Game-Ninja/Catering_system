@@ -108,7 +108,7 @@ export default function ClientLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="bg-primary text-primary-foreground p-4 shadow-md">
+        <header className="bg-[var(--primary)] text-[var(--primary-foreground)] p-4 shadow-md">
           <nav className="container mx-auto">
             {/* Top row with logo and auth */}
             <div className="flex justify-between items-center mb-4">
@@ -194,18 +194,18 @@ export default function ClientLayout({
               <div className="flex items-center space-x-2">
                 {loadingAuth ? (
                   <div className="h-8 w-8 flex items-center justify-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-primary-foreground" />
+                    <Loader2 className="h-5 w-5 animate-spin text-[var(--primary-foreground)]" />
                   </div>
                 ) : user ? (
                   <>
                     <Link href="/profile">
-                      <Button variant="ghost" size="sm" className="text-primary-foreground">
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                         <User className="h-4 w-4" />
                       </Button>
                     </Link>
                     <Link href="/cart">
                       <div className="relative">
-                        <Button variant="ghost" size="sm" className="text-primary-foreground">
+                        <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                           <ShoppingCart className="h-4 w-4" />
                           {cartCount > 0 && (
                             <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
@@ -215,13 +215,13 @@ export default function ClientLayout({
                         </Button>
                       </div>
                     </Link>
-                    <Button variant="ghost" size="sm" className="text-primary-foreground" onClick={handleLogout}>
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]" onClick={handleLogout}>
                       <LogOut className="h-4 w-4" />
                     </Button>
                   </>
                 ) : (
                   <Link href="/login">
-                    <Button variant="ghost" size="sm" className="text-primary-foreground">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                       Login
                     </Button>
                   </Link>
@@ -233,22 +233,22 @@ export default function ClientLayout({
             <div className="hidden md:flex items-center justify-between">
               <div className="flex items-center space-x-1">
                 <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-primary-foreground">
+                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                     <Home className="mr-2 h-4 w-4" /> Home
                   </Button>
                 </Link>
                 <Link href="/menu">
-                  <Button variant="ghost" size="sm" className="text-primary-foreground">
+                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                     <BookText className="mr-2 h-4 w-4" /> Menu
                   </Button>
                 </Link>
                 <Link href="/about">
-                  <Button variant="ghost" size="sm" className="text-primary-foreground">
+                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                     About
                   </Button>
                 </Link>
                 <Link href="/contact">
-                  <Button variant="ghost" size="sm" className="text-primary-foreground">
+                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                     Contact
                   </Button>
                 </Link>
@@ -258,7 +258,7 @@ export default function ClientLayout({
                 <div className="flex items-center space-x-1">
                   <Link href="/cart">
                     <div className="relative">
-                      <Button variant="ghost" size="sm" className="text-primary-foreground">
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                         <ShoppingCart className="h-4 w-4" />
                         {cartCount > 0 && (
                           <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
@@ -269,20 +269,20 @@ export default function ClientLayout({
                     </div>
                   </Link>
                   <Link href="/my-orders">
-                    <Button variant="ghost" size="sm" className="text-primary-foreground">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                       <ListOrdered className="mr-2 h-4 w-4" /> Orders
                     </Button>
                   </Link>
                   {userProfile?.role === "restaurant_owner" && (
                     <Link href="/restaurant-owner">
-                      <Button variant="ghost" size="sm" className="text-primary-foreground">
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                         <Store className="mr-2 h-4 w-4" /> Restaurant Dashboard
                       </Button>
                     </Link>
                   )}
                   {userProfile?.role === "admin" && (
                     <Link href="/admin">
-                      <Button variant="ghost" size="sm" className="text-primary-foreground">
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
                         <Package className="mr-2 h-4 w-4" /> Admin
                       </Button>
                     </Link>

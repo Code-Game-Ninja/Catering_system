@@ -42,7 +42,7 @@ export default function LandingPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-16 md:py-24 bg-muted">
+      <section className="py-16 md:py-24 bg-[var(--muted)]">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="lg:order-1">
             <Image
@@ -55,18 +55,18 @@ export default function LandingPage() {
           </div>
           <div className="lg:order-2 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Story: A Culinary Journey from Rural India</h2>
-            <p className="text-lg text-muted-foreground mb-6">
+            <p className="text-lg text-[var(--muted-foreground)] mb-6">
               Catering was born from a passion to connect the vibrant culinary heritage of rural Indian towns with the
               global community. We saw an opportunity to empower local caterers, often overlooked, by providing a
               platform to showcase their authentic dishes and unique ingredients.
             </p>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-lg text-[var(--muted-foreground)] mb-8">
               Every dish on our menu carries the legacy of generations, prepared with traditional methods and the love
               of skilled hands. Our journey is about more than just food; it's about cultural exchange, sustainable
               livelihoods, and bringing genuine, heartwarming flavors to your home, no matter where you are.
             </p>
             <Link href="/profile">
-              <Button size="lg" variant="outline" className="bg-foreground text-background hover:bg-muted">
+              <Button size="lg" variant="outline" className="bg-[var(--foreground)] text-[var(--background)] hover:bg-[var(--muted)] animate-fade-in-up delay-400">
                 Meet Our Team
               </Button>
             </Link>
@@ -75,12 +75,12 @@ export default function LandingPage() {
       </section>
 
       {/* What We Provide Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-[var(--background)]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">What We Provide</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <Card className="p-6 flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <Utensils className="h-12 w-12 text-primary mb-4" />
+              <Utensils className="h-12 w-12 text-[var(--primary)] mb-4" />
               <CardTitle className="text-xl font-semibold mb-2">Diverse Culinary Delights</CardTitle>
               <CardDescription>
                 A wide array of traditional Indian dishes, from regional specialties to classic favorites, prepared with
@@ -88,7 +88,7 @@ export default function LandingPage() {
               </CardDescription>
             </Card>
             <Card className="p-6 flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <ChefHat className="h-12 w-12 text-primary mb-4" />
+              <ChefHat className="h-12 w-12 text-[var(--primary)] mb-4" />
               <CardTitle className="text-xl font-semibold mb-2">Expert Chefs & Quality Ingredients</CardTitle>
               <CardDescription>
                 Our dishes are crafted by experienced chefs using fresh, locally sourced ingredients to ensure
@@ -96,7 +96,7 @@ export default function LandingPage() {
               </CardDescription>
             </Card>
             <Card className="p-6 flex flex-col items-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-              <HeartHandshake className="h-12 w-12 text-primary mb-4" />
+              <HeartHandshake className="h-12 w-12 text-[var(--primary)] mb-4" />
               <CardTitle className="text-xl font-semibold mb-2">Customized Catering Solutions</CardTitle>
               <CardDescription>
                 Whether it's a small gathering or a grand event, we offer flexible catering packages tailored to your
@@ -108,7 +108,7 @@ export default function LandingPage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-16 md:py-24 bg-muted">
+      <section className="py-16 md:py-24 bg-[var(--muted)]">
         <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="lg:order-2">
             <Image
@@ -121,7 +121,7 @@ export default function LandingPage() {
           </div>
           <div className="lg:order-1 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Catering?</h2>
-            <ul className="space-y-4 text-lg text-muted-foreground mb-8 list-none pl-0">
+            <ul className="space-y-4 text-lg text-[var(--muted-foreground)] mb-8 list-none pl-0">
               <li className="flex items-start lg:items-center gap-3">
                 <Leaf className="h-6 w-6 text-green-600 flex-shrink-0" />
                 <span>
@@ -144,7 +144,7 @@ export default function LandingPage() {
               </li>
             </ul>
             <Link href="/menu">
-              <Button size="lg" className="bg-primary hover:bg-primary/90">
+              <Button size="lg" className="bg-[var(--primary)] hover:bg-[var(--primary)]/90">
                 Explore Our Offerings
               </Button>
             </Link>
@@ -155,27 +155,27 @@ export default function LandingPage() {
       {/* Testimonials Section */}
       {/* Removed the testimonials background image and replaced with a neutral background color */}
       <section
-        className="relative py-16 md:py-24 bg-muted text-foreground text-center"
+        className="relative py-16 md:py-24 bg-[var(--muted)] text-[var(--foreground)] text-center"
       >
-        <div className="absolute inset-0 bg-background/60" />
+        <div className="absolute inset-0 bg-[var(--background)]/60" />
         <div className="relative z-10 container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">What Our Customers Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
+            <Card className="p-6 bg-[var(--background)]/10 backdrop-blur-sm text-[var(--foreground)] shadow-lg">
               <p className="italic mb-4">
                 "The food was absolutely incredible! It felt like a true taste of India, delivered right to my door. The
                 biryani was a masterpiece."
               </p>
               <p className="font-semibold">- Sarah L.</p>
             </Card>
-            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
+            <Card className="p-6 bg-[var(--background)]/10 backdrop-blur-sm text-[var(--foreground)] shadow-lg">
               <p className="italic mb-4">
                 "I ordered for a family gathering, and everyone was raving about the authentic flavors. It's amazing to
                 support such a wonderful initiative."
               </p>
               <p className="font-semibold">- David K.</p>
             </Card>
-            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
+            <Card className="p-6 bg-[var(--background)]/10 backdrop-blur-sm text-[var(--foreground)] shadow-lg">
               <p className="italic mb-4">
                 "Beyond delicious! The quality and freshness were evident in every bite. This is my new go-to for
                 catering."
@@ -187,13 +187,13 @@ export default function LandingPage() {
       </section>
 
       {/* Gallery Preview Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-[var(--background)]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">Gallery Preview</h2>
           <div className="flex flex-wrap justify-center gap-4 mb-6">
             <div className="flex flex-col items-center">
-              <Image src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWFzYWxhJTIwRG9zYXxlbnwwfHwwfHx8MA%3D%3D" alt="Masala Dosa" width={220} height={150} className="rounded-lg shadow-md object-cover" />
-              <span className="mt-2 font-medium">Masala Dosa</span>
+              <Image src="https://media.istockphoto.com/id/1430753492/photo/indian-sweet-jalebi.webp?a=1&b=1&s=612x612&w=0&k=20&c=aO_1E0NcBstoEmqR8Bpw_eJpMT16eFUTcTdxHrOeHuM=" alt="Jalebi" width={220} height={150} className="rounded-lg shadow-md object-cover" />
+              <span className="mt-2 font-medium">Jalebi</span>
             </div>
             <div className="flex flex-col items-center">
               <Image src="https://media.istockphoto.com/id/1455306682/photo/kachalu-chaat.webp?a=1&b=1&s=612x612&w=0&k=20&c=nE03ItYFZ3lUyvrLPpmKa0gG-FM8pFQPSHh0ZWW6p6w=" alt="Paneer Tikka" width={220} height={150} className="rounded-lg shadow-md object-cover" />
@@ -209,7 +209,7 @@ export default function LandingPage() {
             </div>
           </div>
           <Link href="/food-gallery">
-            <Button size="lg" variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button size="lg" variant="outline" className="bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90">
               See all photos
             </Button>
           </Link>
@@ -217,14 +217,14 @@ export default function LandingPage() {
       </section>
 
       {/* Call to Action Section (already exists, but keeping for completeness) */}
-      <section className="py-16 md:py-24 bg-primary text-primary-foreground text-center">
+      <section className="py-16 md:py-24 bg-[var(--primary)] text-[var(--primary-foreground)] text-center">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Experience Authentic Flavors?</h2>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
             Explore our diverse menu and let us cater your next event with unforgettable Indian cuisine.
           </p>
           <Link href="/menu">
-            <Button size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+            <Button size="lg" className="bg-[var(--primary-foreground)] text-[var(--primary)] hover:bg-[var(--primary-foreground)]/90">
               Browse Our Full Menu
             </Button>
           </Link>

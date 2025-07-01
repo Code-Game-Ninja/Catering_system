@@ -271,8 +271,8 @@ export default function RestaurantOwnerProductsPage() {
     setIsEditing(true)
     setCurrentProduct({
       ...product,
-      ingredients: product.ingredients?.join(", ") || "",
-      allergens: product.allergens?.join(", ") || "",
+      ingredients: product.ingredients || [],
+      allergens: product.allergens || [],
     })
     setImageFile(null)
     log("info", "Restaurant owner editing product", { productId: product.id })
@@ -343,7 +343,7 @@ export default function RestaurantOwnerProductsPage() {
         {userRestaurantName ? `${userRestaurantName}'s Menu Management` : "Your Menu Management"}
       </h1>
 
-      <div className="mb-10 p-6 border rounded-lg shadow-md bg-card">
+      <div className="mb-10 p-6 border rounded-lg shadow-md bg-[var(--card)]">
         <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
           {isEditing ? <Edit className="h-6 w-6" /> : <Plus className="h-6 w-6" />}
           {isEditing ? "Edit Product" : "Add New Product"}
@@ -456,7 +456,7 @@ export default function RestaurantOwnerProductsPage() {
                 onCheckedChange={(checked) => setCurrentProduct((prev) => ({ ...prev, isAvailable: Boolean(checked) }))}
               />
               <Label htmlFor="isAvailable" className="flex items-center gap-1">
-                <Info className="h-4 w-4 text-muted-foreground" /> Available
+                <Info className="h-4 w-4 text-[var(--muted-foreground)]" /> Available
               </Label>
             </div>
             <div className="flex items-center space-x-2">

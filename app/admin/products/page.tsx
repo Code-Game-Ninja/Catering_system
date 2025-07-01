@@ -29,7 +29,7 @@ export default function AdminProductsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState(false)
-  const [currentProduct, setCurrentProduct] = useState<Partial<Product>>({
+  const [currentProduct, setCurrentProduct] = useState<Partial<Product> & { ingredients?: string | string[]; allergens?: string | string[] }>({
     name: "",
     description: "",
     price: 0,
@@ -39,8 +39,8 @@ export default function AdminProductsPage() {
     restaurantName: "",
     isAvailable: true,
     preparationTime: 0,
-    ingredients: [],
-    allergens: [],
+    ingredients: "",
+    allergens: "",
     isVegetarian: false,
     isVegan: false,
     spiceLevel: "mild",
@@ -226,10 +226,10 @@ export default function AdminProductsPage() {
       ...currentProduct,
       ingredients: Array.isArray(currentProduct.ingredients)
         ? currentProduct.ingredients
-        : (typeof currentProduct.ingredients === 'string' ? currentProduct.ingredients.split(',').map((i: string) => i.trim()).filter(Boolean) : (!currentProduct.ingredients ? [] : String(currentProduct.ingredients).split(',').map((i: string) => i.trim()).filter(Boolean))),
+        : (typeof currentProduct.ingredients === 'string' ? currentProduct.ingredients.split(',').map((i: string) => i.trim()).filter(Boolean) : []),
       allergens: Array.isArray(currentProduct.allergens)
         ? currentProduct.allergens
-        : (typeof currentProduct.allergens === 'string' ? currentProduct.allergens.split(',').map((i: string) => i.trim()).filter(Boolean) : (!currentProduct.allergens ? [] : String(currentProduct.allergens).split(',').map((i: string) => i.trim()).filter(Boolean))),
+        : (typeof currentProduct.allergens === 'string' ? currentProduct.allergens.split(',').map((i: string) => i.trim()).filter(Boolean) : []),
       imageUrl: imageUrl || currentProduct.imageUrl || "/placeholder.svg?height=300&width=400",
       updatedAt: serverTimestamp(),
     }
@@ -296,8 +296,8 @@ export default function AdminProductsPage() {
       restaurantName: "",
       isAvailable: true,
       preparationTime: 0,
-      ingredients: [],
-      allergens: [],
+      ingredients: "",
+      allergens: "",
       isVegetarian: false,
       isVegan: false,
       spiceLevel: "mild",

@@ -254,20 +254,12 @@ export default function RestaurantOwnerOrdersPage() {
   }
 
   const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-accent text-accent-foreground border-accent"
-      case "processing":
-        return "bg-primary text-primary-foreground border-primary"
-      case "delivered":
-        return "bg-secondary text-secondary-foreground border-secondary"
-      case "completed":
-        return "bg-muted text-muted-foreground border-muted"
-      case "cancelled":
-        return "bg-destructive text-destructive-foreground border-destructive"
-      default:
-        return "bg-card text-foreground border-border"
-    }
+    if (status === "pending") return "bg-[var(--accent)] text-[var(--accent-foreground)] border-[var(--accent)]"
+    if (status === "processing") return "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+    if (status === "delivered") return "bg-[var(--secondary)] text-[var(--secondary-foreground)] border-[var(--secondary)]"
+    if (status === "completed") return "bg-[var(--muted)] text-[var(--muted-foreground)] border-[var(--muted)]"
+    if (status === "cancelled") return "bg-[var(--destructive)] text-[var(--destructive-foreground)] border-[var(--destructive)]"
+    return "bg-[var(--card)] text-[var(--foreground)] border-[var(--border)]"
   }
 
   if (loading || userRole === null || restaurantId === null) {

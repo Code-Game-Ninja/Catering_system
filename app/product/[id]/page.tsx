@@ -225,7 +225,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <Store className="h-5 w-5" /> {restaurant.name}
                 </Link>
               )}
-              <p className="text-2xl font-semibold text-primary mb-4">${product.price.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-[var(--primary)] mb-4">${product.price.toFixed(2)}</p>
               <p className="text-gray-700 mb-4">{product.description}</p>
 
               <div className="flex flex-wrap gap-2 mb-4">
@@ -302,19 +302,19 @@ export default function ProductPage({ params }: ProductPageProps) {
             <p className="text-gray-700 mb-4">{restaurant.description}</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <MapPin className="h-4 w-4 text-[var(--muted-foreground)]" />
                 <span>{restaurant.address}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
+                <Phone className="h-4 w-4 text-[var(--muted-foreground)]" />
                 <span>{restaurant.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
+                <Mail className="h-4 w-4 text-[var(--muted-foreground)]" />
                 <span>{restaurant.email}</span>
               </div>
               <div className="flex items-center gap-2">
-                <UtensilsCrossed className="h-4 w-4 text-muted-foreground" />
+                <UtensilsCrossed className="h-4 w-4 text-[var(--muted-foreground)]" />
                 <span>{restaurant.cuisine.join(", ")}</span>
               </div>
             </div>

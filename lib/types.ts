@@ -25,8 +25,8 @@ export interface Product {
   restaurantName: string // Name of the restaurant selling this product
   isAvailable: boolean // Whether the product is currently available
   preparationTime: number // Estimated preparation time in minutes
-  ingredients: string[] // List of ingredients
-  allergens: string[] // List of common allergens
+  ingredients: string | string[] // List of ingredients or comma-separated string
+  allergens: string | string[] // List of common allergens or comma-separated string
   isVegetarian: boolean
   isVegan: boolean
   spiceLevel: "mild" | "medium" | "hot" | "very-hot"
@@ -91,6 +91,7 @@ export interface Review {
   rating: number // 1-5 stars
   comment: string
   createdAt: Date | Timestamp
+  helpful: number // Number of helpful votes
 }
 
 // Email notification types for order events

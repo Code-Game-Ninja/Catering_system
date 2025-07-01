@@ -275,7 +275,7 @@ export default function RestaurantOwnerDashboard() {
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Store className="h-8 w-8 text-primary" />
+              <Store className="h-8 w-8 text-[var(--primary)]" />
               <div>
                 <h3 className="text-lg font-semibold">Restaurant Status</h3>
                 <p className="text-sm text-gray-600">
