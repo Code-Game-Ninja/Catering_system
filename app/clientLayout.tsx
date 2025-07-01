@@ -108,101 +108,155 @@ export default function ClientLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <header className="bg-[var(--primary)] text-[var(--primary-foreground)] p-4 shadow-md">
-          <nav className="container mx-auto">
-            {/* Top row with logo and auth */}
-            <div className="flex justify-between items-center mb-4">
-              <Link href="/" className="text-2xl font-bold">
-                Catering
-              </Link>
-              <div className="md:hidden">
-                <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-                  <SheetTrigger asChild>
-                    <button className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-white">
-                      <Menu className="h-6 w-6" />
-                      <span className="sr-only">Open navigation menu</span>
-                    </button>
-                  </SheetTrigger>
-                  <SheetContent side="left" className="bg-white text-gray-900 border-r border-gray-200 shadow-lg">
-                    <SheetHeader>
-                      <SheetTitle>Menu</SheetTitle>
-                    </SheetHeader>
-                    <div className="flex flex-col gap-4 mt-6">
-                      <Link href="/" onClick={() => setMobileNavOpen(false)}>
-                        <Button variant="ghost" size="lg" className="w-full justify-start">
-                          Home
-                        </Button>
-                      </Link>
-                      <Link href="/menu" onClick={() => setMobileNavOpen(false)}>
-                        <Button variant="ghost" size="lg" className="w-full justify-start">
-                          Menu
-                        </Button>
-                      </Link>
-                      <Link href="/about" onClick={() => setMobileNavOpen(false)}>
-                        <Button variant="ghost" size="lg" className="w-full justify-start">
-                          About
-                        </Button>
-                      </Link>
-                      <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
-                        <Button variant="ghost" size="lg" className="w-full justify-start">
-                          Contact
-                        </Button>
-                      </Link>
-                      {user && (
-                        <>
-                          <Link href="/cart" onClick={() => setMobileNavOpen(false)}>
-                            <div className="relative w-full">
+        <div className="bg-white/90 rounded-xl shadow-lg border mx-auto mt-4 max-w-7xl">
+          <header className="bg-[var(--primary)] text-[var(--primary-foreground)] p-4 shadow-md">
+            <nav className="container mx-auto">
+              {/* Top row with logo and auth */}
+              <div className="flex justify-between items-center mb-4">
+                <Link href="/" className="text-2xl font-bold">
+                  Catering
+                </Link>
+                <div className="md:hidden">
+                  <Sheet open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+                    <SheetTrigger asChild>
+                      <button className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-white">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Open navigation menu</span>
+                      </button>
+                    </SheetTrigger>
+                    <SheetContent side="left" className="bg-white text-gray-900 border-r border-gray-200 shadow-lg">
+                      <SheetHeader>
+                        <SheetTitle>Menu</SheetTitle>
+                      </SheetHeader>
+                      <div className="flex flex-col gap-4 mt-6">
+                        <Link href="/" onClick={() => setMobileNavOpen(false)}>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            Home
+                          </Button>
+                        </Link>
+                        <Link href="/menu" onClick={() => setMobileNavOpen(false)}>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            Menu
+                          </Button>
+                        </Link>
+                        <Link href="/about" onClick={() => setMobileNavOpen(false)}>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            About
+                          </Button>
+                        </Link>
+                        <Link href="/contact" onClick={() => setMobileNavOpen(false)}>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            Contact
+                          </Button>
+                        </Link>
+                        {user && (
+                          <>
+                            <Link href="/cart" onClick={() => setMobileNavOpen(false)}>
+                              <div className="relative w-full">
+                                <Button variant="ghost" size="lg" className="w-full justify-start">
+                                  Cart
+                                  {cartCount > 0 && (
+                                    <span className="absolute top-2 right-4 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
+                                      {cartCount}
+                                    </span>
+                                  )}
+                                </Button>
+                              </div>
+                            </Link>
+                            <Link href="/my-orders" onClick={() => setMobileNavOpen(false)}>
                               <Button variant="ghost" size="lg" className="w-full justify-start">
-                                Cart
-                                {cartCount > 0 && (
-                                  <span className="absolute top-2 right-4 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
-                                    {cartCount}
-                                  </span>
-                                )}
-                              </Button>
-                            </div>
-                          </Link>
-                          <Link href="/my-orders" onClick={() => setMobileNavOpen(false)}>
-                            <Button variant="ghost" size="lg" className="w-full justify-start">
-                              Orders
-                            </Button>
-                          </Link>
-                          {userProfile?.role === "restaurant_owner" && (
-                            <Link href="/restaurant-owner" onClick={() => setMobileNavOpen(false)}>
-                              <Button variant="ghost" size="lg" className="w-full justify-start">
-                                Restaurant Dashboard
+                                Orders
                               </Button>
                             </Link>
-                          )}
-                          {userProfile?.role === "admin" && (
-                            <Link href="/admin" onClick={() => setMobileNavOpen(false)}>
-                              <Button variant="ghost" size="lg" className="w-full justify-start">
-                                Admin
-                  </Button>
-                            </Link>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-              {/* Desktop Rotating Ads/Announcements Section */}
-              <div className="hidden md:flex flex-1 max-w-md mx-8 items-center justify-center">
-                <RotatingAds />
+                            {userProfile?.role === "restaurant_owner" && (
+                              <Link href="/restaurant-owner" onClick={() => setMobileNavOpen(false)}>
+                                <Button variant="ghost" size="lg" className="w-full justify-start">
+                                  Restaurant Dashboard
+                                </Button>
+                              </Link>
+                            )}
+                            {userProfile?.role === "admin" && (
+                              <Link href="/admin" onClick={() => setMobileNavOpen(false)}>
+                                <Button variant="ghost" size="lg" className="w-full justify-start">
+                                  Admin
+                                </Button>
+                              </Link>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </SheetContent>
+                  </Sheet>
                 </div>
-              <div className="flex items-center space-x-2">
-                {loadingAuth ? (
-                  <div className="h-8 w-8 flex items-center justify-center">
-                    <Loader2 className="h-5 w-5 animate-spin text-[var(--primary-foreground)]" />
-                  </div>
-                ) : user ? (
-                  <>
-                    <Link href="/profile">
+                {/* Desktop Rotating Ads/Announcements Section */}
+                <div className="hidden md:flex flex-1 max-w-md mx-8 items-center justify-center">
+                  <RotatingAds />
+                </div>
+                <div className="flex items-center space-x-2">
+                  {loadingAuth ? (
+                    <div className="h-8 w-8 flex items-center justify-center">
+                      <Loader2 className="h-5 w-5 animate-spin text-[var(--primary-foreground)]" />
+                    </div>
+                  ) : user ? (
+                    <>
+                      <Link href="/profile">
+                        <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                          <User className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                      <Link href="/cart">
+                        <div className="relative">
+                          <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                            <ShoppingCart className="h-4 w-4" />
+                            {cartCount > 0 && (
+                              <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
+                                {cartCount}
+                              </span>
+                            )}
+                          </Button>
+                        </div>
+                      </Link>
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]" onClick={handleLogout}>
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </>
+                  ) : (
+                    <Link href="/login">
                       <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                        <User className="h-4 w-4" />
+                        Login
                       </Button>
                     </Link>
+                  )}
+                </div>
+              </div>
+
+              {/* Desktop Navigation Links */}
+              <div className="hidden md:flex items-center justify-between">
+                <div className="flex items-center space-x-1">
+                  <Link href="/">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                      <Home className="mr-2 h-4 w-4" /> Home
+                    </Button>
+                  </Link>
+                  <Link href="/menu">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                      <BookText className="mr-2 h-4 w-4" /> Menu
+                    </Button>
+                  </Link>
+                  <Link href="/about">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                      About
+                    </Button>
+                  </Link>
+                  <Link href="/contact">
+                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                      Contact
+                    </Button>
+                  </Link>
+                </div>
+
+                {user && (
+                  <div className="flex items-center space-x-1">
                     <Link href="/cart">
                       <div className="relative">
                         <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
@@ -215,83 +269,31 @@ export default function ClientLayout({
                         </Button>
                       </div>
                     </Link>
-                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]" onClick={handleLogout}>
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </>
-                ) : (
-                  <Link href="/login">
-                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                      Login
-                    </Button>
-                  </Link>
+                    <Link href="/my-orders">
+                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                        <ListOrdered className="mr-2 h-4 w-4" /> Orders
+                      </Button>
+                    </Link>
+                    {userProfile?.role === "restaurant_owner" && (
+                      <Link href="/restaurant-owner">
+                        <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                          <Store className="mr-2 h-4 w-4" /> Restaurant Dashboard
+                        </Button>
+                      </Link>
+                    )}
+                    {userProfile?.role === "admin" && (
+                      <Link href="/admin">
+                        <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
+                          <Package className="mr-2 h-4 w-4" /> Admin
+                        </Button>
+                      </Link>
+                    )}
+                  </div>
                 )}
               </div>
-            </div>
-
-            {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center justify-between">
-              <div className="flex items-center space-x-1">
-                <Link href="/">
-                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                    <Home className="mr-2 h-4 w-4" /> Home
-                  </Button>
-                </Link>
-                <Link href="/menu">
-                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                    <BookText className="mr-2 h-4 w-4" /> Menu
-                  </Button>
-                </Link>
-                <Link href="/about">
-                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                    About
-                  </Button>
-                </Link>
-                <Link href="/contact">
-                  <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                    Contact
-                  </Button>
-                </Link>
-              </div>
-
-              {user && (
-                <div className="flex items-center space-x-1">
-                  <Link href="/cart">
-                    <div className="relative">
-                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                        <ShoppingCart className="h-4 w-4" />
-                        {cartCount > 0 && (
-                          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
-                            {cartCount}
-                          </span>
-                        )}
-                      </Button>
-                    </div>
-                  </Link>
-                  <Link href="/my-orders">
-                    <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                      <ListOrdered className="mr-2 h-4 w-4" /> Orders
-                    </Button>
-                  </Link>
-                  {userProfile?.role === "restaurant_owner" && (
-                    <Link href="/restaurant-owner">
-                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                        <Store className="mr-2 h-4 w-4" /> Restaurant Dashboard
-                      </Button>
-                    </Link>
-                  )}
-                  {userProfile?.role === "admin" && (
-                    <Link href="/admin">
-                      <Button variant="ghost" size="sm" className="text-[var(--primary-foreground)]">
-                        <Package className="mr-2 h-4 w-4" /> Admin
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-          </nav>
-        </header>
+            </nav>
+          </header>
+        </div>
 
         <AnimatePresence mode="wait">
           <motion.main

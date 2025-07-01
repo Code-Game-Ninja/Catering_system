@@ -10,9 +10,10 @@ export default function LoginPage() {
   const [registrationType, setRegistrationType] = useState<"user" | "restaurant_owner">("user")
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
-      {showRegister ? (
-        <div className="flex flex-col items-center gap-4">
+    <div className="relative flex min-h-[calc(100vh-64px)] items-center justify-center bg-gray-50 px-4 py-12 dark:bg-gray-950">
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1581455988162-f6040daa6923?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8TG9naW4lMjB3aXRoJTIwZm9vZHxlbnwwfHwwfHx8MA%3D%3D')] bg-cover bg-center opacity-40 z-0" />
+      <div className="relative z-10 w-full flex flex-col items-center gap-4">
+        {showRegister ? (
           <Card className="w-full max-w-md bg-white rounded-xl shadow-lg">
             <CardContent className="pt-6">
               <div className="flex justify-center gap-4 mb-6">
@@ -39,9 +40,7 @@ export default function LoginPage() {
               </Button>
             </CardContent>
           </Card>
-        </div>
-      ) : (
-        <div className="flex flex-col items-center gap-4">
+        ) : (
           <Card className="w-full max-w-md bg-white rounded-xl shadow-lg">
             <CardContent className="pt-6">
               <AuthForm />
@@ -50,8 +49,8 @@ export default function LoginPage() {
               </Button>
             </CardContent>
           </Card>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
