@@ -390,7 +390,7 @@ export default function RestaurantOwnerOrdersPage() {
                           {order.userEmail}
                         </div>
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />${order.totalAmount.toFixed(2)}
+                          <DollarSign className="h-4 w-4" />₹{order.totalAmount.toFixed(2)}
                         </div>
                       </div>
                     </div>
@@ -490,7 +490,7 @@ export default function RestaurantOwnerOrdersPage() {
                           <div className="flex-grow">
                             <p className="font-medium">{item.name}</p>
                             <p className="text-sm text-gray-600">
-                              ${item.price.toFixed(2)} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
+                              ₹{item.price.toFixed(2)} × {item.quantity} = ₹{(item.price * item.quantity).toFixed(2)}
                             </p>
                           </div>
                         </div>

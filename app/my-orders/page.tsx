@@ -130,13 +130,13 @@ export default function MyOrdersPage() {
                       <div>
                         <p className="font-medium">{item.name}</p>
                         <p className="text-sm text-gray-600">
-                          ${item.price.toFixed(2)} x {item.quantity}
+                          ₹{item.price.toFixed(2)} x {item.quantity}
                         </p>
                       </div>
                     </div>
                   ))}
                 </div>
-                <div className="text-right text-lg font-bold mt-4">Total: ${order.totalAmount.toFixed(2)}</div>
+                <div className="text-right text-lg font-bold mt-4">Total: ₹{order.totalAmount.toFixed(2)}</div>
               </CardContent>
             </Card>
           ))}

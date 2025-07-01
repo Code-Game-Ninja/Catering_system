@@ -60,7 +60,7 @@ export default function RestaurantFeeHistoryPage() {
               <tbody>
                 {feeHistory.map(fee => (
                   <tr key={fee.id} className="border-t">
-                    <td className="p-2">${fee.amount.toFixed(2)}</td>
+                    <td className="p-2">₹{fee.amount.toFixed(2)}</td>
                     <td className="p-2">{fee.paidAt?.toDate?.().toLocaleString?.() || "-"}</td>
                     <td className="p-2">{fee.ordersCovered?.length || 0}</td>
                   </tr>

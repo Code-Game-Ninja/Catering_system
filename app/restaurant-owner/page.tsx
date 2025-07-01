@@ -314,7 +314,7 @@ export default function RestaurantOwnerDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${stats.totalRevenue.toFixed(2)}</div>
+            <div className="text-2xl font-bold">₹{stats.totalRevenue.toFixed(2)}</div>
             <p className="text-xs text-muted-foreground">From completed orders</p>
           </CardContent>
         </Card>
@@ -352,7 +352,7 @@ export default function RestaurantOwnerDashboard() {
           <div className="flex flex-col gap-4">
             <div>
               <span className="font-medium">Unpaid Platform Fee: </span>
-              <span className="text-lg">${unpaidFee.toFixed(2)}</span>
+              <span className="text-lg">₹{unpaidFee.toFixed(2)}</span>
             </div>
             <Button onClick={handlePayFee} disabled={paying || unpaidFee <= 0}>
               {paying ? "Processing..." : feePaid ? "Fee Paid" : "Pay Platform Fee"}
@@ -436,7 +436,7 @@ export default function RestaurantOwnerDashboard() {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">${order.totalAmount.toFixed(2)}</p>
+                      <p className="font-medium">₹{order.totalAmount.toFixed(2)}</p>
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
                           order.status === "delivered"
@@ -482,7 +482,7 @@ export default function RestaurantOwnerDashboard() {
                   <div key={product.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">{product.name}</p>
-                      <p className="text-sm text-gray-600">${product.price.toFixed(2)}</p>
+                      <p className="text-sm text-gray-600">₹{product.price.toFixed(2)}</p>
                     </div>
                     <div className="text-right">
                       {typeof product.averageRating === 'number' && !isNaN(product.averageRating) ? (

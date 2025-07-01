@@ -253,7 +253,7 @@ export default function CartPage() {
                       <div className="flex-1">
                         <h3 className="font-semibold">{item.name}</h3>
                         <p className="text-sm text-gray-500">{item.restaurantName}</p>
-                        <p className="text-sm font-medium">${item.price.toFixed(2)}</p>
+                        <p className="text-sm font-medium">₹{item.price.toFixed(2)}</p>
                       </div>
                       <div className="flex items-center gap-2 flex-wrap justify-end sm:justify-start">
                         <Button
@@ -287,7 +287,7 @@ export default function CartPage() {
                 </div>
                 <div className="mt-6 flex justify-between items-center font-bold text-lg">
                   <span>Total:</span>
-                  <span>${calculateTotal()}</span>
+                  <span>₹{calculateTotal()}</span>
                 </div>
               </CardContent>
             </Card>
