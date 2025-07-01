@@ -349,6 +349,9 @@ export default function RestaurantOwnerDashboard() {
             <Button onClick={handlePayFee} disabled={paying || unpaidFee <= 0}>
               {paying ? "Processing..." : feePaid ? "Fee Paid" : "Pay Platform Fee"}
             </Button>
+            <Link href="/restaurant-owner/fees-history">
+              <Button variant="outline" className="w-full mt-2">View Fee Payment History</Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
