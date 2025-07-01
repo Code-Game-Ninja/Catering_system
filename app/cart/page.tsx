@@ -96,8 +96,8 @@ export default function CartPage() {
     const updatedCart = cart.filter((item) => item.productId !== productId)
     updateLocalStorageCart(updatedCart)
     toast({
-      title: "Item Removed",
-      description: "Product removed from your cart.",
+      title: "🗑️ Removed",
+      description: "Item removed.",
       variant: "default",
     })
   }

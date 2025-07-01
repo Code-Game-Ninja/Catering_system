@@ -83,8 +83,8 @@ export default function MenuPage() {
       localStorage.setItem("cart", JSON.stringify(currentCart))
       log("info", "Product added to cart from menu page", { productId: product.id })
       toast({
-        title: "Added to Cart!",
-        description: `${product.name} has been added to your cart.`,
+        title: "🛒 Added to Cart!",
+        description: "Item added.",
         variant: "default",
       })
     } catch (e: any) {

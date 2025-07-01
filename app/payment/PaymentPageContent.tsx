@@ -23,8 +23,8 @@ export default function PaymentPageContent() {
     e.preventDefault()
     if (selected !== "cod") {
       toast({
-        title: "Coming Soon!",
-        description: "This payment method is under construction. Please select COD.",
+        title: "🚧 Coming Soon!",
+        description: "Select COD. Other methods coming soon!",
         variant: "destructive",
       })
       return
@@ -32,8 +32,8 @@ export default function PaymentPageContent() {
     setSubmitting(true)
     setTimeout(() => {
       toast({
-        title: "Payment Confirmed!",
-        description: `Order #${orderId?.substring(0, 8)} will be paid by Cash on Delivery. Thank you!`,
+        title: "💸 Payment Confirmed!",
+        description: `Order #${orderId?.substring(0, 8)} set for COD. Thank you!`,
         variant: "default",
       })
       router.push("/my-orders")

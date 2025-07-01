@@ -75,8 +75,8 @@ export default function ProfilePage() {
     if (!user) {
       setError("User not authenticated.")
       toast({
-        title: "Authentication Error",
-        description: "User not authenticated. Please log in.",
+        title: "🔒 Auth Error",
+        description: "Please log in.",
         variant: "destructive",
       })
       setIsSubmitting(false)
@@ -94,16 +94,16 @@ export default function ProfilePage() {
       })
       log("info", "User profile updated successfully", { uid: user.uid })
       toast({
-        title: "Profile Updated!",
-        description: "Your profile information has been saved.",
+        title: "✅ Profile Saved!",
+        description: "Profile updated.",
         variant: "default",
       })
     } catch (err: any) {
       log("error", "Failed to update user profile", { error: err.message, uid: user.uid })
       setError("Failed to update profile. Please try again.")
       toast({
-        title: "Update Failed",
-        description: "Failed to update profile. Please try again.",
+        title: "❌ Update Failed",
+        description: "Could not update profile.",
         variant: "destructive",
       })
       console.error("Error updating profile:", err)
@@ -116,8 +116,8 @@ export default function ProfilePage() {
     if (!user) {
       setError("User not authenticated.")
       toast({
-        title: "Authentication Error",
-        description: "User not authenticated. Please log in.",
+        title: "🔒 Auth Error",
+        description: "Please log in.",
         variant: "destructive",
       })
       return
@@ -134,8 +134,8 @@ export default function ProfilePage() {
         setRole("restaurant_owner")
         log("info", "User role updated to restaurant_owner", { uid: user.uid })
         toast({
-          title: "Role Updated!",
-          description: "You are now a restaurant owner. Redirecting to setup.",
+          title: "👨‍🍳 Role Updated!",
+          description: "Now a restaurant owner.",
           variant: "default",
         })
         router.push("/restaurant-owner/setup")
@@ -143,8 +143,8 @@ export default function ProfilePage() {
         log("error", "Failed to update user role to restaurant_owner", { error: err.message, uid: user.uid })
         setError("Failed to update role. Please try again.")
         toast({
-          title: "Role Update Failed",
-          description: "Failed to update role. Please try again.",
+          title: "❌ Role Update Failed",
+          description: "Could not update role.",
           variant: "destructive",
         })
         console.error("Error updating role:", err)

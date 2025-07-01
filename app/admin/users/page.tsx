@@ -66,8 +66,8 @@ export default function AdminUsersPage() {
           } else {
             log("warn", "Unauthorized access attempt to admin users page", { uid: user.uid })
             toast({
-              title: "Access Denied",
-              description: "You are not authorized to view this page.",
+              title: "⛔ Access Denied",
+              description: "Not authorized to view this page.",
               variant: "destructive",
             })
             router.push("/")
@@ -109,8 +109,8 @@ export default function AdminUsersPage() {
       setError("Failed to load users. Please try again later.")
       console.error("Error fetching users:", err)
       toast({
-        title: "Error",
-        description: "Failed to load users. " + err.message,
+        title: "❌ Error",
+        description: `Could not load users. ${err.message}`,
         variant: "destructive",
       })
       setLoading(false)
@@ -124,14 +124,14 @@ export default function AdminUsersPage() {
       setUsers((prevUsers) => prevUsers.map((user) => (user.uid === userId ? { ...user, role: newRole } : user)))
       log("info", `User role updated: ${userId} to ${newRole}`)
       toast({
-        title: "Success",
-        description: `User role updated to ${newRole}.`,
+        title: "✅ Role Updated!",
+        description: `Role set to ${newRole}.`,
       })
     } catch (err: any) {
       log("error", `Failed to update user role: ${userId} to ${newRole}`, { error: err.message })
       toast({
-        title: "Error",
-        description: `Failed to update user role: ${err.message}`,
+        title: "❌ Update Failed",
+        description: `Could not update role. ${err.message}`,
         variant: "destructive",
       })
       console.error("Error updating user role:", err)
@@ -145,14 +145,14 @@ export default function AdminUsersPage() {
       setUsers((prevUsers) => prevUsers.filter((user) => user.uid !== userId))
       log("info", `User deleted: ${userId}`)
       toast({
-        title: "Success",
-        description: "User deleted successfully.",
+        title: "🗑️ Deleted!",
+        description: "User deleted.",
       })
     } catch (err: any) {
       log("error", `Failed to delete user: ${userId}`, { error: err.message })
       toast({
-        title: "Error",
-        description: `Failed to delete user: ${err.message}`,
+        title: "❌ Delete Failed",
+        description: `Could not delete user. ${err.message}`,
         variant: "destructive",
       })
       console.error("Error deleting user:", err)

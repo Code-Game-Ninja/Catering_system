@@ -83,8 +83,8 @@ export function ProductCard({ product, onAddToCart, isAdmin = false, onEdit, onD
             </Button>
           </>
         ) : (
-          <Button className="w-full" onClick={handleAddToCartClick}>
-            <ShoppingCart className="mr-2 h-4 w-4" />
+          <Button className="w-full active:scale-95 transition-transform duration-100 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" onClick={handleAddToCartClick} data-testid="add-to-cart-mobile">
+            <ShoppingCart className="mr-2 h-5 w-5" />
             Add to Cart
           </Button>
         )}

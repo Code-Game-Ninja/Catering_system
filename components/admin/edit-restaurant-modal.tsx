@@ -87,8 +87,8 @@ export function EditRestaurantModal({ isOpen, onClose, restaurant, onSave }: Edi
       onSave(updatedRestaurant)
       log("info", "Restaurant updated successfully", { restaurantId: restaurant.id, updatedData })
       toast({
-        title: "Restaurant Updated!",
-        description: "Restaurant details have been updated successfully.",
+        title: "✅ Updated!",
+        description: "Restaurant details saved.",
         variant: "default",
       })
       onClose()
@@ -96,8 +96,8 @@ export function EditRestaurantModal({ isOpen, onClose, restaurant, onSave }: Edi
       log("error", "Failed to update restaurant", { restaurantId: restaurant.id, error: err.message })
       setError("Failed to update restaurant. Please try again.")
       toast({
-        title: "Update Failed",
-        description: "Failed to update restaurant. Please try again.",
+        title: "❌ Update Failed",
+        description: "Could not update. Try again.",
         variant: "destructive",
       })
     } finally {

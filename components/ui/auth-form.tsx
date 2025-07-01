@@ -44,7 +44,7 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
         if (password !== confirmPassword) {
           setError("Passwords do not match.")
           toast({
-            title: "Registration Failed",
+            title: "❌ Registration Failed",
             description: "Passwords do not match.",
             variant: "destructive",
           })
@@ -64,8 +64,8 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
         })
         log("info", "User registered successfully", { uid: user.uid, email: user.email, role: defaultRole })
         toast({
-          title: "Registration Successful!",
-          description: "Your account has been created.",
+          title: "🎉 Registered!",
+          description: "Account created.",
           variant: "default",
         })
         await sendEmailVerification(user)
@@ -90,8 +90,8 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
           log("info", "User logged in successfully", { uid: user.uid })
         }
         toast({
-          title: "Login Successful!",
-          description: "You have been logged in.",
+          title: "✅ Logged In!",
+          description: "Welcome back!",
           variant: "default",
         })
         router.push(onSuccessRedirect)
@@ -100,7 +100,7 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
       log("error", `Authentication failed (${isRegister ? "register" : "login"})`, { error: err.message })
       setError(err.message)
       toast({
-        title: "Authentication Failed",
+        title: "❌ Login Failed",
         description: err.message,
         variant: "destructive",
       })
@@ -116,14 +116,14 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
       await sendPasswordResetEmail(auth, resetEmail)
       setResetMessage("Password reset email sent! Check your inbox.")
       toast({
-        title: "Password Reset Email Sent",
-        description: "Check your inbox for reset instructions.",
+        title: "✉️ Reset Email Sent",
+        description: "Check your inbox.",
         variant: "default",
       })
     } catch (err: any) {
       setResetMessage(err.message)
       toast({
-        title: "Password Reset Failed",
+        title: "❌ Reset Failed",
         description: err.message,
         variant: "destructive",
       })

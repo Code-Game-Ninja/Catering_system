@@ -60,8 +60,8 @@ export default function RestaurantSetupPage() {
             role: userData?.role,
           })
           toast({
-            title: "Access Denied",
-            description: "You are not authorized to set up a restaurant.",
+            title: "⛔ Access Denied",
+            description: "Not authorized to set up a restaurant.",
             variant: "destructive",
           })
           router.push("/") // Redirect if not a restaurant owner
@@ -71,8 +71,8 @@ export default function RestaurantSetupPage() {
             restaurantId: userData.restaurantId,
           })
           toast({
-            title: "Restaurant Already Setup",
-            description: "You already have a restaurant registered. Redirecting to dashboard.",
+            title: "ℹ️ Already Setup",
+            description: "Restaurant already registered.",
             variant: "default",
           })
           router.push("/restaurant-owner") // Redirect if already has a restaurant
@@ -105,20 +105,20 @@ export default function RestaurantSetupPage() {
         fileName: imageFile.name,
         error: err.message,
       })
-      setError("Could not process image.")
+      setError("🖼️ Image Error")
       toast({
-        title: "Image Error",
-        description: "Could not process image. Please try a different file.",
+        title: "🖼️ Image Error",
+        description: "Could not process image.",
         variant: "destructive",
       })
       return null
     }
 
     if (blob.size > 4 * 1024 * 1024) {
-      setError("Image is still too large after compression (max 4 MB).")
+      setError("📦 Too Large")
       toast({
-        title: "Image Too Large",
-        description: "Image is still too large after compression (max 4 MB).",
+        title: "📦 Too Large",
+        description: "Image still too large (max 4 MB).",
         variant: "destructive",
       })
       return null
@@ -138,10 +138,10 @@ export default function RestaurantSetupPage() {
       return downloadURL
     } catch (err: any) {
       log("error", "Restaurant image upload failed", { fileName: imageFile.name, error: err.message })
-      setError("Failed to upload image. Please try again with a smaller file.")
+      setError("❌ Upload Failed")
       toast({
-        title: "Upload Failed",
-        description: "Failed to upload image. Please try again with a smaller file.",
+        title: "❌ Upload Failed",
+        description: "Could not upload image.",
         variant: "destructive",
       })
       return null
@@ -156,10 +156,10 @@ export default function RestaurantSetupPage() {
     setIsSubmitting(true)
 
     if (!user) {
-      setError("User not authenticated.")
+      setError("🔒 Auth Error")
       toast({
-        title: "Authentication Error",
-        description: "User not authenticated. Please log in.",
+        title: "🔒 Auth Error",
+        description: "Please log in.",
         variant: "destructive",
       })
       setIsSubmitting(false)
@@ -167,10 +167,10 @@ export default function RestaurantSetupPage() {
     }
 
     if (!restaurantName || !description || !address || !phone || !email || !cuisine) {
-      setError("Please fill in all required fields.")
+      setError("⚠️ Missing Info")
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: "⚠️ Missing Info",
+        description: "Fill all required fields.",
         variant: "destructive",
       })
       setIsSubmitting(false)
@@ -212,17 +212,17 @@ export default function RestaurantSetupPage() {
       log("info", "User profile updated with restaurantId", { uid: user.uid, restaurantId: newRestaurantRef.id })
 
       toast({
-        title: "Restaurant Registered!",
-        description: "Your restaurant has been registered successfully. It will be active once approved by an admin.",
+        title: "🎉 Registered!",
+        description: "Restaurant registered. Awaiting approval.",
         variant: "default",
       })
       router.push("/restaurant-owner")
     } catch (err: any) {
       log("error", "Failed to register restaurant", { error: err.message, uid: user.uid })
-      setError("Failed to register restaurant. Please try again.")
+      setError("❌ Registration Failed")
       toast({
-        title: "Registration Failed",
-        description: "Failed to register restaurant. Please try again.",
+        title: "❌ Registration Failed",
+        description: "Could not register. Try again.",
         variant: "destructive",
       })
       console.error("Error registering restaurant:", err)

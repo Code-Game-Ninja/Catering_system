@@ -76,8 +76,8 @@ export default function AdminProductsPage() {
         } else {
           log("warn", "Unauthorized access attempt to admin page", { uid: user.uid })
           toast({
-            title: "Access Denied",
-            description: "You are not authorized to view this page.",
+            title: "⛔ Access Denied",
+            description: "Not authorized to view this page.",
             variant: "destructive",
           })
           router.push("/")
@@ -106,8 +106,8 @@ export default function AdminProductsPage() {
       log("error", "Admin failed to fetch products", { error: err.message })
       setError("Failed to load products. Please try again later.")
       toast({
-        title: "Error",
-        description: "Failed to load products. Please try again later.",
+        title: "❌ Error",
+        description: "Could not load products.",
         variant: "destructive",
       })
       console.error("Error fetching products:", err)
@@ -130,8 +130,8 @@ export default function AdminProductsPage() {
       log("error", "Admin failed to fetch restaurants for product assignment", { error: err.message })
       setError("Failed to load restaurants for product assignment.")
       toast({
-        title: "Error",
-        description: "Failed to load restaurants for product assignment.",
+        title: "❌ Error",
+        description: "Could not load restaurants.",
         variant: "destructive",
       })
       console.error("Error fetching restaurants:", err)
@@ -191,8 +191,8 @@ export default function AdminProductsPage() {
       log("error", "Image resize/compression failed", { fileName: imageFile.name, error: err.message })
       setError("Could not process image.")
       toast({
-        title: "Image Error",
-        description: "Could not process image. Please try a different file.",
+        title: "🖼️ Image Error",
+        description: "Could not process image.",
         variant: "destructive",
       })
       return null
@@ -201,8 +201,8 @@ export default function AdminProductsPage() {
     if (blob.size > 4 * 1024 * 1024) {
       setError("Image is still too large after compression (max 4 MB).")
       toast({
-        title: "Image Too Large",
-        description: "Image is still too large after compression (max 4 MB).",
+        title: "📦 Too Large",
+        description: "Image still too large (max 4 MB).",
         variant: "destructive",
       })
       return null
@@ -224,8 +224,8 @@ export default function AdminProductsPage() {
       log("error", "Image upload failed", { fileName: imageFile.name, error: err.message })
       setError("Failed to upload image. Please try again with a smaller file.")
       toast({
-        title: "Upload Failed",
-        description: "Failed to upload image. Please try again with a smaller file.",
+        title: "❌ Upload Failed",
+        description: "Could not upload image.",
         variant: "destructive",
       })
       return null
@@ -247,8 +247,8 @@ export default function AdminProductsPage() {
     ) {
       setError("Please fill in all required fields, including selecting a restaurant.")
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields, including selecting a restaurant.",
+        title: "⚠️ Missing Info",
+        description: "Fill all required fields.",
         variant: "destructive",
       })
       return
@@ -271,8 +271,8 @@ export default function AdminProductsPage() {
         await updateDoc(productRef, productData)
         log("info", "Product updated successfully by admin", { productId: currentProduct.id })
         toast({
-          title: "Product Updated!",
-          description: "Product details have been updated successfully.",
+          title: "✅ Updated!",
+          description: "Product details saved.",
           variant: "default",
         })
       } else {
@@ -282,8 +282,8 @@ export default function AdminProductsPage() {
         })
         log("info", "Product added successfully by admin", { productName: currentProduct.name })
         toast({
-          title: "Product Added!",
-          description: "New product has been added to the menu.",
+          title: "🍽️ Added!",
+          description: "Product added to menu.",
           variant: "default",
         })
       }
@@ -293,8 +293,8 @@ export default function AdminProductsPage() {
       log("error", "Product save failed by admin", { error: err.message, productData })
       setError("Failed to save product. Please try again.")
       toast({
-        title: "Save Failed",
-        description: "Failed to save product. Please try again.",
+        title: "❌ Save Failed",
+        description: "Could not save product.",
         variant: "destructive",
       })
       console.error("Error saving product:", err)

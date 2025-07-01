@@ -79,8 +79,8 @@ export default function RestaurantSettingsPage() {
       log("error", "Failed to fetch user profile or restaurant data", { uid, error: err.message })
       setError("Failed to load settings. Please try again.")
       toast({
-        title: "Error",
-        description: "Failed to load settings. Please try again.",
+        title: "❌ Error",
+        description: "Could not load settings.",
         variant: "destructive",
       })
       console.error("Error fetching data:", err)
@@ -116,8 +116,8 @@ export default function RestaurantSettingsPage() {
     } catch (err: any) {
       log("error", "Restaurant image upload failed", { fileName: file.name, error: err.message })
       toast({
-        title: "Image Upload Failed",
-        description: "Failed to upload restaurant image. Please try again.",
+        title: "❌ Upload Failed",
+        description: "Could not upload image.",
         variant: "destructive",
       })
       throw err
@@ -147,8 +147,8 @@ export default function RestaurantSettingsPage() {
 
       log("info", "Restaurant settings updated successfully", { restaurantId: userProfile.restaurantId })
       toast({
-        title: "Settings Saved!",
-        description: "Your restaurant settings have been updated successfully.",
+        title: "✅ Saved!",
+        description: "Settings updated.",
         variant: "default",
       })
       // Clear image file and preview after successful upload/save
@@ -161,8 +161,8 @@ export default function RestaurantSettingsPage() {
       })
       setError("Failed to save settings. Please try again.")
       toast({
-        title: "Save Failed",
-        description: "Failed to save restaurant settings. Please try again.",
+        title: "❌ Save Failed",
+        description: "Could not save settings.",
         variant: "destructive",
       })
       console.error("Error saving settings:", err)

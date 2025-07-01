@@ -90,8 +90,8 @@ export default function RestaurantOwnerProductsPage() {
         } else if (userData?.role === "restaurant_owner" && !userData.restaurantId) {
           log("info", "Restaurant owner needs to set up restaurant, redirecting", { uid: user.uid })
           toast({
-            title: "Restaurant Setup Required",
-            description: "Please set up your restaurant before managing products.",
+            title: "⚠️ Setup Needed",
+            description: "Set up your restaurant first.",
             variant: "destructive",
           })
           router.push("/restaurant-owner/setup")
@@ -101,8 +101,8 @@ export default function RestaurantOwnerProductsPage() {
             role: userData?.role,
           })
           toast({
-            title: "Access Denied",
-            description: "You are not authorized to view this page.",
+            title: "⛔ Access Denied",
+            description: "Not authorized to view this page.",
             variant: "destructive",
           })
           router.push("/")
@@ -132,8 +132,8 @@ export default function RestaurantOwnerProductsPage() {
       log("error", "Restaurant owner failed to fetch products", { error: err.message, restaurantId })
       setError("Failed to load products. Please try again later.")
       toast({
-        title: "Error",
-        description: "Failed to load products. Please try again later.",
+        title: "❌ Error",
+        description: "Could not load products.",
         variant: "destructive",
       })
       console.error("Error fetching products:", err)
@@ -186,8 +186,8 @@ export default function RestaurantOwnerProductsPage() {
       log("error", "Image resize/compression failed", { fileName: imageFile.name, error: err.message })
       setError("Could not process image.")
       toast({
-        title: "Image Error",
-        description: "Could not process image. Please try a different file.",
+        title: "🖼️ Image Error",
+        description: "Could not process image.",
         variant: "destructive",
       })
       return null
@@ -196,8 +196,8 @@ export default function RestaurantOwnerProductsPage() {
     if (blob.size > 4 * 1024 * 1024) {
       setError("Image is still too large after compression (max 4 MB).")
       toast({
-        title: "Image Too Large",
-        description: "Image is still too large after compression (max 4 MB).",
+        title: "📦 Too Large",
+        description: "Image still too large (max 4 MB).",
         variant: "destructive",
       })
       return null
@@ -219,8 +219,8 @@ export default function RestaurantOwnerProductsPage() {
       log("error", "Image upload failed", { fileName: imageFile.name, error: err.message })
       setError("Failed to upload image. Please try again with a smaller file.")
       toast({
-        title: "Upload Failed",
-        description: "Failed to upload image. Please try again with a smaller file.",
+        title: "❌ Upload Failed",
+        description: "Could not upload image.",
         variant: "destructive",
       })
       return null
@@ -236,8 +236,8 @@ export default function RestaurantOwnerProductsPage() {
     if (!userRestaurantId || !userRestaurantName) {
       setError("Restaurant information not available. Please set up your restaurant first.")
       toast({
-        title: "Restaurant Not Found",
-        description: "Restaurant information not available. Please set up your restaurant first.",
+        title: "❓ Not Found",
+        description: "Set up your restaurant first.",
         variant: "destructive",
       })
       return
@@ -246,8 +246,8 @@ export default function RestaurantOwnerProductsPage() {
     if (!currentProduct.name || !currentProduct.description || !currentProduct.price || !currentProduct.category) {
       setError("Please fill in all required fields (Name, Description, Price, Category).")
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields (Name, Description, Price, Category).",
+        title: "⚠️ Missing Info",
+        description: "Fill all required fields.",
         variant: "destructive",
       })
       return
@@ -281,8 +281,8 @@ export default function RestaurantOwnerProductsPage() {
           restaurantId: userRestaurantId,
         })
         toast({
-          title: "Product Updated!",
-          description: "Product details have been updated successfully.",
+          title: "✅ Updated!",
+          description: "Product details saved.",
           variant: "default",
         })
       } else {
@@ -297,8 +297,8 @@ export default function RestaurantOwnerProductsPage() {
           restaurantId: userRestaurantId,
         })
         toast({
-          title: "Product Added!",
-          description: "New product has been added to your menu.",
+          title: "🍽️ Added!",
+          description: "Product added to menu.",
           variant: "default",
         })
       }
@@ -312,8 +312,8 @@ export default function RestaurantOwnerProductsPage() {
       })
       setError("Failed to save product. Please try again.")
       toast({
-        title: "Save Failed",
-        description: "Failed to save product. Please try again.",
+        title: "❌ Save Failed",
+        description: "Could not save product.",
         variant: "destructive",
       })
       console.error("Error saving product:", err)
