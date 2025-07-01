@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
-import { useToast } from "@/components/ui/use-toast"
 import { log } from "@/lib/logging"
 import {
   AlertDialog,
@@ -49,7 +48,6 @@ export default function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterRole, setFilterRole] = useState<UserRole | "all">("all")
   const router = useRouter()
-  const { toast } = useToast()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -65,11 +63,6 @@ export default function AdminUsersPage() {
             fetchUsers()
           } else {
             log("warn", "Unauthorized access attempt to admin users page", { uid: user.uid })
-            toast({
-              title: "⛔ Access Denied",
-              description: "Not authorized to view this page.",
-              variant: "destructive",
-            })
             router.push("/")
           }
         } else {
@@ -82,7 +75,7 @@ export default function AdminUsersPage() {
       }
     })
     return () => unsubscribe()
-  }, [router, toast])
+  }, [router])
 
   const fetchUsers = async () => {
     try {
@@ -108,11 +101,6 @@ export default function AdminUsersPage() {
       log("error", "Failed to fetch users for admin", { error: err.message })
       setError("Failed to load users. Please try again later.")
       console.error("Error fetching users:", err)
-      toast({
-        title: "❌ Error",
-        description: `Could not load users. ${err.message}`,
-        variant: "destructive",
-      })
       setLoading(false)
     }
   }
@@ -123,17 +111,8 @@ export default function AdminUsersPage() {
       await updateDoc(userDocRef, { role: newRole, updatedAt: new Date() })
       setUsers((prevUsers) => prevUsers.map((user) => (user.uid === userId ? { ...user, role: newRole } : user)))
       log("info", `User role updated: ${userId} to ${newRole}`)
-      toast({
-        title: "✅ Role Updated!",
-        description: `Role set to ${newRole}.`,
-      })
     } catch (err: any) {
       log("error", `Failed to update user role: ${userId} to ${newRole}`, { error: err.message })
-      toast({
-        title: "❌ Update Failed",
-        description: `Could not update role. ${err.message}`,
-        variant: "destructive",
-      })
       console.error("Error updating user role:", err)
     }
   }
@@ -144,17 +123,8 @@ export default function AdminUsersPage() {
       await deleteDoc(userDocRef)
       setUsers((prevUsers) => prevUsers.filter((user) => user.uid !== userId))
       log("info", `User deleted: ${userId}`)
-      toast({
-        title: "🗑️ Deleted!",
-        description: "User deleted.",
-      })
     } catch (err: any) {
       log("error", `Failed to delete user: ${userId}`, { error: err.message })
-      toast({
-        title: "❌ Delete Failed",
-        description: `Could not delete user. ${err.message}`,
-        variant: "destructive",
-      })
       console.error("Error deleting user:", err)
     }
   }

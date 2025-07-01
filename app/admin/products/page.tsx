@@ -22,7 +22,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Plus, Edit, Package, UtensilsCrossed, Leaf, Vegan, Info } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -50,7 +49,6 @@ export default function AdminProductsPage() {
   const [uploading, setUploading] = useState(false)
   const [userRole, setUserRole] = useState<"user" | "admin" | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -75,11 +73,6 @@ export default function AdminProductsPage() {
           fetchRestaurants()
         } else {
           log("warn", "Unauthorized access attempt to admin page", { uid: user.uid })
-          toast({
-            title: "⛔ Access Denied",
-            description: "Not authorized to view this page.",
-            variant: "destructive",
-          })
           router.push("/")
         }
       } else {
@@ -88,7 +81,7 @@ export default function AdminProductsPage() {
       }
     })
     return () => unsubscribe()
-  }, [router, toast])
+  }, [router])
 
   const fetchProducts = async () => {
     try {
@@ -105,11 +98,6 @@ export default function AdminProductsPage() {
     } catch (err: any) {
       log("error", "Admin failed to fetch products", { error: err.message })
       setError("Failed to load products. Please try again later.")
-      toast({
-        title: "❌ Error",
-        description: "Could not load products.",
-        variant: "destructive",
-      })
       console.error("Error fetching products:", err)
     } finally {
       setLoading(false)
@@ -129,11 +117,6 @@ export default function AdminProductsPage() {
     } catch (err: any) {
       log("error", "Admin failed to fetch restaurants for product assignment", { error: err.message })
       setError("Failed to load restaurants for product assignment.")
-      toast({
-        title: "❌ Error",
-        description: "Could not load restaurants.",
-        variant: "destructive",
-      })
       console.error("Error fetching restaurants:", err)
     }
   }
@@ -190,21 +173,11 @@ export default function AdminProductsPage() {
     } catch (err: any) {
       log("error", "Image resize/compression failed", { fileName: imageFile.name, error: err.message })
       setError("Could not process image.")
-      toast({
-        title: "🖼️ Image Error",
-        description: "Could not process image.",
-        variant: "destructive",
-      })
       return null
     }
 
     if (blob.size > 4 * 1024 * 1024) {
       setError("Image is still too large after compression (max 4 MB).")
-      toast({
-        title: "📦 Too Large",
-        description: "Image still too large (max 4 MB).",
-        variant: "destructive",
-      })
       return null
     }
 
@@ -223,11 +196,6 @@ export default function AdminProductsPage() {
     } catch (err: any) {
       log("error", "Image upload failed", { fileName: imageFile.name, error: err.message })
       setError("Failed to upload image. Please try again with a smaller file.")
-      toast({
-        title: "❌ Upload Failed",
-        description: "Could not upload image.",
-        variant: "destructive",
-      })
       return null
     } finally {
       setUploading(false)
@@ -246,11 +214,6 @@ export default function AdminProductsPage() {
       !currentProduct.restaurantId
     ) {
       setError("Please fill in all required fields, including selecting a restaurant.")
-      toast({
-        title: "⚠️ Missing Info",
-        description: "Fill all required fields.",
-        variant: "destructive",
-      })
       return
     }
 
@@ -261,42 +224,33 @@ export default function AdminProductsPage() {
 
     const productData = {
       ...currentProduct,
+      ingredients: Array.isArray(currentProduct.ingredients)
+        ? currentProduct.ingredients
+        : (typeof currentProduct.ingredients === 'string' ? currentProduct.ingredients.split(',').map((i: string) => i.trim()).filter(Boolean) : (!currentProduct.ingredients ? [] : String(currentProduct.ingredients).split(',').map((i: string) => i.trim()).filter(Boolean))),
+      allergens: Array.isArray(currentProduct.allergens)
+        ? currentProduct.allergens
+        : (typeof currentProduct.allergens === 'string' ? currentProduct.allergens.split(',').map((i: string) => i.trim()).filter(Boolean) : (!currentProduct.allergens ? [] : String(currentProduct.allergens).split(',').map((i: string) => i.trim()).filter(Boolean))),
       imageUrl: imageUrl || currentProduct.imageUrl || "/placeholder.svg?height=300&width=400",
       updatedAt: serverTimestamp(),
-    } as Product
+    }
 
     try {
       if (isEditing && currentProduct.id) {
         const productRef = doc(db, "products", currentProduct.id)
         await updateDoc(productRef, productData)
         log("info", "Product updated successfully by admin", { productId: currentProduct.id })
-        toast({
-          title: "✅ Updated!",
-          description: "Product details saved.",
-          variant: "default",
-        })
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
           createdAt: serverTimestamp(),
         })
         log("info", "Product added successfully by admin", { productName: currentProduct.name })
-        toast({
-          title: "🍽️ Added!",
-          description: "Product added to menu.",
-          variant: "default",
-        })
       }
       resetForm()
       fetchProducts() // Refresh the list
     } catch (err: any) {
       log("error", "Product save failed by admin", { error: err.message, productData })
       setError("Failed to save product. Please try again.")
-      toast({
-        title: "❌ Save Failed",
-        description: "Could not save product.",
-        variant: "destructive",
-      })
       console.error("Error saving product:", err)
     }
   }
@@ -305,8 +259,12 @@ export default function AdminProductsPage() {
     setIsEditing(true)
     setCurrentProduct({
       ...product,
-      ingredients: product.ingredients?.join(", ") || "",
-      allergens: product.allergens?.join(", ") || "",
+      ingredients: Array.isArray(product.ingredients)
+        ? product.ingredients
+        : (typeof product.ingredients === 'string' ? product.ingredients.split(',').map((i: string) => i.trim()).filter(Boolean) : (!product.ingredients ? [] : String(product.ingredients).split(',').map((i: string) => i.trim()).filter(Boolean))),
+      allergens: Array.isArray(product.allergens)
+        ? product.allergens
+        : (typeof product.allergens === 'string' ? product.allergens.split(',').map((i: string) => i.trim()).filter(Boolean) : (!product.allergens ? [] : String(product.allergens).split(',').map((i: string) => i.trim()).filter(Boolean))),
     })
     setImageFile(null)
     log("info", "Admin editing product", { productId: product.id })
@@ -318,19 +276,9 @@ export default function AdminProductsPage() {
         await deleteDoc(doc(db, "products", productId))
         setProducts(products.filter((p) => p.id !== productId))
         log("info", "Product deleted successfully by admin", { productId })
-        toast({
-          title: "Product Deleted!",
-          description: "The product has been removed from the menu.",
-          variant: "default",
-        })
       } catch (err: any) {
         log("error", "Product deletion failed by admin", { productId, error: err.message })
         setError("Failed to delete product.")
-        toast({
-          title: "Deletion Failed",
-          description: "Failed to delete product. Please try again.",
-          variant: "destructive",
-        })
         console.error("Error deleting product:", err)
       }
     }
