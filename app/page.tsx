@@ -22,8 +22,8 @@ export default function LandingPage() {
         className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center text-center bg-cover bg-center"
         style={{ backgroundImage: "url('https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D')" }}
       >
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 text-white px-4 md:px-8">
+        <div className="absolute inset-0 bg-background/60" />
+        <div className="relative z-10 text-foreground px-4 md:px-8">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-up">
             Authentic Indian Catering for Every Occasion
           </h1>
@@ -55,18 +55,18 @@ export default function LandingPage() {
           </div>
           <div className="lg:order-2 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Our Story: A Culinary Journey from Rural India</h2>
-            <p className="text-lg text-gray-700 mb-6">
+            <p className="text-lg text-muted-foreground mb-6">
               Catering was born from a passion to connect the vibrant culinary heritage of rural Indian towns with the
               global community. We saw an opportunity to empower local caterers, often overlooked, by providing a
               platform to showcase their authentic dishes and unique ingredients.
             </p>
-            <p className="text-lg text-gray-700 mb-8">
+            <p className="text-lg text-muted-foreground mb-8">
               Every dish on our menu carries the legacy of generations, prepared with traditional methods and the love
               of skilled hands. Our journey is about more than just food; it's about cultural exchange, sustainable
               livelihoods, and bringing genuine, heartwarming flavors to your home, no matter where you are.
             </p>
             <Link href="/profile">
-              <Button size="lg" variant="outline" className="bg-black text-white hover:bg-gray-800">
+              <Button size="lg" variant="outline" className="bg-foreground text-background hover:bg-muted">
                 Meet Our Team
               </Button>
             </Link>
@@ -121,7 +121,7 @@ export default function LandingPage() {
           </div>
           <div className="lg:order-1 text-center lg:text-left">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Why Choose Catering?</h2>
-            <ul className="space-y-4 text-lg text-gray-700 mb-8 list-none pl-0">
+            <ul className="space-y-4 text-lg text-muted-foreground mb-8 list-none pl-0">
               <li className="flex items-start lg:items-center gap-3">
                 <Leaf className="h-6 w-6 text-green-600 flex-shrink-0" />
                 <span>
@@ -155,27 +155,27 @@ export default function LandingPage() {
       {/* Testimonials Section */}
       {/* Removed the testimonials background image and replaced with a neutral background color */}
       <section
-        className="relative py-16 md:py-24 bg-muted text-white text-center"
+        className="relative py-16 md:py-24 bg-muted text-foreground text-center"
       >
-        <div className="absolute inset-0 bg-black/70" />
+        <div className="absolute inset-0 bg-background/60" />
         <div className="relative z-10 container mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">What Our Customers Say</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="p-6 bg-white/10 backdrop-blur-sm text-white shadow-lg">
+            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
               <p className="italic mb-4">
                 "The food was absolutely incredible! It felt like a true taste of India, delivered right to my door. The
                 biryani was a masterpiece."
               </p>
               <p className="font-semibold">- Sarah L.</p>
             </Card>
-            <Card className="p-6 bg-white/10 backdrop-blur-sm text-white shadow-lg">
+            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
               <p className="italic mb-4">
                 "I ordered for a family gathering, and everyone was raving about the authentic flavors. It's amazing to
                 support such a wonderful initiative."
               </p>
               <p className="font-semibold">- David K.</p>
             </Card>
-            <Card className="p-6 bg-white/10 backdrop-blur-sm text-white shadow-lg">
+            <Card className="p-6 bg-background/10 backdrop-blur-sm text-foreground shadow-lg">
               <p className="italic mb-4">
                 "Beyond delicious! The quality and freshness were evident in every bite. This is my new go-to for
                 catering."
