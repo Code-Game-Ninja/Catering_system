@@ -141,6 +141,7 @@ export default function RestaurantOwnerOrdersPage() {
     newStatus: "pending" | "processing" | "completed" | "cancelled" | "delivered",
   ) => {
     setUpdatingOrderId(orderId)
+    let adminEmail = 'admin@example.com'
     try {
       const orderRef = doc(db, "orders", orderId)
       await updateDoc(orderRef, { status: newStatus })
@@ -159,7 +160,6 @@ export default function RestaurantOwnerOrdersPage() {
       if (newStatus === "processing") {
         const { subject, html, text } = generateOrderEventEmail({ eventType: 'order_confirmed', order, recipientRole: 'user' })
         await sendEmail({ to: order.userEmail || '', subject, html, text })
-        let adminEmail = 'admin@example.com'
         const adminsQuery = query(collection(db, 'users'), where('role', '==', 'admin'))
         const adminsSnapshot = await getDocs(adminsQuery)
         if (!adminsSnapshot.empty) {
@@ -276,6 +276,17 @@ export default function RestaurantOwnerOrdersPage() {
       return () => unsub()
     }, [userId])
     return profile
+  }
+
+  // Move the useUserProfile hook into a child component
+  function OrderCustomerInfo({ userId }: { userId: string }) {
+    const customer = useUserProfile(userId)
+    return (
+      <>
+        <p><span className="font-medium">Email:</span> {customer.email}</p>
+        <p><span className="font-medium">Name:</span> {customer.name}</p>
+      </>
+    )
   }
 
   if (loading || userRole === null || restaurantId === null) {
@@ -417,7 +428,7 @@ export default function RestaurantOwnerOrdersPage() {
                         </div>
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
-                          {useUserProfile(order.userId)?.name}
+                          {order.userName}
                         </div>
                         <div className="flex items-center gap-1">
                           <DollarSign className="h-4 w-4" />₹{order.totalAmount.toFixed(2)}
@@ -450,25 +461,18 @@ export default function RestaurantOwnerOrdersPage() {
                     {/* Customer Information */}
                     <div>
                       <h3 className="font-semibold mb-3">Customer Information</h3>
-                      <div className="space-y-2 text-sm">
+                      <OrderCustomerInfo userId={order.userId} />
+                      <p>
+                        <span className="font-medium">Delivery Address:</span> {order.deliveryAddress || "N/A"}
+                      </p>
+                      <p>
+                        <span className="font-medium">Contact Phone:</span> {order.contactPhone || "N/A"}
+                      </p>
+                      {order.notes && (
                         <p>
-                          <span className="font-medium">Email:</span> {useUserProfile(order.userId)?.email}
+                          <span className="font-medium">Notes:</span> {order.notes}
                         </p>
-                        <p>
-                          <span className="font-medium">Name:</span> {useUserProfile(order.userId)?.name}
-                        </p>
-                        <p>
-                          <span className="font-medium">Delivery Address:</span> {order.deliveryAddress || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Contact Phone:</span> {order.contactPhone || "N/A"}
-                        </p>
-                        {order.notes && (
-                          <p>
-                            <span className="font-medium">Notes:</span> {order.notes}
-                          </p>
-                        )}
-                      </div>
+                      )}
                     </div>
 
                     {/* Order Status Management */}
