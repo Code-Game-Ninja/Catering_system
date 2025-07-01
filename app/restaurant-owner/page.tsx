@@ -271,7 +271,7 @@ export default function RestaurantOwnerDashboard() {
       </div>
 
       {/* Restaurant Status */}
-      <Card className="mb-8">
+      <Card className="bg-white rounded-xl shadow-lg mb-8">
         <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -296,7 +296,7 @@ export default function RestaurantOwnerDashboard() {
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
             <ShoppingCart className="h-4 w-4 text-gray-600" />
@@ -307,7 +307,7 @@ export default function RestaurantOwnerDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Revenue</CardTitle>
             <DollarSign className="h-4 w-4 text-gray-600" />
@@ -318,7 +318,7 @@ export default function RestaurantOwnerDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Orders</CardTitle>
             <Clock className="h-4 w-4 text-gray-600" />
@@ -329,7 +329,7 @@ export default function RestaurantOwnerDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Menu Items</CardTitle>
             <Package className="h-4 w-4 text-gray-600" />
@@ -342,7 +342,7 @@ export default function RestaurantOwnerDashboard() {
       </div>
 
       {/* Platform Fee Payment */}
-      <Card className="mb-8">
+      <Card className="bg-white rounded-xl shadow-lg mb-8">
         <CardHeader>
           <CardTitle>Platform Fee</CardTitle>
           <CardDescription>Pay your accumulated platform fee to the platform</CardDescription>
@@ -364,7 +364,7 @@ export default function RestaurantOwnerDashboard() {
       </Card>
 
       {/* Quick Actions */}
-      <Card className="mb-8">
+      <Card className="bg-white rounded-xl shadow-lg mb-8">
         <CardHeader>
           <CardTitle>Restaurant Management</CardTitle>
           <CardDescription>Manage your menu, orders, and restaurant settings</CardDescription>
@@ -405,7 +405,7 @@ export default function RestaurantOwnerDashboard() {
       {/* Recent Orders and Top Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Recent Orders */}
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader>
             <CardTitle>Recent Orders</CardTitle>
             <CardDescription>Latest orders for your restaurant</CardDescription>
@@ -461,7 +461,7 @@ export default function RestaurantOwnerDashboard() {
         </Card>
 
         {/* Top Products */}
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardHeader>
             <CardTitle>Your Menu Items</CardTitle>
             <CardDescription>Your current product catalog</CardDescription>

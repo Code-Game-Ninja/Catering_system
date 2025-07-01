@@ -273,7 +273,7 @@ export default function RestaurantOwnerOrdersPage() {
       </div>
 
       {/* Filters Section */}
-      <Card className="mb-8">
+      <Card className="bg-white rounded-xl shadow-lg mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Filter className="h-5 w-5" />
@@ -354,7 +354,7 @@ export default function RestaurantOwnerOrdersPage() {
 
       {/* Orders List */}
       {filteredOrders.length === 0 ? (
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardContent className="text-center py-12">
             <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-lg text-gray-600">
@@ -365,7 +365,7 @@ export default function RestaurantOwnerOrdersPage() {
       ) : (
         <div className="space-y-6">
           {filteredOrders.map((order) => (
-            <Card key={order.id} className="overflow-hidden">
+            <Card key={order.id} className="bg-white rounded-xl shadow-lg overflow-hidden">
               <CardHeader className="bg-gray-50">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-center gap-4">

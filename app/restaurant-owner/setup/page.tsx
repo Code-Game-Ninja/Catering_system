@@ -237,7 +237,7 @@ export default function RestaurantSetupPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="max-w-2xl mx-auto">
+      <Card className="bg-white rounded-xl shadow-lg max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <PlusCircle className="h-6 w-6" /> Register Your Restaurant

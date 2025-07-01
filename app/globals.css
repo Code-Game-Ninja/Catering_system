@@ -4,6 +4,8 @@
 
 body {
   font-family: Arial, Helvetica, sans-serif;
+  background: #f7f7fa;
+  color: #22223b;
 }
 
 @layer utilities {
@@ -91,4 +93,10 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.card-mixed {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
 }

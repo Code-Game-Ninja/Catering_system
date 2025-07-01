@@ -218,7 +218,7 @@ export default function CartPage() {
       </div>
 
       {cart.length === 0 ? (
-        <Card className="max-w-2xl mx-auto text-center py-12">
+        <Card className="max-w-2xl mx-auto text-center py-12 bg-white rounded-xl shadow-lg">
           <CardContent>
             <XCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
             <p className="text-xl text-gray-600 font-semibold">Your cart is empty.</p>
@@ -231,7 +231,7 @@ export default function CartPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="bg-white rounded-xl shadow-lg">
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
                 <CardDescription>Review your selected items before placing the order.</CardDescription>
@@ -294,7 +294,7 @@ export default function CartPage() {
           </div>
 
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="bg-white rounded-xl shadow-lg">
               <CardHeader>
                 <CardTitle>Delivery & Contact Information</CardTitle>
                 <CardDescription>Please provide your details for order delivery.</CardDescription>

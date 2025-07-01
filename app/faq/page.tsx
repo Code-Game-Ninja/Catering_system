@@ -9,7 +9,7 @@ export default function FAQPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen py-12 bg-white">
+    <div className="min-h-screen py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 mb-8">
           <Button variant="back" onClick={() => router.back()} className="p-2 md:hidden">
@@ -18,7 +18,7 @@ export default function FAQPage() {
           <h1 className="text-2xl font-semibold">Frequently Asked Questions</h1>
         </div>
         <div className="max-w-2xl mx-auto space-y-6">
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>What areas do you deliver to?</CardTitle>
             </CardHeader>
@@ -26,7 +26,7 @@ export default function FAQPage() {
               We currently deliver to major cities across India and are expanding internationally. Check our delivery areas during checkout.
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>How far in advance should I place my order?</CardTitle>
             </CardHeader>
@@ -34,7 +34,7 @@ export default function FAQPage() {
               For regular orders, 24 hours notice is sufficient. For large events or catering, we recommend 3-7 days advance notice.
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>Do you accommodate dietary restrictions?</CardTitle>
             </CardHeader>
@@ -42,7 +42,7 @@ export default function FAQPage() {
               Yes! We offer vegetarian, vegan, gluten-free, and other dietary options. Please specify your requirements when ordering.
             </CardContent>
           </Card>
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
               <CardTitle>How can I contact support?</CardTitle>
             </CardHeader>

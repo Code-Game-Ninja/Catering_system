@@ -326,7 +326,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card className="mb-8">
+      <Card className="mb-8 bg-white rounded-xl shadow-lg">
         <CardHeader>
           <CardTitle>Platform Management</CardTitle>
           <CardDescription>Manage restaurants, users, products, and platform settings</CardDescription>

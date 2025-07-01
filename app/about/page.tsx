@@ -107,7 +107,7 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold text-center mb-12">Our Core Values</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <Card key={index} className="text-center h-full">
+              <Card key={index} className="text-center h-full bg-white rounded-xl shadow-lg">
                 <CardHeader>
                   <div className="flex justify-center mb-4">{value.icon}</div>
                   <CardTitle className="text-xl">{value.title}</CardTitle>
@@ -142,7 +142,7 @@ export default function AboutPage() {
           <h2 className="text-3xl font-bold text-center mb-12">Meet Our Team</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {teamMembers.map((member, index) => (
-              <Card key={index} className="text-center">
+              <Card key={index} className="text-center bg-white rounded-xl shadow-lg">
                 <CardHeader>
                   <Image
                     src={member.image || "/placeholder.svg"}
@@ -168,7 +168,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">How We Work</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="text-center">
+            <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
                 <Utensils className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Source Authentically</CardTitle>
@@ -181,7 +181,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
                 <Award className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Ensure Quality</CardTitle>
@@ -194,7 +194,7 @@ export default function AboutPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center">
+            <Card className="text-center bg-white rounded-xl shadow-lg">
               <CardHeader>
                 <Truck className="h-12 w-12 text-primary mx-auto mb-4" />
                 <CardTitle>Deliver Fresh</CardTitle>

@@ -193,7 +193,7 @@ export default function RestaurantSettingsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="w-full max-w-3xl mx-auto">
+      <Card className="bg-white rounded-xl shadow-lg w-full max-w-3xl mx-auto">
         <CardHeader>
           <CardTitle className="text-3xl text-center">Restaurant Settings</CardTitle>
         </CardHeader>

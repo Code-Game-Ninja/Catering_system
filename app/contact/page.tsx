@@ -84,10 +84,10 @@ export default function ContactPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <Card>
+          <Card className="bg-white rounded-xl shadow-lg">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Send className="h-5 w-5" />
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <Send className="h-5 w-5 text-primary" />
                 Send us a Message
               </CardTitle>
               <CardDescription>Fill out the form below and we'll get back to you within 24 hours.</CardDescription>
@@ -169,9 +169,9 @@ export default function ContactPage() {
 
           {/* Contact Information */}
           <div className="space-y-6">
-            <Card>
+            <Card className="bg-white rounded-xl shadow-lg">
               <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+                <CardTitle className="text-primary">Contact Information</CardTitle>
                 <CardDescription>Reach out to us through any of these channels.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -181,9 +181,9 @@ export default function ContactPage() {
                       {info.icon}
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">{info.title}</h3>
+                      <h3 className="font-semibold mb-1 text-primary">{info.title}</h3>
                       {info.details.map((detail, idx) => (
-                        <p key={idx} className="text-gray-600 text-sm">
+                        <p key={idx} className="text-gray-700 text-sm">
                           {detail}
                         </p>
                       ))}
@@ -194,9 +194,9 @@ export default function ContactPage() {
             </Card>
 
             {/* FAQ Section */}
-            <Card>
+            <Card className="bg-white rounded-xl shadow-lg">
               <CardHeader>
-                <CardTitle>Frequently Asked Questions</CardTitle>
+                <CardTitle className="text-primary">Frequently Asked Questions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>

@@ -22,8 +22,8 @@ export default function LandingPage() {
         className="relative w-full h-[60vh] md:h-[70vh] lg:h-[80vh] flex items-center justify-center text-center bg-cover bg-center"
         style={{ backgroundImage: "url('https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D')" }}
       >
-        <div className="absolute inset-0 bg-background/60" />
-        <div className="relative z-10 text-foreground px-4 md:px-8">
+        <div className="absolute inset-0 bg-black/70" />
+        <div className="relative z-10 text-white px-4 md:px-8">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 animate-fade-in-up">
             Authentic Indian Catering for Every Occasion
           </h1>

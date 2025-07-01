@@ -593,7 +593,7 @@ export default function RestaurantOwnerProductsPage() {
         <Package className="h-7 w-7" /> Your Existing Menu Items
       </h2>
       {products.length === 0 ? (
-        <Card>
+        <Card className="bg-white rounded-xl shadow-lg">
           <CardContent className="text-center py-12">
             <UtensilsCrossed className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-lg text-gray-600">No products added to your menu yet.</p>
