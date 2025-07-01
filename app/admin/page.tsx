@@ -33,6 +33,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<"user" | "restaurant_owner" | "admin" | null>(null)
+  const [invalidOrders, setInvalidOrders] = useState<any[]>([])
   const router = useRouter()
 
   useEffect(() => {
@@ -77,15 +78,38 @@ export default function AdminDashboardPage() {
       const ordersCollection = collection(db, "orders")
       const ordersQuery = query(ordersCollection, orderBy("orderDate", "desc"))
       const unsubscribeOrders = onSnapshot(ordersQuery, async (ordersSnapshot) => {
-        const orders = ordersSnapshot.docs.map((doc) => {
+        const validOrders: Order[] = []
+        const invalidOrders: any[] = []
+        ordersSnapshot.docs.forEach((doc) => {
           const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
-            estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
-          } as unknown as Order;
-        });
+          // Check for required fields
+          if (
+            typeof data.status === 'string' &&
+            typeof data.totalAmount === 'number' &&
+            (data.orderDate && (typeof data.orderDate.toDate === 'function' || data.orderDate instanceof Date))
+          ) {
+            validOrders.push({
+              id: doc.id,
+              userId: data.userId || '',
+              userName: data.userName || '',
+              userEmail: data.userEmail || '',
+              restaurantId: data.restaurantId || '',
+              restaurantName: data.restaurantName || '',
+              items: data.items || [],
+              totalAmount: data.totalAmount,
+              status: data.status,
+              orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
+              deliveryAddress: data.deliveryAddress || '',
+              contactPhone: data.contactPhone || '',
+              notes: data.notes || '',
+              updatedAt: data.updatedAt || undefined,
+              estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
+            } as unknown as Order)
+          } else {
+            invalidOrders.push({ id: doc.id, ...data })
+            console.warn('Order skipped due to missing fields:', { id: doc.id, ...data })
+          }
+        })
 
         // Fetch products in real time
         const productsCollection = collection(db, "products")
@@ -126,19 +150,19 @@ export default function AdminDashboardPage() {
               });
 
               // Calculate stats
-              const totalOrders = orders.length
-              const pendingOrders = orders.filter((order) => order.status === "pending").length
-              const completedOrders = orders.filter((order) => order.status === "delivered" || order.status === "completed").length
-              const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
+              const totalOrders = validOrders.length
+              const pendingOrders = validOrders.filter((order) => order.status === "pending").length
+              const completedOrders = validOrders.filter((order) => order.status === "delivered" || order.status === "completed").length
+              const cancelledOrders = validOrders.filter((order) => order.status === "cancelled").length
               // Platform fee is now 10% of each delivered order
               const platformFeeRate = 0.10;
-              const totalRevenue = orders
+              const totalRevenue = validOrders
                 .filter((order) => order.status === "delivered")
                 .reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
               const totalProducts = products.length
               const totalRestaurants = restaurants.length
               const totalUsers = users.filter((user) => user.role === "user").length
-              const recentOrders = orders.slice(0, 5)
+              const recentOrders = validOrders.slice(0, 5)
 
               // Get top restaurants by rating
               const topRestaurants = restaurants
@@ -170,6 +194,7 @@ export default function AdminDashboardPage() {
               console.log('Admin dashboard stats updated:', dashboardStats)
               log('debug', 'Admin dashboard stats updated', dashboardStats)
               setLoading(false)
+              setInvalidOrders(invalidOrders)
             })
           })
         })
@@ -421,6 +446,18 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {invalidOrders && invalidOrders.length > 0 && (
+        <div className="mt-8 p-4 border border-destructive bg-destructive/10 rounded">
+          <h2 className="text-lg font-bold text-destructive mb-2">Orders with Missing Fields</h2>
+          <ul className="text-destructive-foreground text-sm">
+            {invalidOrders.map(order => (
+              <li key={order.id}>Order ID: {order.id} (Missing required fields)</li>
+            ))}
+          </ul>
+          <p className="text-xs mt-2">These orders are not included in stats. Please review in Firestore.</p>
+        </div>
+      )}
     </div>
   )
 }
