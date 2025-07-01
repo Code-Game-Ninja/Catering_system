@@ -29,10 +29,10 @@ import {
   Truck,
 } from "lucide-react" // Added Truck icon
 
-interface OrderWithUserInfo extends Order {
-  userEmail?: string
-  userName?: string
-  userPhone?: string
+interface OrderWithUserInfo extends Omit<Order, 'userName' | 'userEmail'> {
+  userEmail?: string | null;
+  userName?: string | null;
+  userPhone?: string | null;
 }
 
 export default function AdminOrdersPage() {
@@ -102,7 +102,7 @@ export default function AdminOrdersPage() {
                 ...orderData,
                 userEmail: userData.email,
                 userName: userData.name,
-                userPhone: userData.phone,
+                userPhone: null,
               } as OrderWithUserInfo
             }
           } catch (err) {
@@ -335,14 +335,23 @@ export default function AdminOrdersPage() {
                       <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
-                          {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : 'N/A'} at {order.orderDate ? new Date(order.orderDate).toLocaleTimeString() : 'N/A'}
+                          {(() => {
+                            let dateObj = order.orderDate;
+                            if (dateObj && typeof dateObj === 'object' && typeof (dateObj as any).toDate === 'function') {
+                              dateObj = (dateObj as any).toDate();
+                            }
+                            if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
+                              return `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`;
+                            }
+                            return 'N/A';
+                          })()}
                         </div>
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
                           {order.userEmail}
                         </div>
                         <div className="flex items-center gap-1">
-                          <DollarSign className="h-4 w-4" />${order.totalAmount.toFixed(2)}
+                          <DollarSign className="h-4 w-4" />₹{order.totalAmount.toFixed(2)}
                         </div>
                       </div>
                     </div>
@@ -426,7 +435,7 @@ export default function AdminOrdersPage() {
                           <div className="flex-grow">
                             <p className="font-medium">{item.name}</p>
                             <p className="text-sm text-gray-600">
-                              ${item.price.toFixed(2)} × {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
+                              ₹{item.price.toFixed(2)} × {item.quantity} = ₹{(item.price * item.quantity).toFixed(2)}
                             </p>
                           </div>
                         </div>
