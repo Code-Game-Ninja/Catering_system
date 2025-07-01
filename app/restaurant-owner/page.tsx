@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, doc, getDoc, setDoc, query, where, onSnapshot } from "firebase/firestore"
+import { collection, getDocs, doc, getDoc, setDoc, query, where, onSnapshot, addDoc, Timestamp } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -31,6 +31,9 @@ export default function RestaurantOwnerDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<"user" | "restaurant_owner" | "admin" | null>(null)
+  const [unpaidFee, setUnpaidFee] = useState(0)
+  const [paying, setPaying] = useState(false)
+  const [feePaid, setFeePaid] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -130,11 +133,12 @@ export default function RestaurantOwnerDashboard() {
             .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
             .slice(0, 5)
 
+          const platformFeeRate = 0.10;
           const restaurantStats: RestaurantStats = {
             totalOrders: orders.length,
             pendingOrders: orders.filter((order) => ["pending", "confirmed", "preparing"].includes(order.status)).length,
             completedOrders: orders.filter((order) => order.status === "delivered").length,
-            totalRevenue: orders.filter((order) => order.status === "delivered").reduce((sum, order) => sum + order.totalAmount, 0),
+            totalRevenue: orders.filter((order) => order.status === "delivered").reduce((sum, order) => sum + (order.totalAmount * (1 - platformFeeRate)), 0),
             totalProducts: products.length,
             averageRating: restaurant ? restaurant.rating || 0 : 0,
             totalReviews: restaurant ? restaurant.totalReviews || 0 : 0,
@@ -162,6 +166,64 @@ export default function RestaurantOwnerDashboard() {
       setError("Failed to load dashboard data. Please try again later.")
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Fetch unpaid platform fee for this restaurant
+  useEffect(() => {
+    async function fetchUnpaidFee() {
+      if (!restaurant) return
+      // Get all delivered orders
+      const ordersCollection = collection(db, "orders")
+      const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurant.id), where("status", "==", "delivered"))
+      const ordersSnapshot = await getDocs(ordersQuery)
+      const deliveredOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Order[]
+      // Get all paid platform fee records
+      const feesCollection = collection(db, "platformFees")
+      const feesQuery = query(feesCollection, where("restaurantId", "==", restaurant.id), where("paid", "==", true))
+      const feesSnapshot = await getDocs(feesQuery)
+      const paidOrderIds = feesSnapshot.docs.flatMap(feeDoc => feeDoc.data().ordersCovered || [])
+      // Calculate unpaid orders
+      const unpaidOrders = deliveredOrders.filter(order => !paidOrderIds.includes(order.id))
+      const platformFeeRate = 0.10
+      const unpaidFeeAmount = unpaidOrders.reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
+      setUnpaidFee(unpaidFeeAmount)
+    }
+    fetchUnpaidFee()
+  }, [restaurant])
+
+  // Pay platform fee handler
+  const handlePayFee = async () => {
+    if (!restaurant || unpaidFee <= 0) return
+    setPaying(true)
+    try {
+      // Get all delivered orders
+      const ordersCollection = collection(db, "orders")
+      const ordersQuery = query(ordersCollection, where("restaurantId", "==", restaurant.id), where("status", "==", "delivered"))
+      const ordersSnapshot = await getDocs(ordersQuery)
+      const deliveredOrders = ordersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Order[]
+      // Get all paid platform fee records
+      const feesCollection = collection(db, "platformFees")
+      const feesQuery = query(feesCollection, where("restaurantId", "==", restaurant.id), where("paid", "==", true))
+      const feesSnapshot = await getDocs(feesQuery)
+      const paidOrderIds = feesSnapshot.docs.flatMap(feeDoc => feeDoc.data().ordersCovered || [])
+      // Calculate unpaid orders
+      const unpaidOrders = deliveredOrders.filter(order => !paidOrderIds.includes(order.id))
+      // Create a new platform fee record
+      await addDoc(collection(db, "platformFees"), {
+        restaurantId: restaurant.id,
+        amount: unpaidFee,
+        paid: true,
+        paidAt: Timestamp.now(),
+        ordersCovered: unpaidOrders.map(order => order.id),
+      })
+      setFeePaid(true)
+      setUnpaidFee(0)
+    } catch (err) {
+      setFeePaid(false)
+      alert("Failed to pay platform fee. Please try again.")
+    } finally {
+      setPaying(false)
     }
   }
 
@@ -271,6 +333,25 @@ export default function RestaurantOwnerDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Platform Fee Payment */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Platform Fee</CardTitle>
+          <CardDescription>Pay your accumulated platform fee to the platform</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-4">
+            <div>
+              <span className="font-medium">Unpaid Platform Fee: </span>
+              <span className="text-lg">${unpaidFee.toFixed(2)}</span>
+            </div>
+            <Button onClick={handlePayFee} disabled={paying || unpaidFee <= 0}>
+              {paying ? "Processing..." : feePaid ? "Fee Paid" : "Pay Platform Fee"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Quick Actions */}
       <Card className="mb-8">

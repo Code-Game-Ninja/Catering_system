@@ -53,7 +53,7 @@ service cloud.firestore {
 
     // PLATFORM FEES (example for new collection)
     match /platformFees/{feeId} {
-      allow read, write: if isAdmin();
+      allow read, write: if isAdmin() || isOwner(get(/databases/$(database)/documents/platformFees/$(feeId)).data.restaurantId);
     }
 
     // ANALYTICS (example for future collection)
@@ -72,6 +72,10 @@ service cloud.firestore {
       return request.auth != null &&
         exists(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)) &&
         get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId == request.auth.uid;
+    }
+    // Add a helper to check if the user is the owner of the restaurant for a fee record
+    function isOwner(restaurantId) {
+      return request.auth != null && get(/databases/$(database)/documents/restaurants/$(restaurantId)).data.ownerId == request.auth.uid;
     }
   }
 }
