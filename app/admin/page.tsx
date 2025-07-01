@@ -1,7 +1,7 @@
 // app/admin/page.tsx
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { collection, getDocs, query, orderBy, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore"
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
@@ -29,7 +29,10 @@ interface DashboardStats {
 }
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [orders, setOrders] = useState<Order[]>([])
+  const [products, setProducts] = useState<Product[]>([])
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([])
+  const [users, setUsers] = useState<UserProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<"user" | "restaurant_owner" | "admin" | null>(null)
@@ -37,11 +40,10 @@ export default function AdminDashboardPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userDocRef = doc(db, "users", user.uid)
         const userDocSnap = await getDoc(userDocRef)
-
         if (!userDocSnap.exists()) {
           await setDoc(userDocRef, {
             uid: user.uid,
@@ -52,11 +54,9 @@ export default function AdminDashboardPage() {
           })
           log("info", "User profile auto-created during admin dashboard check", { uid: user.uid })
         }
-
         const userData = (await getDoc(userDocRef)).data()
         if (userData?.role === "admin") {
           setUserRole("admin")
-          fetchDashboardStats()
         } else {
           log("warn", "Unauthorized access attempt to admin dashboard", { uid: user.uid })
           router.push("/")
@@ -67,146 +67,121 @@ export default function AdminDashboardPage() {
       }
     })
 
-    return () => {
-      unsubscribe()
-    }
-  }, [router, userRole])
-
-  const fetchDashboardStats = () => {
-    try {
-      // Fetch orders in real time
-      const ordersCollection = collection(db, "orders")
-      const ordersQuery = query(ordersCollection, orderBy("orderDate", "desc"))
-      const unsubscribeOrders = onSnapshot(ordersQuery, async (ordersSnapshot) => {
-        const validOrders: Order[] = []
-        const invalidOrders: any[] = []
-        ordersSnapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          // Check for required fields
-          if (
-            typeof data.status === 'string' &&
-            typeof data.totalAmount === 'number' &&
-            (data.orderDate && (typeof data.orderDate.toDate === 'function' || data.orderDate instanceof Date))
-          ) {
-            validOrders.push({
-              id: doc.id,
-              userId: data.userId || '',
-              userName: data.userName || '',
-              userEmail: data.userEmail || '',
-              restaurantId: data.restaurantId || '',
-              restaurantName: data.restaurantName || '',
-              items: data.items || [],
-              totalAmount: data.totalAmount,
-              status: data.status,
-              orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
-              deliveryAddress: data.deliveryAddress || '',
-              contactPhone: data.contactPhone || '',
-              notes: data.notes || '',
-              updatedAt: data.updatedAt || undefined,
-              estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
-            } as unknown as Order)
-          } else {
-            invalidOrders.push({ id: doc.id, ...data })
-            console.warn('Order skipped due to missing fields:', { id: doc.id, ...data })
-          }
-        })
-
-        // Fetch products in real time
-        const productsCollection = collection(db, "products")
-        const unsubscribeProducts = onSnapshot(productsCollection, (productsSnapshot) => {
-          const products = productsSnapshot.docs.map((doc) => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              ...data,
-              createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-              updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
-            } as unknown as Product;
-          });
-
-          // Fetch restaurants in real time
-          const restaurantsCollection = collection(db, "restaurants")
-          const unsubscribeRestaurants = onSnapshot(restaurantsCollection, (restaurantsSnapshot) => {
-            const restaurants = restaurantsSnapshot.docs.map((doc) => {
-              const data = doc.data();
-              return {
-                id: doc.id,
-                ...data,
-                createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-                updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
-              } as unknown as Restaurant;
-            });
-
-            // Fetch users in real time
-            const usersCollection = collection(db, "users")
-            const unsubscribeUsers = onSnapshot(usersCollection, (usersSnapshot) => {
-              const users = usersSnapshot.docs.map((doc) => {
-                const data = doc.data();
-                return {
-                  id: doc.id,
-                  ...data,
-                  createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
-                } as unknown as UserProfile;
-              });
-
-              // Calculate stats
-              const totalOrders = validOrders.length
-              const pendingOrders = validOrders.filter((order) => order.status === "pending").length
-              const completedOrders = validOrders.filter((order) => order.status === "delivered" || order.status === "completed").length
-              const cancelledOrders = validOrders.filter((order) => order.status === "cancelled").length
-              // Platform fee is now 10% of each delivered order
-              const platformFeeRate = 0.10;
-              const totalRevenue = validOrders
-                .filter((order) => order.status === "delivered")
-                .reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
-              const totalProducts = products.length
-              const totalRestaurants = restaurants.length
-              const totalUsers = users.filter((user) => user.role === "user").length
-              const recentOrders = validOrders.slice(0, 5)
-
-              // Get top restaurants by rating
-              const topRestaurants = restaurants
-                .filter((restaurant) => restaurant.isActive)
-                .sort((a, b) => (b.rating || 0) - (a.rating || 0))
-                .slice(0, 5)
-
-              // Get top products by rating
-              const topProducts = products
-                .filter((product) => product.isAvailable)
-                .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
-                .slice(0, 5)
-
-              const dashboardStats: DashboardStats = {
-                totalOrders,
-                pendingOrders,
-                completedOrders,
-                cancelledOrders,
-                totalRevenue,
-                totalProducts,
-                totalRestaurants,
-                totalUsers,
-                recentOrders,
-                topRestaurants,
-                topProducts,
-              }
-
-              setStats(dashboardStats)
-              console.log('Admin dashboard stats updated:', dashboardStats)
-              log('debug', 'Admin dashboard stats updated', dashboardStats)
-              setLoading(false)
-              setInvalidOrders(invalidOrders)
-            })
-          })
-        })
+    // Set up all listeners in parallel
+    const unsubOrders = onSnapshot(collection(db, "orders"), (ordersSnapshot) => {
+      const validOrders: Order[] = []
+      const invalidOrders: any[] = []
+      ordersSnapshot.docs.forEach((doc) => {
+        const data = doc.data();
+        if (
+          typeof data.status === 'string' &&
+          typeof data.totalAmount === 'number' &&
+          (data.orderDate && (typeof data.orderDate.toDate === 'function' || data.orderDate instanceof Date))
+        ) {
+          validOrders.push({
+            id: doc.id,
+            userId: data.userId || '',
+            userName: data.userName || '',
+            userEmail: data.userEmail || '',
+            restaurantId: data.restaurantId || '',
+            restaurantName: data.restaurantName || '',
+            items: data.items || [],
+            totalAmount: data.totalAmount,
+            status: data.status,
+            orderDate: data.orderDate && typeof data.orderDate.toDate === 'function' ? data.orderDate.toDate() : data.orderDate,
+            deliveryAddress: data.deliveryAddress || '',
+            contactPhone: data.contactPhone || '',
+            notes: data.notes || '',
+            updatedAt: data.updatedAt || undefined,
+            estimatedDeliveryTime: data.estimatedDeliveryTime && typeof data.estimatedDeliveryTime.toDate === 'function' ? data.estimatedDeliveryTime.toDate() : data.estimatedDeliveryTime,
+          } as unknown as Order)
+        } else {
+          invalidOrders.push({ id: doc.id, ...data })
+        }
       })
-      // Store unsubscribe functions if you want to clean up later
-    } catch (err: any) {
-      log("error", "Failed to fetch admin dashboard stats", { error: err.message })
-      setError("Failed to load dashboard data. Please try again later.")
-      console.error("Error fetching dashboard stats:", err)
-      setLoading(false)
+      setOrders(validOrders)
+      setInvalidOrders(invalidOrders)
+    })
+    const unsubProducts = onSnapshot(collection(db, "products"), (productsSnapshot) => {
+      setProducts(productsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+        } as unknown as Product;
+      }))
+    })
+    const unsubRestaurants = onSnapshot(collection(db, "restaurants"), (restaurantsSnapshot) => {
+      setRestaurants(restaurantsSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+          updatedAt: data.updatedAt && typeof data.updatedAt.toDate === 'function' ? data.updatedAt.toDate() : data.updatedAt,
+        } as unknown as Restaurant;
+      }))
+    })
+    const unsubUsers = onSnapshot(collection(db, "users"), (usersSnapshot) => {
+      setUsers(usersSnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate() : data.createdAt,
+        } as unknown as UserProfile;
+      }))
+    })
+
+    setLoading(false)
+    return () => {
+      unsubscribeAuth && unsubscribeAuth()
+      unsubOrders && unsubOrders()
+      unsubProducts && unsubProducts()
+      unsubRestaurants && unsubRestaurants()
+      unsubUsers && unsubUsers()
     }
-  }
+  }, [router])
+
+  // Calculate stats from latest state
+  const stats = useMemo(() => {
+    if (!orders || !products || !restaurants || !users) return null
+    const totalOrders = orders.length
+    const pendingOrders = orders.filter((order) => order.status === "pending").length
+    const completedOrders = orders.filter((order) => order.status === "delivered" || order.status === "completed").length
+    const cancelledOrders = orders.filter((order) => order.status === "cancelled").length
+    const platformFeeRate = 0.10
+    const totalRevenue = orders
+      .filter((order) => order.status === "delivered")
+      .reduce((sum, order) => sum + (order.totalAmount * platformFeeRate), 0)
+    const totalProducts = products.length
+    const totalRestaurants = restaurants.length
+    const totalUsers = users.filter((user) => user.role === "user").length
+    const recentOrders = [...orders].sort((a, b) => (b.orderDate instanceof Date && a.orderDate instanceof Date ? b.orderDate.getTime() - a.orderDate.getTime() : 0)).slice(0, 5)
+    const topRestaurants = [...restaurants]
+      .filter((restaurant) => restaurant.isActive)
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      .slice(0, 5)
+    const topProducts = [...products]
+      .filter((product) => product.isAvailable)
+      .sort((a, b) => (b.averageRating || 0) - (a.averageRating || 0))
+      .slice(0, 5)
+    return {
+      totalOrders,
+      pendingOrders,
+      completedOrders,
+      cancelledOrders,
+      totalRevenue,
+      totalProducts,
+      totalRestaurants,
+      totalUsers,
+      recentOrders,
+      topRestaurants,
+      topProducts,
+    }
+  }, [orders, products, restaurants, users])
 
   if (loading || userRole === null) {
     return <LoadingSpinner />

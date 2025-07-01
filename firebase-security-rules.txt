@@ -4,60 +4,82 @@ service cloud.firestore {
 
     // USERS
     match /users/{userId} {
+      // Users can read/update/delete their own profile
       allow read, update, delete: if request.auth != null && request.auth.uid == userId;
+      // Users can create their own profile
       allow create: if request.auth != null && request.auth.uid == userId;
+      // Admins can read/write all users
       allow read, write: if isAdmin();
     }
 
     // RESTAURANTS
     match /restaurants/{restaurantId} {
+      // Public can read active restaurants, owners and admins can read all
       allow read: if resource.data.isActive == true || isAdmin() || isOwner(resource.data.ownerId);
+      // Only authenticated users can create a restaurant (if not already exists)
       allow create: if request.auth != null && !exists(/databases/$(database)/documents/restaurants/$(restaurantId));
+      // Only owner or admin can update/delete
       allow update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }
 
     // PRODUCTS
     match /products/{productId} {
+      // Public can read products
       allow read: if true;
+      // Only admin or owner can create
       allow create: if isAdmin() || isOwner(request.resource.data.ownerId);
+      // Only admin or owner can update/delete
       allow update, delete: if isAdmin() || isOwner(resource.data.ownerId);
     }
 
     // ORDERS
     match /orders/{orderId} {
-      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Users can create orders for themselves
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      // Users can read/update/delete their own orders
+      allow read, update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Restaurant owners can read orders for their restaurant
       allow read: if request.auth != null &&
         resource.data.restaurantId != null &&
         exists(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)) &&
         get(/databases/$(database)/documents/restaurants/$(resource.data.restaurantId)).data.ownerId == request.auth.uid;
+      // Admins can read/write all orders
       allow read, write: if isAdmin();
     }
 
     // REVIEWS
     match /reviews/{reviewId} {
+      // Public can read reviews
       allow read: if true;
+      // Authenticated users can create reviews for products or restaurants
       allow create: if request.auth != null && (
         (request.resource.data.productId is string && request.resource.data.productId.size() > 0) ||
         (request.resource.data.restaurantId is string && request.resource.data.restaurantId.size() > 0)
       ) && request.resource.data.userId == request.auth.uid;
+      // Users can update/delete their own reviews
       allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+      // Admins can read/write all reviews
       allow read, write: if isAdmin();
     }
 
     // CATEGORIES
     match /categories/{categoryId} {
+      // Public can read categories
       allow read: if true;
+      // Only admin can create/update/delete
       allow create, update, delete: if isAdmin();
     }
 
     // PLATFORM FEES
     match /platformFees/{feeId} {
+      // Admin or restaurant owner can create
       allow create: if isAdmin() ||
         (request.auth != null &&
           request.resource.data.restaurantId != null &&
           exists(/databases/$(database)/documents/restaurants/$(request.resource.data.restaurantId)) &&
           get(/databases/$(database)/documents/restaurants/$(request.resource.data.restaurantId)).data.ownerId == request.auth.uid
         );
+      // Admin or restaurant owner can read/write
       allow read, write: if isAdmin() ||
         (request.auth != null &&
           resource.data.restaurantId != null &&
@@ -68,16 +90,19 @@ service cloud.firestore {
 
     // ANALYTICS
     match /analytics/{docId} {
+      // Only admin can read/write analytics
       allow read, write: if isAdmin();
     }
 
     // NOTIFICATIONS
     match /notifications/{notificationId} {
+      // Only the relevant user, restaurant owner, or admin can read/write
       allow read, write: if request.auth != null && (
         resource.data.userId == request.auth.uid ||
         resource.data.restaurantOwnerId == request.auth.uid ||
         isAdmin()
       );
+      // Any authenticated user can create
       allow create: if request.auth != null;
     }
 

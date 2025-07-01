@@ -80,6 +80,7 @@ export default function CartPage() {
   const updateLocalStorageCart = (updatedCart: CartItem[]) => {
     localStorage.setItem("cart", JSON.stringify(updatedCart))
     setCart(updatedCart)
+    window.dispatchEvent(new Event("cart-updated"))
   }
 
   const handleQuantityChange = (productId: string, newQuantity: number) => {
