@@ -138,11 +138,6 @@ export default function ClientLayout({
                           Menu
                         </Button>
                       </Link>
-                      <Link href="/food-gallery" onClick={() => setMobileNavOpen(false)}>
-                        <Button variant="ghost" size="lg" className="w-full justify-start">
-                          Gallery
-                        </Button>
-                      </Link>
                       <Link href="/about" onClick={() => setMobileNavOpen(false)}>
                         <Button variant="ghost" size="lg" className="w-full justify-start">
                           About
@@ -245,11 +240,6 @@ export default function ClientLayout({
                 <Link href="/menu">
                   <Button variant="ghost" size="sm" className="text-primary-foreground">
                     <BookText className="mr-2 h-4 w-4" /> Menu
-                  </Button>
-                </Link>
-                <Link href="/food-gallery">
-                  <Button variant="ghost" size="sm" className="text-primary-foreground">
-                    Gallery
                   </Button>
                 </Link>
                 <Link href="/about">

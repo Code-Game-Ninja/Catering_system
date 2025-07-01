@@ -186,8 +186,35 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Indian Food Gallery Section */}
-      <IndianFoodGallery />
+      {/* Gallery Preview Section */}
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-8">Gallery Preview</h2>
+          <div className="flex flex-wrap justify-center gap-4 mb-6">
+            <div className="flex flex-col items-center">
+              <Image src="https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWFzYWxhJTIwRG9zYXxlbnwwfHwwfHx8MA%3D%3D" alt="Masala Dosa" width={220} height={150} className="rounded-lg shadow-md object-cover" />
+              <span className="mt-2 font-medium">Masala Dosa</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <Image src="https://media.istockphoto.com/id/1455306682/photo/kachalu-chaat.webp?a=1&b=1&s=612x612&w=0&k=20&c=nE03ItYFZ3lUyvrLPpmKa0gG-FM8pFQPSHh0ZWW6p6w=" alt="Paneer Tikka" width={220} height={150} className="rounded-lg shadow-md object-cover" />
+              <span className="mt-2 font-medium">Paneer Tikka</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <Image src="https://media.istockphoto.com/id/979914742/photo/chole-bhature-or-chick-pea-curry-and-fried-puri-served-in-terracotta-crockery-over-white.webp?a=1&b=1&s=612x612&w=0&k=20&c=8pmBVIcNb-GIFnsBT0sYqfy-YtzNq7pOqc6lQZgFOPo=" alt="Chole Bhature" width={220} height={150} className="rounded-lg shadow-md object-cover" />
+              <span className="mt-2 font-medium">Chole Bhature</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <Image src="https://media.istockphoto.com/id/1257018928/photo/gujarati-khaman-dhokla-or-steamed-gram-flour-puffy-snack-cake.webp?a=1&b=1&s=612x612&w=0&k=20&c=YQTu_3O4g7MJ7iRqXrl634_J_SajzmaF-E9W51YdAOs=" alt="Dhokla" width={220} height={150} className="rounded-lg shadow-md object-cover" />
+              <span className="mt-2 font-medium">Dhokla</span>
+            </div>
+          </div>
+          <Link href="/food-gallery">
+            <Button size="lg" variant="outline" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              See all photos
+            </Button>
+          </Link>
+        </div>
+      </section>
 
       {/* Call to Action Section (already exists, but keeping for completeness) */}
       <section className="py-16 md:py-24 bg-primary text-primary-foreground text-center">
