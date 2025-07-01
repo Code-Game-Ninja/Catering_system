@@ -17,7 +17,6 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import { resizeAndCompress } from "@/lib/resize-image"
 import { PlusCircle, ImageIcon } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function RestaurantSetupPage() {
   const [user, setUser] = useState<any>(null)
@@ -33,7 +32,6 @@ export default function RestaurantSetupPage() {
   const [uploading, setUploading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -59,22 +57,14 @@ export default function RestaurantSetupPage() {
             uid: currentUser.uid,
             role: userData?.role,
           })
-          toast({
-            title: "⛔ Access Denied",
-            description: "Not authorized to set up a restaurant.",
-            variant: "destructive",
-          })
+          setError("Not authorized to set up a restaurant.")
           router.push("/") // Redirect if not a restaurant owner
         } else if (userData.restaurantId) {
           log("info", "Restaurant owner already has a restaurant, redirecting to dashboard", {
             uid: currentUser.uid,
             restaurantId: userData.restaurantId,
           })
-          toast({
-            title: "ℹ️ Already Setup",
-            description: "Restaurant already registered.",
-            variant: "default",
-          })
+          setError("Restaurant already registered.")
           router.push("/restaurant-owner") // Redirect if already has a restaurant
         } else {
           setEmail(currentUser.email || "") // Pre-fill email
@@ -86,7 +76,7 @@ export default function RestaurantSetupPage() {
       }
     })
     return () => unsubscribe()
-  }, [router, toast])
+  }, [router])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -105,22 +95,12 @@ export default function RestaurantSetupPage() {
         fileName: imageFile.name,
         error: err.message,
       })
-      setError("🖼️ Image Error")
-      toast({
-        title: "🖼️ Image Error",
-        description: "Could not process image.",
-        variant: "destructive",
-      })
+      setError("Could not process image.")
       return null
     }
 
     if (blob.size > 4 * 1024 * 1024) {
-      setError("📦 Too Large")
-      toast({
-        title: "📦 Too Large",
-        description: "Image still too large (max 4 MB).",
-        variant: "destructive",
-      })
+      setError("Image still too large (max 4 MB).")
       return null
     }
 
@@ -138,12 +118,7 @@ export default function RestaurantSetupPage() {
       return downloadURL
     } catch (err: any) {
       log("error", "Restaurant image upload failed", { fileName: imageFile.name, error: err.message })
-      setError("❌ Upload Failed")
-      toast({
-        title: "❌ Upload Failed",
-        description: "Could not upload image.",
-        variant: "destructive",
-      })
+      setError("Could not upload image.")
       return null
     } finally {
       setUploading(false)
@@ -156,23 +131,13 @@ export default function RestaurantSetupPage() {
     setIsSubmitting(true)
 
     if (!user) {
-      setError("🔒 Auth Error")
-      toast({
-        title: "🔒 Auth Error",
-        description: "Please log in.",
-        variant: "destructive",
-      })
+      setError("Please log in.")
       setIsSubmitting(false)
       return
     }
 
     if (!restaurantName || !description || !address || !phone || !email || !cuisine) {
-      setError("⚠️ Missing Info")
-      toast({
-        title: "⚠️ Missing Info",
-        description: "Fill all required fields.",
-        variant: "destructive",
-      })
+      setError("Fill all required fields.")
       setIsSubmitting(false)
       return
     }
@@ -211,20 +176,11 @@ export default function RestaurantSetupPage() {
       await setDoc(userDocRef, { restaurantId: newRestaurantRef.id }, { merge: true })
       log("info", "User profile updated with restaurantId", { uid: user.uid, restaurantId: newRestaurantRef.id })
 
-      toast({
-        title: "🎉 Registered!",
-        description: "Restaurant registered. Awaiting approval.",
-        variant: "default",
-      })
+      setError(null)
       router.push("/restaurant-owner")
     } catch (err: any) {
       log("error", "Failed to register restaurant", { error: err.message, uid: user.uid })
-      setError("❌ Registration Failed")
-      toast({
-        title: "❌ Registration Failed",
-        description: "Could not register. Try again.",
-        variant: "destructive",
-      })
+      setError("Could not register. Try again.")
       console.error("Error registering restaurant:", err)
     } finally {
       setIsSubmitting(false)

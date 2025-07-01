@@ -20,7 +20,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 interface EditRestaurantModalProps {
   isOpen: boolean
@@ -40,7 +39,6 @@ export function EditRestaurantModal({ isOpen, onClose, restaurant, onSave }: Edi
   const [isActive, setIsActive] = useState(restaurant.isActive)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     if (restaurant) {
@@ -86,20 +84,10 @@ export function EditRestaurantModal({ isOpen, onClose, restaurant, onSave }: Edi
       }
       onSave(updatedRestaurant)
       log("info", "Restaurant updated successfully", { restaurantId: restaurant.id, updatedData })
-      toast({
-        title: "✅ Updated!",
-        description: "Restaurant details saved.",
-        variant: "default",
-      })
-      onClose()
+      setError(null)
     } catch (err: any) {
       log("error", "Failed to update restaurant", { restaurantId: restaurant.id, error: err.message })
-      setError("Failed to update restaurant. Please try again.")
-      toast({
-        title: "❌ Update Failed",
-        description: "Could not update. Try again.",
-        variant: "destructive",
-      })
+      setError("Could not update. Try again.")
     } finally {
       setLoading(false)
     }

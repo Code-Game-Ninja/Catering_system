@@ -3,7 +3,6 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { toast } from "@/components/ui/use-toast"
 
 const PAYMENT_METHODS = [
   { label: "Cash on Delivery (COD)", value: "cod", available: true },
@@ -22,20 +21,12 @@ export default function PaymentPageContent() {
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault()
     if (selected !== "cod") {
-      toast({
-        title: "🚧 Coming Soon!",
-        description: "Select COD. Other methods coming soon!",
-        variant: "destructive",
-      })
+      alert("This payment method is under construction. Please select COD.")
       return
     }
     setSubmitting(true)
     setTimeout(() => {
-      toast({
-        title: "💸 Payment Confirmed!",
-        description: `Order #${orderId?.substring(0, 8)} set for COD. Thank you!`,
-        variant: "default",
-      })
+      alert(`Order #${orderId?.substring(0, 8)} set for COD. Thank you!`)
       router.push("/my-orders")
     }, 1200)
   }

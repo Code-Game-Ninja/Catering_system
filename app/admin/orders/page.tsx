@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { collection, getDocs, doc, query, orderBy, setDoc, getDoc, onSnapshot } from "firebase/firestore" // Removed updateDoc
+import { collection, getDocs, doc, query, orderBy, setDoc, getDoc, onSnapshot, updateDoc } from "firebase/firestore" // Removed updateDoc
 import { db, auth } from "@/lib/firebase"
 import { onAuthStateChanged } from "firebase/auth"
 import { useRouter } from "next/navigation"
@@ -28,6 +28,8 @@ import {
   User,
   Truck,
 } from "lucide-react" // Added Truck icon
+import { sendEmail, generateOrderEventEmail } from '@/lib/utils'
+import { query as fsQuery, where } from 'firebase/firestore'
 
 interface OrderWithUserInfo extends Omit<Order, 'userName' | 'userEmail'> {
   userEmail?: string | null;
@@ -45,7 +47,7 @@ export default function AdminOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [dateFilter, setDateFilter] = useState<string>("all")
   const [selectedOrder, setSelectedOrder] = useState<OrderWithUserInfo | null>(null)
-  // Removed updatingOrderId state as admin no longer updates status
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -94,7 +96,7 @@ export default function AdminOrdersPage() {
 
           // Fetch user information for each order
           try {
-            const userDocRef = doc(db, "users", orderData.userId)
+            const userDocRef = doc(db, "users", (orderData as any).userId)
             const userDocSnap = await getDoc(userDocRef)
             if (userDocSnap.exists()) {
               const userData = userDocSnap.data() as UserProfile
@@ -106,7 +108,7 @@ export default function AdminOrdersPage() {
               } as OrderWithUserInfo
             }
           } catch (err) {
-            log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
+            log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: (orderData as any).userId })
           }
 
           return orderData as OrderWithUserInfo
@@ -128,7 +130,70 @@ export default function AdminOrdersPage() {
     }
   }
 
-  // Removed updateOrderStatus function as admin no longer updates status
+  const updateOrderStatus = async (
+    orderId: string,
+    newStatus: "pending" | "processing" | "completed" | "cancelled" | "delivered",
+  ) => {
+    setUpdatingOrderId(orderId)
+    try {
+      const orderRef = doc(db, "orders", orderId)
+      await updateDoc(orderRef, { status: newStatus })
+      // Fetch updated order data
+      const orderDocSnap = await getDoc(orderRef)
+      const orderData = { id: orderId, ...orderDocSnap.data() }
+      // Fetch user info for the order
+      let userEmail = ''
+      let userName = ''
+      if ((orderData as any).userId) {
+        const userDocRef = doc(db, 'users', (orderData as any).userId)
+        const userDocSnap = await getDoc(userDocRef)
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data() as UserProfile
+          userEmail = userData.email || ''
+          userName = userData.name || ''
+        }
+      }
+      const order = { ...orderData, userEmail, userName }
+      // Send email notifications
+      // User email
+      // Restaurant owner email
+      let ownerEmail = 'owner@example.com'
+      if ((order as any).restaurantId) {
+        const restaurantDoc = await getDoc(doc(db, 'restaurants', (order as any).restaurantId))
+        if (restaurantDoc.exists()) {
+          const restaurantData = restaurantDoc.data()
+          if (restaurantData.ownerId) {
+            const ownerDoc = await getDoc(doc(db, 'users', restaurantData.ownerId))
+            if (ownerDoc.exists()) {
+              ownerEmail = ownerDoc.data().email || ownerEmail
+            }
+          }
+        }
+      }
+      // Admin email
+      let adminEmail = 'admin@example.com'
+      const adminsQuery = fsQuery(collection(db, 'users'), where('role', '==', 'admin'))
+      const adminsSnapshot = await getDocs(adminsQuery)
+      if (!adminsSnapshot.empty) {
+        const adminDoc = adminsSnapshot.docs[0]
+        adminEmail = adminDoc.data().email || adminEmail
+      }
+      // Send emails for relevant events
+      if (newStatus === "processing") {
+        await sendEmail({ to: userEmail, ...(generateOrderEventEmail({ eventType: 'order_confirmed', order, recipientRole: 'user' })) })
+        await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_confirmed', order, recipientRole: 'admin' })) })
+      } else if (newStatus === "delivered") {
+        await sendEmail({ to: userEmail, ...(generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'user' })) })
+        await sendEmail({ to: ownerEmail, ...(generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'restaurant_owner' })) })
+        await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'admin' })) })
+      }
+    } catch (err) {
+      setError('Failed to update order status. Please try again.')
+      console.error('Error updating order status:', err)
+    } finally {
+      setUpdatingOrderId(null)
+    }
+  }
 
   const applyFilters = (ordersList: OrderWithUserInfo[], search: string, status: string, date: string) => {
     let filtered = [...ordersList]
@@ -410,12 +475,26 @@ export default function AdminOrdersPage() {
 
                     {/* Order Status Display (Read-Only for Admin) */}
                     <div>
-                      <h3 className="font-semibold mb-3">Order Status</h3>
-                      <Badge className={`${getStatusColor(order.status)} flex items-center gap-1 w-fit`}>
-                        {getStatusIcon(order.status)}
-                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                      </Badge>
-                      <p className="text-sm text-gray-500 mt-2">Order status is managed by the restaurant owner.</p>
+                      <h3 className="font-semibold mb-3">Update Order Status</h3>
+                      <div className="flex items-center gap-2">
+                        <Select
+                          value={order.status}
+                          onValueChange={(newStatus) => updateOrderStatus(order.id, newStatus as any)}
+                          disabled={updatingOrderId === order.id}
+                        >
+                          <SelectTrigger className="w-40">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="processing">Processing</SelectItem>
+                            <SelectItem value="delivered">Delivered</SelectItem>
+                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="cancelled">Cancelled</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        {updatingOrderId === order.id && <div className="text-sm text-gray-500">Updating...</div>}
+                      </div>
                     </div>
                   </div>
 

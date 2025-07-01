@@ -19,7 +19,6 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import Image from "next/image"
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
 import { resizeAndCompress } from "@/lib/resize-image" // Correct import
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function RestaurantSettingsPage() {
   const [user, setUser] = useState<any>(null)
@@ -30,7 +29,6 @@ export default function RestaurantSettingsPage() {
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -78,11 +76,6 @@ export default function RestaurantSettingsPage() {
     } catch (err: any) {
       log("error", "Failed to fetch user profile or restaurant data", { uid, error: err.message })
       setError("Failed to load settings. Please try again.")
-      toast({
-        title: "❌ Error",
-        description: "Could not load settings.",
-        variant: "destructive",
-      })
       console.error("Error fetching data:", err)
     }
   }
@@ -115,11 +108,7 @@ export default function RestaurantSettingsPage() {
       return imageUrl
     } catch (err: any) {
       log("error", "Restaurant image upload failed", { fileName: file.name, error: err.message })
-      toast({
-        title: "❌ Upload Failed",
-        description: "Could not upload image.",
-        variant: "destructive",
-      })
+      setError("Could not upload image.")
       throw err
     }
   }
@@ -146,25 +135,13 @@ export default function RestaurantSettingsPage() {
       })
 
       log("info", "Restaurant settings updated successfully", { restaurantId: userProfile.restaurantId })
-      toast({
-        title: "✅ Saved!",
-        description: "Settings updated.",
-        variant: "default",
-      })
-      // Clear image file and preview after successful upload/save
-      setImageFile(null)
-      setPreviewImage(updatedImageUrl)
+      setError(null)
     } catch (err: any) {
       log("error", "Failed to update restaurant settings", {
         restaurantId: userProfile.restaurantId,
         error: err.message,
       })
       setError("Failed to save settings. Please try again.")
-      toast({
-        title: "❌ Save Failed",
-        description: "Could not save settings.",
-        variant: "destructive",
-      })
       console.error("Error saving settings:", err)
     } finally {
       setLoading(false)

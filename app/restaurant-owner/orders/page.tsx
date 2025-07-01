@@ -28,16 +28,11 @@ import {
   User,
   Truck,
 } from "lucide-react"
-
-interface OrderWithUserInfo extends Order {
-  userEmail?: string
-  userName?: string
-  userPhone?: string
-}
+import { sendEmail, generateOrderEventEmail } from '@/lib/utils'
 
 export default function RestaurantOwnerOrdersPage() {
-  const [orders, setOrders] = useState<OrderWithUserInfo[]>([])
-  const [filteredOrders, setFilteredOrders] = useState<OrderWithUserInfo[]>([])
+  const [orders, setOrders] = useState<Order[]>([])
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<"user" | "admin" | "restaurant_owner" | null>(null)
@@ -45,7 +40,7 @@ export default function RestaurantOwnerOrdersPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
   const [dateFilter, setDateFilter] = useState<string>("all")
-  const [selectedOrder, setSelectedOrder] = useState<OrderWithUserInfo | null>(null)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null)
   const router = useRouter()
 
@@ -95,7 +90,7 @@ export default function RestaurantOwnerOrdersPage() {
           const orderData = {
             id: orderDoc.id,
             ...orderDoc.data(),
-            orderDate: orderDoc.data().orderDate?.toDate(),
+            orderDate: orderDoc.data().orderDate && typeof orderDoc.data().orderDate.toDate === 'function' ? orderDoc.data().orderDate.toDate() : orderDoc.data().orderDate,
           } as Order
 
           // Fetch user information for each order
@@ -108,18 +103,21 @@ export default function RestaurantOwnerOrdersPage() {
                 ...orderData,
                 userEmail: userData.email,
                 userName: userData.name,
-                userPhone: userData.phone,
-              } as OrderWithUserInfo
+              } as Order
             }
           } catch (err) {
             log("warn", "Failed to fetch user info for order", { orderId: orderData.id, userId: orderData.userId })
           }
 
-          return orderData as OrderWithUserInfo
+          return orderData as Order
         }),
       )
 
-        const sorted = ordersList.sort((a, b) => (b.orderDate?.getTime?.() ?? 0) - (a.orderDate?.getTime?.() ?? 0))
+        const sorted = ordersList.sort((a, b) => {
+          const aDate = a.orderDate instanceof Date ? a.orderDate : (typeof a.orderDate?.toDate === 'function' ? a.orderDate.toDate() : null)
+          const bDate = b.orderDate instanceof Date ? b.orderDate : (typeof b.orderDate?.toDate === 'function' ? b.orderDate.toDate() : null)
+          return (bDate?.getTime?.() ?? 0) - (aDate?.getTime?.() ?? 0)
+        })
       setOrders(sorted)
       setFilteredOrders(sorted)
       log("info", "Restaurant owner fetched orders successfully", {
@@ -152,6 +150,30 @@ export default function RestaurantOwnerOrdersPage() {
       setOrders(updatedOrders)
       applyFilters(updatedOrders, searchTerm, statusFilter, dateFilter)
 
+      // Fetch updated order data
+      const orderDocRef = doc(db, "orders", orderId)
+      const orderDocSnap = await getDoc(orderDocRef)
+      const order = { id: orderId, ...orderDocSnap.data() } as Order
+
+      // Send email notifications for relevant events
+      if (newStatus === "processing") {
+        const { subject, html, text } = generateOrderEventEmail({ eventType: 'order_confirmed', order, recipientRole: 'user' })
+        await sendEmail({ to: order.userEmail || '', subject, html, text })
+        let adminEmail = 'admin@example.com'
+        const adminsQuery = query(collection(db, 'users'), where('role', '==', 'admin'))
+        const adminsSnapshot = await getDocs(adminsQuery)
+        if (!adminsSnapshot.empty) {
+          const adminDoc = adminsSnapshot.docs[0]
+          adminEmail = adminDoc.data().email || adminEmail
+        }
+        await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_confirmed', order, recipientRole: 'admin' })) })
+      } else if (newStatus === "delivered") {
+        const { subject, html, text } = generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'user' })
+        await sendEmail({ to: order.userEmail || '', subject, html, text })
+        await sendEmail({ to: 'owner@example.com', ...(generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'restaurant_owner' })) })
+        await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_delivered', order, recipientRole: 'admin' })) })
+      }
+
       log("info", "Order status updated successfully by restaurant owner", { orderId, newStatus, restaurantId })
     } catch (err: any) {
       log("error", "Failed to update order status by restaurant owner", {
@@ -167,7 +189,7 @@ export default function RestaurantOwnerOrdersPage() {
     }
   }
 
-  const applyFilters = (ordersList: OrderWithUserInfo[], search: string, status: string, date: string) => {
+  const applyFilters = (ordersList: Order[], search: string, status: string, date: string) => {
     let filtered = [...ordersList]
 
     // Search filter
@@ -376,8 +398,8 @@ export default function RestaurantOwnerOrdersPage() {
                           <Calendar className="h-4 w-4" />
                           {(() => {
                             let dateObj = order.orderDate
-                            if (dateObj && typeof dateObj === 'object' && typeof dateObj.toDate === 'function') {
-                              dateObj = dateObj.toDate()
+                            if (dateObj && typeof dateObj === 'object' && typeof (dateObj as any).toDate === 'function') {
+                              dateObj = (dateObj as any).toDate()
                             }
                             if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
                               return `${dateObj.toLocaleDateString()} at ${dateObj.toLocaleTimeString()}`
@@ -426,12 +448,6 @@ export default function RestaurantOwnerOrdersPage() {
                         </p>
                         <p>
                           <span className="font-medium">Name:</span> {order.userName || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">Phone:</span> {order.userPhone || "N/A"}
-                        </p>
-                        <p>
-                          <span className="font-medium">User ID:</span> {order.userId}
                         </p>
                         <p>
                           <span className="font-medium">Delivery Address:</span> {order.deliveryAddress || "N/A"}

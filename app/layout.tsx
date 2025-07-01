@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import ClientLayout from "./clientLayout"
-import { Toaster } from "@/components/ui/toaster" // Import Toaster
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,7 +21,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientLayout>{children}</ClientLayout>
-        <Toaster /> {/* Add the Toaster component here */}
       </body>
     </html>
   )

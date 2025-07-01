@@ -15,7 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import { ShoppingCart, XCircle, MapPin, Phone, Mail, ArrowLeft } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
+import { sendEmail, generateOrderEventEmail } from '@/lib/utils'
 
 interface CartItem {
   productId: string
@@ -38,7 +38,6 @@ export default function CartPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -95,11 +94,7 @@ export default function CartPage() {
   const handleRemoveItem = (productId: string) => {
     const updatedCart = cart.filter((item) => item.productId !== productId)
     updateLocalStorageCart(updatedCart)
-    toast({
-      title: "🗑️ Removed",
-      description: "Item removed.",
-      variant: "default",
-    })
+    setError("Item removed from cart.")
   }
 
   const calculateTotal = () => {
@@ -113,33 +108,18 @@ export default function CartPage() {
 
     if (!user) {
       setError("You must be logged in to place an order.")
-      toast({
-        title: "Authentication Required",
-        description: "You must be logged in to place an order.",
-        variant: "destructive",
-      })
       setIsSubmitting(false)
       return
     }
 
     if (cart.length === 0) {
-      setError("Your cart is empty.")
-      toast({
-        title: "Cart Empty",
-        description: "Your cart is empty. Please add items before placing an order.",
-        variant: "destructive",
-      })
+      setError("Your cart is empty. Please add items before placing an order.")
       setIsSubmitting(false)
       return
     }
 
     if (!deliveryAddress || !contactPhone || !contactEmail) {
       setError("Please fill in all delivery and contact details.")
-      toast({
-        title: "Missing Details",
-        description: "Please fill in all delivery and contact details.",
-        variant: "destructive",
-      })
       setIsSubmitting(false)
       return
     }
@@ -184,20 +164,39 @@ export default function CartPage() {
 
       // Clear cart after successful order
       updateLocalStorageCart([])
-      toast({
-        title: "Order Placed!",
-        description: `Your order #${orderRef.id.substring(0, 8)} has been placed successfully. Please select a payment method.`,
-        variant: "default",
-      })
+      setError(null)
       router.push(`/payment?orderId=${orderRef.id}`)
+
+      // After order is placed (after addDoc):
+      const placedOrder = { id: orderRef.id, ...orderData, orderDate: new Date() }
+      // Send email to user
+      const userEmail = contactEmail || user.email || ''
+      const { subject, html, text } = generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'user' })
+      await sendEmail({ to: userEmail, subject, html, text })
+      // Fetch restaurant owner email if possible
+      let ownerEmail = 'owner@example.com'
+      if (restaurantId) {
+        const restaurantDoc = await getDoc(doc(db, 'restaurants', restaurantId))
+        if (restaurantDoc.exists()) {
+          const restaurantData = restaurantDoc.data()
+          if (restaurantData.ownerId) {
+            const ownerDoc = await getDoc(doc(db, 'users', restaurantData.ownerId))
+            if (ownerDoc.exists()) {
+              ownerEmail = ownerDoc.data().email || ownerEmail
+            }
+          }
+        }
+      }
+      await sendEmail({ to: ownerEmail, ...(generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'restaurant_owner' })) })
+      // Fetch admin email (first admin found)
+      let adminEmail = 'admin@example.com'
+      const usersSnapshot = await getDoc(doc(db, 'users', user.uid))
+      // If you have a way to query all admins, replace this with a query for admin users
+      // For now, use placeholder
+      await sendEmail({ to: adminEmail, ...(generateOrderEventEmail({ eventType: 'order_placed', order: placedOrder, recipientRole: 'admin' })) })
     } catch (err: any) {
       log("error", "Failed to place order", { error: err.message, userId: user.uid })
       setError("Failed to place order. Please try again.")
-      toast({
-        title: "Order Failed",
-        description: "Failed to place order. Please try again.",
-        variant: "destructive",
-      })
       console.error("Error placing order:", err)
     } finally {
       setIsSubmitting(false)

@@ -14,7 +14,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import type { UserRole } from "@/lib/types"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 interface AuthFormProps {
   isRegister?: boolean
@@ -32,7 +31,6 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
   const [resetEmail, setResetEmail] = useState("")
   const [resetMessage, setResetMessage] = useState<string | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -43,12 +41,6 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
       if (isRegister) {
         if (password !== confirmPassword) {
           setError("Passwords do not match.")
-          toast({
-            title: "❌ Registration Failed",
-            description: "Passwords do not match.",
-            variant: "destructive",
-          })
-          setLoading(false)
           return
         }
         const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -63,11 +55,7 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
           createdAt: new Date(),
         })
         log("info", "User registered successfully", { uid: user.uid, email: user.email, role: defaultRole })
-        toast({
-          title: "🎉 Registered!",
-          description: "Account created.",
-          variant: "default",
-        })
+        setError(null)
         await sendEmailVerification(user)
         router.push(onSuccessRedirect)
       } else {
@@ -89,21 +77,12 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
         } else {
           log("info", "User logged in successfully", { uid: user.uid })
         }
-        toast({
-          title: "✅ Logged In!",
-          description: "Welcome back!",
-          variant: "default",
-        })
+        setError(null)
         router.push(onSuccessRedirect)
       }
     } catch (err: any) {
       log("error", `Authentication failed (${isRegister ? "register" : "login"})`, { error: err.message })
       setError(err.message)
-      toast({
-        title: "❌ Login Failed",
-        description: err.message,
-        variant: "destructive",
-      })
     } finally {
       setLoading(false)
     }
@@ -115,18 +94,8 @@ export function AuthForm({ isRegister = false, defaultRole = "user", onSuccessRe
     try {
       await sendPasswordResetEmail(auth, resetEmail)
       setResetMessage("Password reset email sent! Check your inbox.")
-      toast({
-        title: "✉️ Reset Email Sent",
-        description: "Check your inbox.",
-        variant: "default",
-      })
     } catch (err: any) {
       setResetMessage(err.message)
-      toast({
-        title: "❌ Reset Failed",
-        description: err.message,
-        variant: "destructive",
-      })
     }
   }
 

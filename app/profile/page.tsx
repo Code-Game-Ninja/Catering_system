@@ -14,7 +14,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { log } from "@/lib/logging"
 import { User, Mail, Phone, MapPin, Utensils, ArrowLeft } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null)
@@ -27,7 +26,6 @@ export default function ProfilePage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -73,13 +71,7 @@ export default function ProfilePage() {
     setIsSubmitting(true)
 
     if (!user) {
-      setError("User not authenticated.")
-      toast({
-        title: "🔒 Auth Error",
-        description: "Please log in.",
-        variant: "destructive",
-      })
-      setIsSubmitting(false)
+      setError("Please log in.")
       return
     }
 
@@ -93,19 +85,10 @@ export default function ProfilePage() {
         updatedAt: serverTimestamp(),
       })
       log("info", "User profile updated successfully", { uid: user.uid })
-      toast({
-        title: "✅ Profile Saved!",
-        description: "Profile updated.",
-        variant: "default",
-      })
+      setError(null)
     } catch (err: any) {
       log("error", "Failed to update user profile", { error: err.message, uid: user.uid })
-      setError("Failed to update profile. Please try again.")
-      toast({
-        title: "❌ Update Failed",
-        description: "Could not update profile.",
-        variant: "destructive",
-      })
+      setError("Could not update profile.")
       console.error("Error updating profile:", err)
     } finally {
       setIsSubmitting(false)
@@ -114,12 +97,7 @@ export default function ProfilePage() {
 
   const handleBecomeRestaurantOwner = async () => {
     if (!user) {
-      setError("User not authenticated.")
-      toast({
-        title: "🔒 Auth Error",
-        description: "Please log in.",
-        variant: "destructive",
-      })
+      setError("Please log in.")
       return
     }
 
@@ -133,20 +111,11 @@ export default function ProfilePage() {
         })
         setRole("restaurant_owner")
         log("info", "User role updated to restaurant_owner", { uid: user.uid })
-        toast({
-          title: "👨‍🍳 Role Updated!",
-          description: "Now a restaurant owner.",
-          variant: "default",
-        })
+        setError(null)
         router.push("/restaurant-owner/setup")
       } catch (err: any) {
         log("error", "Failed to update user role to restaurant_owner", { error: err.message, uid: user.uid })
-        setError("Failed to update role. Please try again.")
-        toast({
-          title: "❌ Role Update Failed",
-          description: "Could not update role.",
-          variant: "destructive",
-        })
+        setError("Could not update role.")
         console.error("Error updating role:", err)
       } finally {
         setIsSubmitting(false)

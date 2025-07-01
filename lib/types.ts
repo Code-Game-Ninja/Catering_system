@@ -92,3 +92,15 @@ export interface Review {
   comment: string
   createdAt: Date | Timestamp
 }
+
+// Email notification types for order events
+export type OrderEventType = 'order_placed' | 'order_confirmed' | 'order_delivered'
+
+export interface OrderEventEmailPayload {
+  eventType: OrderEventType
+  orderId: string
+  to: string
+  subject: string
+  html: string
+  text?: string
+}

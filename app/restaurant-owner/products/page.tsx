@@ -33,7 +33,6 @@ import { Plus, Edit, Package, UtensilsCrossed, Leaf, Vegan, Info } from "lucide-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast" // Import useToast
 
 export default function RestaurantOwnerProductsPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -60,7 +59,6 @@ export default function RestaurantOwnerProductsPage() {
   const [userRestaurantName, setUserRestaurantName] = useState<string | null>(null)
   const [userRole, setUserRole] = useState<"user" | "restaurant_owner" | "admin" | null>(null)
   const router = useRouter()
-  const { toast } = useToast() // Initialize toast
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -89,22 +87,14 @@ export default function RestaurantOwnerProductsPage() {
           fetchProducts(userData.restaurantId)
         } else if (userData?.role === "restaurant_owner" && !userData.restaurantId) {
           log("info", "Restaurant owner needs to set up restaurant, redirecting", { uid: user.uid })
-          toast({
-            title: "⚠️ Setup Needed",
-            description: "Set up your restaurant first.",
-            variant: "destructive",
-          })
+          setError("Set up your restaurant first.")
           router.push("/restaurant-owner/setup")
         } else {
           log("warn", "Unauthorized access attempt to restaurant owner products page", {
             uid: user.uid,
             role: userData?.role,
           })
-          toast({
-            title: "⛔ Access Denied",
-            description: "Not authorized to view this page.",
-            variant: "destructive",
-          })
+          setError("Not authorized to view this page.")
           router.push("/")
         }
       } else {
@@ -113,7 +103,7 @@ export default function RestaurantOwnerProductsPage() {
       }
     })
     return () => unsubscribe()
-  }, [router, toast])
+  }, [router])
 
   const fetchProducts = async (restaurantId: string) => {
     try {
@@ -130,12 +120,7 @@ export default function RestaurantOwnerProductsPage() {
       log("info", "Restaurant owner fetched products successfully", { restaurantId, count: productsList.length })
     } catch (err: any) {
       log("error", "Restaurant owner failed to fetch products", { error: err.message, restaurantId })
-      setError("Failed to load products. Please try again later.")
-      toast({
-        title: "❌ Error",
-        description: "Could not load products.",
-        variant: "destructive",
-      })
+      setError("Could not load products.")
       console.error("Error fetching products:", err)
     } finally {
       setLoading(false)
@@ -185,21 +170,11 @@ export default function RestaurantOwnerProductsPage() {
     } catch (err: any) {
       log("error", "Image resize/compression failed", { fileName: imageFile.name, error: err.message })
       setError("Could not process image.")
-      toast({
-        title: "🖼️ Image Error",
-        description: "Could not process image.",
-        variant: "destructive",
-      })
       return null
     }
 
     if (blob.size > 4 * 1024 * 1024) {
-      setError("Image is still too large after compression (max 4 MB).")
-      toast({
-        title: "📦 Too Large",
-        description: "Image still too large (max 4 MB).",
-        variant: "destructive",
-      })
+      setError("Image still too large (max 4 MB).")
       return null
     }
 
@@ -217,12 +192,7 @@ export default function RestaurantOwnerProductsPage() {
       return downloadURL
     } catch (err: any) {
       log("error", "Image upload failed", { fileName: imageFile.name, error: err.message })
-      setError("Failed to upload image. Please try again with a smaller file.")
-      toast({
-        title: "❌ Upload Failed",
-        description: "Could not upload image.",
-        variant: "destructive",
-      })
+      setError("Could not upload image.")
       return null
     } finally {
       setUploading(false)
@@ -235,21 +205,11 @@ export default function RestaurantOwnerProductsPage() {
 
     if (!userRestaurantId || !userRestaurantName) {
       setError("Restaurant information not available. Please set up your restaurant first.")
-      toast({
-        title: "❓ Not Found",
-        description: "Set up your restaurant first.",
-        variant: "destructive",
-      })
       return
     }
 
     if (!currentProduct.name || !currentProduct.description || !currentProduct.price || !currentProduct.category) {
-      setError("Please fill in all required fields (Name, Description, Price, Category).")
-      toast({
-        title: "⚠️ Missing Info",
-        description: "Fill all required fields.",
-        variant: "destructive",
-      })
+      setError("Fill all required fields.")
       return
     }
 
@@ -280,11 +240,7 @@ export default function RestaurantOwnerProductsPage() {
           productId: currentProduct.id,
           restaurantId: userRestaurantId,
         })
-        toast({
-          title: "✅ Updated!",
-          description: "Product details saved.",
-          variant: "default",
-        })
+        setError(null)
       } else {
         await addDoc(collection(db, "products"), {
           ...productData,
@@ -296,11 +252,7 @@ export default function RestaurantOwnerProductsPage() {
           productName: currentProduct.name,
           restaurantId: userRestaurantId,
         })
-        toast({
-          title: "🍽️ Added!",
-          description: "Product added to menu.",
-          variant: "default",
-        })
+        setError(null)
       }
       resetForm()
       fetchProducts(userRestaurantId) // Refresh the list
@@ -310,12 +262,7 @@ export default function RestaurantOwnerProductsPage() {
         productData,
         restaurantId: userRestaurantId,
       })
-      setError("Failed to save product. Please try again.")
-      toast({
-        title: "❌ Save Failed",
-        description: "Could not save product.",
-        variant: "destructive",
-      })
+      setError("Could not save product.")
       console.error("Error saving product:", err)
     }
   }
@@ -337,11 +284,6 @@ export default function RestaurantOwnerProductsPage() {
         await deleteDoc(doc(db, "products", productId))
         setProducts(products.filter((p) => p.id !== productId))
         log("info", "Product deleted successfully by restaurant owner", { productId, restaurantId: userRestaurantId })
-        toast({
-          title: "Product Deleted!",
-          description: "The product has been removed from your menu.",
-          variant: "default",
-        })
       } catch (err: any) {
         log("error", "Product deletion failed for restaurant owner", {
           productId,
@@ -349,11 +291,6 @@ export default function RestaurantOwnerProductsPage() {
           restaurantId: userRestaurantId,
         })
         setError("Failed to delete product.")
-        toast({
-          title: "Deletion Failed",
-          description: "Failed to delete product. Please try again.",
-          variant: "destructive",
-        })
         console.error("Error deleting product:", err)
       }
     }
