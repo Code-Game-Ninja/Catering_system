@@ -48,6 +48,7 @@ export default function ClientLayout({
   const pathname = usePathname()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -74,6 +75,16 @@ export default function ClientLayout({
       log("info", "Auth state changed", { user: currentUser ? currentUser.uid : "none" })
     })
     return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]")
+      setCartCount((cart as any[]).reduce((sum: number, item: any) => sum + (item.quantity || 1), 0))
+    }
+    updateCartCount()
+    window.addEventListener("storage", updateCartCount)
+    return () => window.removeEventListener("storage", updateCartCount)
   }, [])
 
   const handleLogout = async () => {
@@ -146,9 +157,16 @@ export default function ClientLayout({
                       {user && (
                         <>
                           <Link href="/cart" onClick={() => setMobileNavOpen(false)}>
-                            <Button variant="ghost" size="lg" className="w-full justify-start">
-                              Cart
-                            </Button>
+                            <div className="relative w-full">
+                              <Button variant="ghost" size="lg" className="w-full justify-start">
+                                Cart
+                                {cartCount > 0 && (
+                                  <span className="absolute top-2 right-4 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
+                                    {cartCount}
+                                  </span>
+                                )}
+                              </Button>
+                            </div>
                           </Link>
                           <Link href="/my-orders" onClick={() => setMobileNavOpen(false)}>
                             <Button variant="ghost" size="lg" className="w-full justify-start">
@@ -191,6 +209,18 @@ export default function ClientLayout({
                       <Button variant="ghost" size="sm" className="text-primary-foreground">
                         <User className="h-4 w-4" />
                       </Button>
+                    </Link>
+                    <Link href="/cart">
+                      <div className="relative">
+                        <Button variant="ghost" size="sm" className="text-primary-foreground">
+                          <ShoppingCart className="h-4 w-4" />
+                          {cartCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
+                              {cartCount}
+                            </span>
+                          )}
+                        </Button>
+                      </div>
                     </Link>
                     <Button variant="ghost" size="sm" className="text-primary-foreground" onClick={handleLogout}>
                       <LogOut className="h-4 w-4" />
@@ -239,9 +269,16 @@ export default function ClientLayout({
               {user && (
                 <div className="flex items-center space-x-1">
                   <Link href="/cart">
-                    <Button variant="ghost" size="sm" className="text-primary-foreground">
-                      <ShoppingCart className="mr-2 h-4 w-4" /> Cart
-                    </Button>
+                    <div className="relative">
+                      <Button variant="ghost" size="sm" className="text-primary-foreground">
+                        <ShoppingCart className="h-4 w-4" />
+                        {cartCount > 0 && (
+                          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs px-1 min-w-[18px] text-center">
+                            {cartCount}
+                          </span>
+                        )}
+                      </Button>
+                    </div>
                   </Link>
                   <Link href="/my-orders">
                     <Button variant="ghost" size="sm" className="text-primary-foreground">
