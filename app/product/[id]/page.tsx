@@ -225,7 +225,7 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <Store className="h-5 w-5" /> {restaurant.name}
                 </Link>
               )}
-              <p className="text-2xl font-semibold text-[var(--primary)] mb-4">${product.price.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-[var(--primary)] mb-4">₹{product.price.toFixed(2)}</p>
               <p className="text-gray-700 mb-4">{product.description}</p>
 
               <div className="flex flex-wrap gap-2 mb-4">
@@ -263,12 +263,12 @@ export default function ProductPage({ params }: ProductPageProps) {
 
               {product.ingredients && product.ingredients.length > 0 && (
                 <p className="text-sm text-gray-600 mb-2">
-                  <span className="font-semibold">Ingredients:</span> {product.ingredients.join(", ")}
+                  <span className="font-semibold">Ingredients:</span> {Array.isArray(product.ingredients) ? product.ingredients.join(", ") : product.ingredients}
                 </p>
               )}
               {product.allergens && product.allergens.length > 0 && (
                 <p className="text-sm text-red-500 mb-4">
-                  <span className="font-semibold">Allergens:</span> {product.allergens.join(", ")}
+                  <span className="font-semibold">Allergens:</span> {Array.isArray(product.allergens) ? product.allergens.join(", ") : product.allergens}
                 </p>
               )}
 
