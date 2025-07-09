@@ -135,16 +135,12 @@ Visit [http://localhost:3000](http://localhost:3000) to view the app in developm
 
 ## 📸 Screenshots
 
-> Add your own here or use the following placeholders:
-
  | User View                                      |
  | --------------------------------------------------- |
- | Restaurant Dashboard                           |
  | ![image](https://github.com/user-attachments/assets/8af7955a-b4cd-4a2c-8e37-266c409dfa63)
- | ---------------------------------------------------- |
+| Restaurant Dashboard                           |
  | ![screencapture-catering-system-59v4n9eav-chirags-projects-5c6a8fe9-vercel-app-restaurant-owner-2025-07-01-17_23_32](https://github.com/user-attachments/assets/851dbbb2-6327-427e-987c-f318742cd265)
- |----------------------------------------------------- |
- | Admin Panel                                     |
+ | Admin Dashboard                                     |
  ![image](https://github.com/user-attachments/assets/effd9f36-a0c4-4ee4-a978-01a4e1703d26)
  |----------------------------------------------------- |
 
